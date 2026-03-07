@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reading Aloud</title>
+
+<style>
+html, body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#fff;
+  font-family:"Times New Roman", Times, serif;
+}
+
+/* Split layout */
+#game{
+  position:fixed;
+  inset:0;
+  display:flex;
+  opacity:0;
+  transition:opacity 0.4s ease;
+}
+
+.column{
+  flex:1;
+  padding:80px 60px;
+  box-sizing:border-box;
+  font-size:28px;
+  line-height:1.6;
+}
+
+/* Buttons */
+.navBtn{
+  position:fixed;
+  top:15px;
+  height:50px;
+  width:auto;
+  cursor:pointer;
+  image-rendering:pixelated;
+  z-index:1000;
+}
+
+#nextBtn{ right:15px; }
+#backBtn{ left:15px; display:none; }
+
+/* Countdown overlay */
+#countdown{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+}
+
+#countImg{
+  height:200px;
+  image-rendering:pixelated;
+}
+
+/* Fade overlay */
+#fade{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  opacity:1;
+  pointer-events:none;
+  transition:opacity 0.4s ease;
+  z-index:1500;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="waitSound" src="assets/wait.ogg"></audio>
+<audio id="goSound" src="assets/go.ogg"></audio>
+<audio id="pageForward" src="assets/PAGE_FORWARD.ogg"></audio>
+<audio id="pageBack" src="assets/PAGE_BACK.ogg"></audio>
+
+<!-- ✅ finish sound -->
+<audio id="finishSound" src="assets/FINISH.ogg"></audio>
+
+<div id="countdown">
+  <img id="countImg" src="assets/3.webp">
+</div>
+
+<div id="fade"></div>
+
+<img id="backBtn" class="navBtn" src="assets/BACK_READING.webp" alt="">
+<img id="nextBtn" class="navBtn" src="assets/NEXT_READING.webp" alt="">
+
+<div id="game">
+  <div class="column" id="leftText"></div>
+  <div class="column" id="rightText"></div>
+</div>
+
+<script>
+/* ---------------- BOOK DATA ---------------- */
+
+const books = [
+{
+title:"The Quiet Forest",
+pages:[
+`Jane Austen:<br>Emma<br><br>Emma Woodhouse, handsome, clever, and rich, with a comfortable home and happy disposition, seemed to unite some of the best blessings of existence; and had lived nearly twenty-one years`,
+`in the world with very little to distress or vex her.<br><br>She was the youngest of the two daughters of a most affectionate, indulgent father; and had, in consequence of her sister's marriage, been mistress of his house from a very early period. Her mother had died`,
+`in the world with very little to distress or vex her.<br>She was the youngest of the two daughters of a most affectionate, indulgent father;`,
+`and had, in consequence of her sister's marriage, been mistress of his house from a very early period. Her mother had died`,
+`too long ago for her to have more than an indistinct remembrance of her caresses; and her place had been supplied by an excellent`,
+`woman as governess, who had fallen little short of a mother in affection. Sixteen years had Miss Taylor been in Mr. Woodhouse's`,
+`family, less as a governess than a friend, very fond of both daughters, but particularly of Emma. Between then is was more`,
+`the intimacy of sisters. Even before Miss Taylor had ceased`,
+`family, less as a governess than a friend, very fond of both daughters, but particularly of Emma. Between then is was more`,
+`family, less as a governess than a friend, very fond of both daughters, but particularly of Emma. Between then is was more`,
+]
+},
+{
+title:"A Letter From Home",
+pages:[
+`Dear friend, I hope this letter finds you well and in good spirits.`,
+`The days have grown longer, and the evenings are filled with the sound of children playing outside.`,
+`Life here is simple, yet it carries a quiet beauty that is easy to miss.`,
+`I look forward to the day we can sit together and talk again.`
+]
+},
+{
+title:"Morning Routine",
+pages:[
+`The alarm clock rang sharply at seven o'clock, cutting through the quiet of the room.`,
+`She stretched slowly, letting the morning light warm her face.`,
+`The smell of fresh coffee drifted through the kitchen, inviting her to begin the day.`,
+`Outside, the city was already awake and moving with purpose.`
+]
+},
+{
+title:"The Lighthouse",
+pages:[
+`Waves crashed against the rocks beneath the old lighthouse.`,
+`Its beam of light swept steadily across the dark ocean, guiding ships safely to shore.`,
+`Inside, the keeper adjusted the lens carefully, ensuring it burned brightly.`,
+`Far away, sailors felt comforted by its steady glow.`
+]
+},
+{
+title:"An Unexpected Journey",
+pages:[
+`The suitcase lay open on the bed, half packed and waiting.`,
+`He hesitated, unsure of what tomorrow would bring.`,
+`Sometimes the hardest part of travel is taking the first step.`,
+`With a deep breath, he closed the case and walked out the door.`
+]
+},
+{
+title:"Rainy Afternoon",
+pages:[
+`Rain tapped gently against the windowpane.`,
+`Inside, the room felt warm and safe.`,
+`A book rested open on the table beside a cup of tea.`,
+`It was the perfect afternoon to read and reflect.`
+]
+}
+];
+
+/* ---------------- RANDOM BOOK SELECTION ---------------- */
+
+function getRandomBooks(count){
+  const shuffled = [...books].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+
+const selectedBooks = getRandomBooks(4);
+let currentBookIndex = 0;
+let currentSpreadIndex = 0; // 0 = pages 0+1, 1 = pages 2+3, etc
+
+/* ---------------- ELEMENTS ---------------- */
+
+const leftText = document.getElementById("leftText");
+const rightText = document.getElementById("rightText");
+const nextBtn = document.getElementById("nextBtn");
+const backBtn = document.getElementById("backBtn");
+const pageForward = document.getElementById("pageForward");
+const pageBack = document.getElementById("pageBack");
+const finishSound = document.getElementById("finishSound");
+
+/* ---------------- INPUT BLOCKING + EXIT ---------------- */
+
+let inputBlocked = false;
+
+function blockAllInput(){
+  inputBlocked = true;
+
+  // disable mouse input
+  nextBtn.style.pointerEvents = "none";
+  backBtn.style.pointerEvents = "none";
+
+  // also disable cursor feel (optional)
+  nextBtn.style.cursor = "default";
+  backBtn.style.cursor = "default";
+}
+
+function redirectToTraining(){
+  window.location.href = "training.html";
+}
+
+function playSfx(audioEl) {
+  if (!audioEl) return;
+  audioEl.pause();
+  audioEl.currentTime = 0;
+  audioEl.play().catch(() => {});
+}
+
+/* ENTER key: instant exit (only if NOT blocked) */
+document.addEventListener("keydown", (e) => {
+  if (inputBlocked) return;
+  if (e.key === "Enter") {
+    e.preventDefault();
+    redirectToTraining();
+  }
+}, { passive: false });
+
+/* ---------------- PAGE RENDER ---------------- */
+
+function renderPage(){
+  const book = selectedBooks[currentBookIndex];
+  const leftPage = book.pages[currentSpreadIndex * 2] || "";
+  const rightPage = book.pages[currentSpreadIndex * 2 + 1] || "";
+
+  leftText.innerHTML = leftPage;
+  rightText.innerHTML = rightPage;
+
+  backBtn.style.display =
+    (currentSpreadIndex > 0 || currentBookIndex > 0)
+      ? "block"
+      : "none";
+}
+
+/* True when user is on the very last spread of the very last book */
+function isAtVeryEnd(){
+  if (currentBookIndex !== selectedBooks.length - 1) return false;
+  const book = selectedBooks[currentBookIndex];
+  const maxSpread = Math.ceil(book.pages.length / 2) - 1;
+  return currentSpreadIndex >= maxSpread;
+}
+
+function finishAndExit(){
+  blockAllInput();
+  playSfx(finishSound);
+
+  // redirect when sound finishes; fallback in case 'ended' doesn't fire
+  const fallbackMs = 6000;
+  const t = setTimeout(redirectToTraining, fallbackMs);
+
+  finishSound.addEventListener("ended", () => {
+    clearTimeout(t);
+    redirectToTraining();
+  }, { once: true });
+}
+
+/* ---------------- BUTTON VISUALS ---------------- */
+
+nextBtn.addEventListener("mousedown", () => {
+  if (inputBlocked) return;
+  nextBtn.src="assets/NEXT_READING_PRESSED.webp";
+});
+nextBtn.addEventListener("mouseup", () => {
+  if (inputBlocked) return;
+  nextBtn.src="assets/NEXT_READING.webp";
+});
+nextBtn.addEventListener("mouseleave", () => {
+  if (inputBlocked) return;
+  nextBtn.src="assets/NEXT_READING.webp";
+});
+
+backBtn.addEventListener("mousedown", () => {
+  if (inputBlocked) return;
+  backBtn.src="assets/BACK_READING_PRESSED.webp";
+});
+backBtn.addEventListener("mouseup", () => {
+  if (inputBlocked) return;
+  backBtn.src="assets/BACK_READING.webp";
+});
+backBtn.addEventListener("mouseleave", () => {
+  if (inputBlocked) return;
+  backBtn.src="assets/BACK_READING.webp";
+});
+
+/* ---------------- NAVIGATION ---------------- */
+
+nextBtn.addEventListener("click", () => {
+  if (inputBlocked) return;
+
+  // ✅ If user is already at the end and presses next -> finish flow
+  if (isAtVeryEnd()) {
+    finishAndExit();
+    return;
+  }
+
+  playSfx(pageForward);
+
+  const book = selectedBooks[currentBookIndex];
+  const maxSpread = Math.ceil(book.pages.length / 2) - 1;
+
+  if(currentSpreadIndex < maxSpread){
+    currentSpreadIndex++;
+  } else if(currentBookIndex < selectedBooks.length - 1){
+    currentBookIndex++;
+    currentSpreadIndex = 0;
+  }
+
+  renderPage();
+});
+
+backBtn.addEventListener("click", () => {
+  if (inputBlocked) return;
+
+  playSfx(pageBack);
+
+  if(currentSpreadIndex > 0){
+    currentSpreadIndex--;
+  } else if(currentBookIndex > 0){
+    currentBookIndex--;
+    const prevBook = selectedBooks[currentBookIndex];
+    currentSpreadIndex = Math.ceil(prevBook.pages.length / 2) - 1;
+  }
+
+  renderPage();
+});
+
+/* ---------------- COUNTDOWN INTRO ---------------- */
+
+const countImg = document.getElementById("countImg");
+const countdown = document.getElementById("countdown");
+const waitSound = document.getElementById("waitSound");
+const goSound = document.getElementById("goSound");
+const fade = document.getElementById("fade");
+const game = document.getElementById("game");
+
+async function playCountdown(){
+  const sequence = ["3.webp","2.webp","1.webp"];
+
+  for(let img of sequence){
+    countImg.src = "assets/" + img;
+    waitSound.currentTime = 0;
+    waitSound.play().catch(() => {});
+    await new Promise(r => setTimeout(r,1000));
+  }
+
+  goSound.play().catch(() => {});
+  countdown.style.display = "none";
+
+  renderPage();
+
+  requestAnimationFrame(()=>{
+    fade.style.opacity = "0";
+    game.style.opacity = "1";
+  });
+}
+
+window.onload = playCountdown;
+</script>
+
+</body>
+</html>

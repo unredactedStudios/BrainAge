@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BRAIN TRAINING: Web Edition</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Dr Kawashima's BRAIN TRAINING: Web Edition" />
+    <meta name="title" content="Dr Kawashima's BRAIN TRAINING: Web Edition">
+    <meta property="og:description" content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning." />
+    <meta name="description" content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning.">
+    <meta property="og:image" content="assets/BANNER.webp" />
+    <meta name="image" content="assets/BANNER.webp" />
+
+    <!-- Optional: Discord / Theme Color -->
+    <meta name="theme-color" content="#7289DA" />
+
+    <!-- Default favicon: animated GIF -->
+    <link rel="icon" type="image/gif" href="assets/favicon.gif">
+
+</head>
+
+<body>
+
+    <div id="boot">
+        <img src="assets/ESRB.webp" id="esrb" class="splash">
+        <img src="assets/SPLASH.webp" id="splash" class="splash">
+    </div>
+
+    <audio id="bgm" src="assets/MAINMENU.ogg" loop style="display:none;"></audio>
+
+    <!-- Main Menu -->
+    <div id="mainMenu" class="menuScreen">
+        <div id="topBar">
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <img id="logo" src="assets/LOGO.webp">
+                <img class="head" src="assets/HEAD.webp">
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <div id="buttonStack">
+                    <div class="button button1">Introduction</div>
+                    <div class="button button2">My Brain Training</div>
+                </div>
+                <div id="buttonStack2">
+                    <!-- <div class="button buttonBlocked">Options</div> -->
+                    <div class="button button3">About</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Brain Training Menu / Introduction -->
+    <div id="homeMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>Introduction</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <img class="head" src="assets/HEAD.webp">
+                <div id="speech">
+                    <img src="assets/SPEECH.webp">
+                    <div id="speechText"></div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <img class="rightImage" src="">
+            </div>
+        </div>
+    </div>
+
+    <!-- Options Menu -->
+    <div id="optionsMenu" class="menuScreen" style="display:none;">
+        <div id="topBar"></div>
+        <div id="menuBody">
+            <div id="leftPane">
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+            </div>
+        </div>
+    </div>
+
+    <!-- About Menu -->
+    <div id="aboutMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>About This Game</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <img class="head" src="assets/HEAD.webp">
+                <div id="speech">
+                    <img src="assets/SPEECH.webp">
+                    <div id="speechText"></div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <img class="rightImage Studios" src="">
+            </div>
+        </div>
+    </div>
+
+    <div id="versionLabel">versionLabel</div>
+
+    <div id="whiteOverlay" aria-hidden="true"></div>
+    <script src="script.js"></script>
+</body>
+
+</html>

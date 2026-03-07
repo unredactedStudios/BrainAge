@@ -1,0 +1,492 @@
+* {
+    font-family: "SystemFont", Arial, Helvetica, sans-serif;
+    cursor: url("assets/CURSOR.webp"), auto !important;
+    user-select: none;       /* standard */
+    -webkit-user-select: none; /* Safari/Chrome */
+    -moz-user-select: none;   /* Firefox */
+    -ms-user-select: none;    /* IE/Edge */
+}
+
+img {
+    -webkit-user-drag: none;
+    -moz-user-drag: none;
+    -ms-user-drag: none;
+}
+
+/* Optional: remove selection outline / highlight if dragged */
+::selection {
+    background: transparent;
+}
+
+@font-face {
+    font-family: "SystemFont";
+    src: url("assets/SYSTEM.otf") format("opentype");
+    font-weight: thin;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "ButtonFont";
+    src: url("assets/BUTTON.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "BIOSFont";
+    src: url("assets/BIOS.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: "SystemFont", Arial, Helvetica, sans-serif;
+    background: white;
+    overflow: hidden;
+}
+
+/* Boot / splash container */
+#boot {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Splash images */
+.splash {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    max-height: 80%;
+    opacity: 0;
+    transition: opacity 0.5s linear;
+    z-index: 1001;
+}
+
+.visible {
+    opacity: 1;
+}
+
+/* Main menu */
+#mainMenu {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background-color: #FAFBFB;
+    background-image:
+        linear-gradient(to right, #EAECEB 2px, transparent 2px),
+        linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
+    background-size: 64px 64px;
+}
+
+#homeMenu {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background-color: #FAFBFB;
+    background-image:
+        linear-gradient(to right, #EAECEB 2px, transparent 2px),
+        linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
+    background-size: 64px 64px;
+}
+
+#optionsMenu {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background-color: #FAFBFB;
+    background-image:
+        linear-gradient(to right, #EAECEB 2px, transparent 2px),
+        linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
+    background-size: 64px 64px;
+}
+
+#aboutMenu {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background-color: #FAFBFB;
+    background-image:
+        linear-gradient(to right, #EAECEB 2px, transparent 2px),
+        linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
+    background-size: 64px 64px;
+}
+
+/* Top bar */
+#topBar {
+    height: 50px;
+    width: 100%;
+    background: linear-gradient(to bottom, #ffd05b, #FE9721);
+    display: flex;                /* align icon + text horizontally */
+    align-items: center;          /* vertically center */
+    padding-left: 10px;           /* small padding for left edge */
+    gap: 10px;                    /* space between icon and text */
+    box-sizing: border-box;
+    font-family: "ButtonFont", "SystemFont", Arial, Helvetica, sans-serif;
+    position: relative;
+}
+
+/* Top bar icon */
+#topBarIcon {
+    height: 40px;                 /* fit inside the 50px bar */
+    width: auto;                  /* maintain aspect ratio */
+}
+
+/* h1 inside top bar */
+#topBar h1 {
+    margin: 0;
+    font-size: 48px;              /* adjust as needed */
+    color: #EE6D3F;
+    font-family: inherit;         /* BUTTON.otf */
+    transform: translateY(7px);   /* nudge text down */
+    letter-spacing: -1px;
+}
+
+/* Menu content */
+#menuContent {
+    padding: 24px;
+}
+
+#menuContent h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #333;
+}
+
+#logo {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 35vh;
+    z-index: 5;
+}
+
+#menuBody {
+    position: absolute;
+    top: 50px;               /* height of top bar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+}
+
+#leftPane,
+#rightPane {
+    flex: 1;
+    position: relative;
+}
+
+#divider {
+    width: 4px;
+    background-color: #000000;
+    margin-top: 35px;
+    margin-bottom: 35px;
+    opacity: 25%;
+}
+
+/* Floating head character */
+.head {
+    position: absolute;
+    left: 5%;
+    bottom: 5%;
+    height: 30vh; /* adjust if needed */
+    animation: headFloat 1.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+#speech {
+    position: absolute;
+    left: 5%;
+    bottom: 25%;
+    height: 45vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#speech img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+#speechText {
+    position: absolute;     /* overlay on top of the img */
+    top: 14px;
+    left: 20px;
+    right: 20px;
+    font-family: "SystemFont", Arial, Helvetica, sans-serif;
+    font-size: 24px;
+    color: #000;
+    pointer-events: none;
+    white-space: pre-wrap;
+    z-index: 5000;
+}
+
+/* Floating animation */
+@keyframes headFloat {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.buttonBlocked {
+    background: linear-gradient(to right, #F3F3F3, #FBFBFB) !important;
+    border-color: #E8E8E8 !important;
+    color: #E8E8E8 !important;
+    text-shadow: none !important;
+}
+
+.button1 {
+    background: linear-gradient(to right, #FBF8BA, #F8F8F8) !important;
+    border-color: #E0A039 !important;
+    color: #E6A83C !important;
+    
+}
+
+.button2 {
+    background: linear-gradient(to right, #E9BA9F, #F8F8F8) !important;
+    border-color: #E38E54 !important;
+    color: #D86941 !important;
+}
+
+.button3 {
+    background: linear-gradient(to right, #E5E4E6, #F8F8F8) !important;
+    border-color: #96B48B !important;
+    color: #A0B794 !important; 
+}
+
+.button4 {
+    background: linear-gradient(to right, #e7bafb, #F8F8F8) !important;
+    border-color: #9f5ddd !important;
+    color: #b46ae5 !important;
+}
+
+.button1a {
+    background: linear-gradient(to right, #F3B2B2, #F3D3D3) !important;
+    border-color: #FB0000 !important;
+    color: #FB0000 !important;
+}
+
+.button2a {
+    background: linear-gradient(to right, #FBDBC3, #FBFBFB) !important;
+    border-color: #FB6900 !important;
+    color: #FB3000 !important;
+}
+
+.button3a {
+    background: linear-gradient(to right, #F3C3DB, #F3EBF3) !important;
+    border-color: #FB51BA !important;
+    color: #FB51BA !important; 
+}
+
+.button {
+    font-family: "ButtonFont", "SystemFont", Arial, Helvetica, sans-serif;
+    background: linear-gradient(to right, #FBF8BA, #FAF8F6);
+    border-radius: 15px 0 0 15px;
+    border: solid 5px #E0A039;
+    border-right: none;
+    color: #E6A83C;
+    text-shadow: 1px 1px #000;
+
+    font-size: 42px;
+    letter-spacing: -2px;
+
+    box-shadow: 2px 2px 4px #000;
+
+    width: 400px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-top: 6px;   /* pushes text down slightly */
+
+    cursor: pointer !important;
+}
+
+#buttonStack {
+    position: absolute;
+    right: 0;
+    top: 15px;
+    display: flex;
+    flex-direction: column; /* stack vertically */
+    gap: 15px; /* space between buttons */
+}
+
+#buttonStack2 {
+    position: absolute;
+    right: 0;
+    bottom: 15px;
+    display: flex;
+    flex-direction: column; /* stack vertically */
+    gap: 15px; /* space between buttons */
+}
+
+/* Button click effect: shift slightly */
+.button.clicked {
+    transform: translate(5px, 5px);
+    transition: transform 0.1s ease-in-out;
+}
+
+/* Wipe effect using mask */
+@keyframes fadeRightToLeft {
+    0% {
+        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 0%);
+        mask-image: linear-gradient(to left, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 0%);
+        opacity: 1;
+    }
+    100% {
+        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0) 100%, rgba(0,0,0,1) 0%);
+        mask-image: linear-gradient(to left, rgba(0,0,0,0) 100%, rgba(0,0,0,1) 0%);
+        opacity: 0;
+    }
+}
+
+/* Apply to entire main menu */
+#mainMenu.fading {
+    animation: fadeRightToLeft 0.5s forwards;
+}
+
+/* Container for right-side top bar buttons */
+.topBarButtons {
+    position: absolute;
+    right: 5px;                 /* anchor to right edge */
+    top: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 14px;                   /* space between buttons */
+}
+
+/* Shared top bar button styling */
+.topBarBtn {
+    height: 45px;                /* fits inside bar */
+    width: auto;
+    cursor: pointer;
+    image-rendering: pixelated;  /* keeps crisp DS look */
+}
+
+/* Inner (left) button — closer to center */
+.topBarBtn.leftBtn {
+    margin-right: -10px;
+}
+
+/* Outer (right) button — flush right */
+.topBarBtn.rightBtn {
+    margin-right: 0;
+}
+
+/* Blocked cursor for greyed-out MORE button */
+.greyed {
+    cursor: not-allowed !important;
+}
+
+.rightImage {
+    position: absolute;
+    right: 25%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60vh;
+    width: auto;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+    border: 4px solid #F4B756; /* correct shorthand */
+}
+
+.Studios {
+    position: absolute;
+    right: 35%;
+    top: 50%;
+    height: 50px !important;
+    width: auto;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+    border: 4px solid #00000000 !important; /* correct shorthand */
+}
+
+
+.redText {
+    color: #EB473D;
+}
+
+/* white overlay for Back transitions */
+#whiteOverlay {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 20000;
+}
+
+#versionLabel {
+  position: fixed;
+  bottom: 5%;
+  left: 42%;                 /* middle of the LEFT side */
+  transform: translateX(-50%);
+  font-family: "BIOSFont", Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  color: #F4B756;
+  opacity: 75%;
+  pointer-events: none;      /* never clickable */
+  display: none;             /* hidden by default */
+  z-index: 1000;
+}
+
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100vw);
+        opacity: 0;
+        visibility: visible; /* start being visible once animation begins */
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+#buttonStack .button,
+#buttonStack2 .button {
+    transform: translateX(100vw); /* off-screen right */
+    opacity: 0;                  /* fully invisible */
+    visibility: hidden;          /* prevents that brief flash */
+}
+
+@keyframes gridMove {
+    from {
+        background-position: 0px 0px;
+    }
+    to {
+        background-position: -64px -64px;
+    }
+}
+
+.menuScreen {
+    animation: gridMove 2s linear infinite;
+}

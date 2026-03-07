@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BRAIN TRAINING: Web Edition</title>
+    <link rel="stylesheet" href="training.css">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Dr Kawashima's BRAIN TRAINING: Web Edition" />
+    <meta name="title" content="Dr Kawashima's BRAIN TRAINING: Web Edition">
+    <meta property="og:description" content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning." />
+    <meta name="description" content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning.">
+    <meta property="og:image" content="assets/BANNER.webp" />
+    <meta name="image" content="assets/BANNER.webp" />
+
+    <!-- Optional: Discord / Theme Color -->
+    <meta name="theme-color" content="#7289DA" />
+
+    <!-- Default favicon: animated GIF -->
+    <link rel="icon" type="image/gif" href="assets/favicon.gif">
+
+</head>
+
+<body>
+
+    <audio id="bgm" src="assets/HOME.ogg" loop style="display:none;"></audio>
+
+    <!-- Main Menu -->
+    <div id="mainMenu" class="menuScreen" style="display:block;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>My Brain Training</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn endBtn" src="assets/END.webp">
+                <span></span>
+                <img class="topBarBtn leftBtn" src="assets/LEFT_GREYED.webp">
+                <img class="topBarBtn leftBtn" src="assets/CALENDER.webp">
+                <img class="topBarBtn leftBtn" src="assets/RIGHT_GREYED.webp">
+                <span></span>
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <div class="calendarWrap">
+                    <img class="leftStaticAbove" src="assets/INFO.webp" alt="">
+                    <img id="calendarAnim" class="calendarAnim" src="assets/CAL.webp" alt="">
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <div id="buttonStack">
+                    <div class="button button1a">Training</div>
+                    <!-- <div class="button button2a">Themes</div> -->
+                </div>
+                <div id="buttonStack2">
+                    <!-- <div class="button button3a">Brain Age Check</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Brain Training Menu / Introduction -->
+    <div id="homeMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>Introduction</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <img class="calendarAnim" src="assets/CAL.png" alt="">
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <img class="rightImage" src="">
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Submenu (minigames list) -->
+<div id="trainingMenu" class="menuScreen" style="display:none;">
+  <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>Training</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <span></span>
+                <img class="topBarBtn leftBtn" src="assets/LEFT_GREYED.webp">
+                <img class="topBarBtn leftBtn" src="assets/CALENDER.webp">
+                <img class="topBarBtn leftBtn" src="assets/RIGHT_GREYED.webp">
+                <span></span>
+            </div>
+        </div>
+
+  <div id="menuBody">
+    <div id="leftPane">
+      <div class="calendarWrap">
+        <img class="leftStaticAbove" src="assets/INFO.webp" alt="">
+        <img id="calendarAnim" class="calendarAnim" src="assets/CAL.webp" alt="">
+      </div>
+    </div>
+
+    <div id="divider"></div>
+
+    <div id="rightPane">
+      <div id="buttonStack">
+        <div class="button button2">Reading Aloud</div>
+        <div class="button button2">Word Scramble</div>
+        <div class="button button2">Photo Memory</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Minigame Intro Screen -->
+<div id="minigameIntroMenu" class="menuScreen" style="display:none;">
+  <div id="topBar">
+    <img id="topBarIcon" src="assets/ABC.webp">
+    <h1 id="minigameTitle">Training</h1>
+    <div class="topBarButtons">
+      <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+      <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+    </div>
+  </div>
+
+  <div id="menuBody">
+    <div id="leftPane">
+      <img class="head" src="assets/HEAD.webp">
+      <div id="speech">
+        <img src="assets/SPEECH.webp">
+        <div id="speechText"></div>
+      </div>
+    </div>
+
+    <div id="divider"></div>
+
+    <div id="rightPane">
+      <!-- optional: show a preview image for the minigame -->
+      <img class="rightImage" id="minigamePreview" src="">
+      <img id="startBtn" class="startBtn" src="assets/START.webp" alt="Start" style="display:none;">
+    </div>
+  </div>
+</div>
+
+    <!-- Options Menu -->
+    <div id="optionsMenu" class="menuScreen" style="display:none;">
+        <div id="topBar"></div>
+        <div id="menuBody">
+            <div id="leftPane">
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+            </div>
+        </div>
+    </div>
+
+    <!-- About Menu -->
+    <div id="aboutMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>About This Game</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <img class="head" src="assets/HEAD.webp">
+                <div id="speech">
+                    <img src="assets/SPEECH.webp">
+                    <div id="speechText"></div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <img class="rightImage Studios" src="">
+            </div>
+        </div>
+    </div>
+
+    <div id="whiteOverlay" aria-hidden="true"></div>
+    <script src="training.js"></script>
+</body>
+
+</html>

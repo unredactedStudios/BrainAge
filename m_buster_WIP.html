@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Word Buster</title>
+<style>
+  :root{
+    --ds-bg:#bfbfbf;
+    --panel:#ffffff;
+    --panel-border:#cfcfcf;
+  }
+
+  html,body{
+    margin:0;
+    height:100%;
+    background:#bdbdbd;
+    font-family:"Times New Roman", Times, serif;
+    overflow:hidden;
+  }
+
+  /* FULLSCREEN LAYOUT */
+  .wrap{ height:100%; width:100%; }
+
+  .ds{
+    width:100vw;
+    height:100vh;
+    background:linear-gradient(#cfcfcf,#bdbdbd);
+    position:relative;
+  }
+
+  .screens{
+    position:absolute;
+    inset:0;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .screen{
+    position:relative;
+    background:var(--ds-bg);
+    border-left:3px solid #888;
+  }
+
+  .screen:first-child{
+    border-left:none;
+    border-right:3px solid #888;
+  }
+
+  .panel{
+    position:absolute;
+    left:6%;
+    right:6%;
+    top:4%;
+    bottom:10%;
+    background:var(--panel);
+    border:6px solid var(--panel-border);
+    box-shadow: inset 0 0 0 2px #e8e8e8;
+  }
+
+  /* LEFT: big word display */
+  .wordArea{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+  }
+
+  .wordDisplay{
+    font-size:6vw;
+    letter-spacing:6px;
+    color:#111;
+    user-select:none;
+    opacity:0;
+    transition:opacity 80ms linear;
+  }
+
+  .wordDisplay.show{ opacity:1; }
+
+  .slots{
+    position:absolute;
+    left:10%;
+    right:10%;
+    bottom:6%;
+    height:22%;
+    background:#f7f7f7;
+    border:4px solid #c9c9c9;
+    display:grid;
+    place-items:center;
+  }
+
+  .slots .underscores{
+    font-size:3vw;
+    letter-spacing:10px;
+    opacity:.25; /* keep the “slot box” look without being loud */
+  }
+
+  .writeArea{
+    position:absolute;
+    left:6%;
+    right:6%;
+    top:18%;
+    bottom:28%;
+    background:#fff;
+    border:6px solid #cfcfcf;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+  }
+
+  .typed{
+    font-size:5vw;
+    letter-spacing:8px;
+  }
+
+  .eraseBtn{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:8%;
+    height:10%;
+    width:auto;
+    cursor:pointer;
+    user-select:none;
+    image-rendering:pixelated;
+  }
+
+  /* “Again” button (top-right of right screen) */
+  .againBtn{
+    position:absolute;
+    top:4%;
+    right:6%;
+    padding:.6vw 1.1vw;
+    background:#e9e9e9;
+    border:4px solid #c0c0c0;
+    box-shadow: inset 0 0 0 2px #f6f6f6;
+    cursor:pointer;
+    user-select:none;
+    font-size:1.2vw;
+    line-height:1;
+  }
+  .againBtn:active{
+    transform:translateY(1px);
+  }
+
+  .level{
+    position:absolute;
+    left:6%;
+    top:4%;
+    font-size:1.2vw;
+  }
+
+  .resultOverlay{
+    position:absolute;
+    inset:0;
+    display:none;
+    place-items:center;
+    pointer-events:none;
+  }
+
+  .resultOverlay img{
+    max-width:60%;
+    image-rendering:pixelated;
+  }
+
+  .resultOverlay.show{ display:grid; }
+
+  /* Countdown overlay */
+  #countdown{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2000;
+  }
+
+  #countImg{
+    height:200px;
+    image-rendering:pixelated;
+  }
+
+  /* Intro fade overlay */
+  #fadeIntro{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    opacity:1;
+    pointer-events:none;
+    transition:opacity 0.4s ease;
+    z-index:1500;
+  }
+
+  #fadeWhite{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.5s linear;
+    z-index:9999;
+  }
+  #fadeWhite.show{ opacity:1; }
+
+  /* tiny shake on wrong */
+  .shake{ animation: shake .35s linear; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-8px); }
+    40%{ transform:translateX(8px); }
+    60%{ transform:translateX(-6px); }
+    80%{ transform:translateX(6px); }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="ds" id="ds">
+      <div class="screens">
+        <!-- LEFT SCREEN -->
+        <div class="screen">
+          <div class="panel">
+            <div class="wordArea">
+              <div class="wordDisplay" id="wordDisplay"></div>
+            </div>
+
+            <div class="slots">
+              <div class="resultOverlay" id="resultOverlay">
+                <img id="resultImg" alt="Result" src="" />
+              </div>
+              <div class="underscores" id="underscores">____</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SCREEN -->
+        <div class="screen">
+          <div class="againBtn" id="againBtn">Again</div>
+          <div class="level" id="levelText"></div>
+
+          <div class="writeArea" id="writeArea">
+            <div class="typed" id="typed"> </div>
+          </div>
+
+          <img
+            src="assets/ERASE.webp"
+            id="eraseBtn"
+            class="eraseBtn"
+            alt="Erase"
+            draggable="false"
+          />
+        </div>
+      </div>
+
+      <div id="countdown">
+        <img id="countImg" src="assets/3.webp" alt="Countdown">
+      </div>
+
+      <div id="fadeIntro"></div>
+    </div>
+  </div>
+
+<script>
+/**
+ * Word list (progressively harder).
+ * Add/remove freely.
+ */
+const WORDS = [
+  "PLAN",
+  "FABLE",
+  "GRAVE",
+  "SHOPS",
+  "CAREER",
+  "WOODEN",
+  "LEAGUE",
+  "SEVENTY",
+  "KNOCKOUT"
+];
+
+const els = {
+  wordDisplay: document.getElementById("wordDisplay"),
+  underscores: document.getElementById("underscores"),
+  typed: document.getElementById("typed"),
+  eraseBtn: document.getElementById("eraseBtn"),
+  againBtn: document.getElementById("againBtn"),
+  overlay: document.getElementById("resultOverlay"),
+  resultImg: document.getElementById("resultImg"),
+  writeArea: document.getElementById("writeArea"),
+  levelText: document.getElementById("levelText"),
+  ds: document.getElementById("ds"),
+};
+
+const countdown = document.getElementById("countdown");
+const countImg = document.getElementById("countImg");
+const fadeIntro = document.getElementById("fadeIntro");
+
+const sounds = {
+  success: new Audio("assets/success.ogg"),
+  fail: new Audio("assets/fail.ogg"),
+  erase: new Audio("assets/ERASE.ogg"),
+  finish: new Audio("assets/FINISH.ogg"),
+  wait: new Audio("assets/wait.ogg"),
+  go: new Audio("assets/go.ogg")
+};
+
+Object.values(sounds).forEach(a => a && (a.preload = "auto"));
+
+let index = 0;
+let target = "";
+let answer = "";
+let locked = true;     // locked during countdown / transitions
+let gameDone = false;
+
+let againCount = 0;    // per-word
+let hideTimer = null;  // manages hiding the left word
+
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+function playSound(key){
+  const src = sounds[key]?.src;
+  if(!src) return null;
+  const a = new Audio(src); // overlap-friendly
+  a.preload = "auto";
+  a.play();
+  return a;
+}
+
+function waitAudioEnd(a){
+  if(!a) return Promise.resolve();
+  return new Promise(res => a.addEventListener("ended", res, { once:true }));
+}
+
+function clearOverlay(){
+  els.overlay.classList.remove("show");
+  els.resultImg.src = "";
+}
+
+function showOverlay(type){
+  els.resultImg.src = (type === "correct")
+    ? "assets/CORRECT.webp"
+    : "assets/WRONG.webp";
+  els.overlay.classList.add("show");
+}
+
+function setUnderscores(len){
+  // purely cosmetic (keeps the DS slot box vibe)
+  els.underscores.textContent = "_".repeat(Math.max(1, len));
+}
+
+function setTypedText(){
+  // RIGHT SCREEN shows the full typed word
+  els.typed.textContent = answer.length ? answer : " ";
+}
+
+function stopHideTimer(){
+  if(hideTimer){
+    clearTimeout(hideTimer);
+    hideTimer = null;
+  }
+}
+
+function showWord(ms){
+  stopHideTimer();
+  els.wordDisplay.classList.add("show");
+
+  // If Again pressed > 5 times, keep visible permanently
+  if(againCount > 5) return;
+
+  hideTimer = setTimeout(() => {
+    els.wordDisplay.classList.remove("show");
+    hideTimer = null;
+  }, ms);
+}
+
+function revealDuration(){
+  // Spec:
+  // - initial show: 0.25s (handled in loadWord)
+  // - if Again pressed: 0.5s
+  // - again: 1s
+  // - after that: keep 1s until >5 presses, then always visible
+  if(againCount <= 0) return 250;
+  if(againCount === 1) return 500;
+  return 1000;
+}
+
+function loadWord(i){
+  index = i;
+  answer = "";
+  againCount = 0;
+  locked = false;
+  clearOverlay();
+
+  target = WORDS[index].toUpperCase();
+  // Display word on left (Brain Age feels like lowercase in many screens)
+  els.wordDisplay.textContent = target.toLowerCase();
+
+  setUnderscores(target.length);
+  setTypedText();
+  els.levelText.textContent = "";
+
+  // Initial flash: 0.25s
+  showWord(250);
+}
+
+function checkAnswer(){
+  if(locked || gameDone) return;
+  if(answer.length !== target.length) return;
+
+  locked = true;
+
+  if(answer === target){
+    showOverlay("correct");
+    const sfx = playSound("success");
+
+    if(index < WORDS.length - 1){
+      setTimeout(() => {
+        clearOverlay();
+        loadWord(index + 1);
+      }, 800);
+    } else {
+      waitAudioEnd(sfx).then(() => {
+        clearOverlay();
+        finishSequence();
+      });
+    }
+  } else {
+    showOverlay("wrong");
+    playSound("fail");
+    els.writeArea.classList.add("shake");
+
+    setTimeout(() => {
+      els.writeArea.classList.remove("shake");
+      clearOverlay();
+      answer = "";
+      setTypedText();
+      locked = false;
+    }, 650);
+  }
+}
+
+function erase(){
+  if(gameDone || locked) return;
+  answer = "";
+  setTypedText();
+}
+
+async function finishSequence(){
+  if(gameDone) return;
+  gameDone = true;
+  locked = true;
+
+  const fin = playSound("finish");
+
+  const fadeWhite = document.getElementById("fadeWhite");
+  fadeWhite.classList.add("show");
+
+  const fadeMin = sleep(500);
+  const audioDone = fin ? waitAudioEnd(fin) : sleep(500);
+
+  await Promise.all([fadeMin, audioDone]);
+  window.location.href = "training.html";
+}
+
+/* INPUT */
+document.addEventListener("keydown", (e) => {
+  if(gameDone || locked) return;
+
+  if(e.key.length === 1 && /[a-zA-Z]/.test(e.key)){
+    const ch = e.key.toUpperCase();
+    if(answer.length < target.length){
+      answer += ch;
+      setTypedText();
+      checkAnswer();
+    }
+    return;
+  }
+
+  if(e.key === "Backspace"){
+    if(answer.length > 0){
+      playSound("erase");
+      answer = answer.slice(0, -1);
+      setTypedText();
+    }
+    return;
+  }
+
+  if(e.key === "Escape"){
+    playSound("erase");
+    erase();
+    return;
+  }
+
+  if(e.key === "Enter"){
+    checkAnswer();
+    return;
+  }
+});
+
+/* BUTTONS */
+els.eraseBtn.addEventListener("click", () => {
+  playSound("erase");
+  erase();
+});
+
+els.againBtn.addEventListener("click", () => {
+  if(gameDone) return;
+
+  // You can press Again even while “locked” by result transitions;
+  // it won’t affect scoring, just visibility.
+  againCount++;
+
+  // If touched more than five times, the word stays visible
+  if(againCount > 5){
+    stopHideTimer();
+    els.wordDisplay.classList.add("show");
+    return;
+  }
+
+  showWord(revealDuration());
+});
+
+/* COUNTDOWN */
+async function playCountdown(){
+  locked = true;
+
+  const sequence = ["3.webp","2.webp","1.webp"];
+  for(const img of sequence){
+    countImg.src = "assets/" + img;
+    playSound("wait");
+    await sleep(1000);
+  }
+
+  playSound("go");
+  countdown.style.display = "none";
+
+  loadWord(0);
+
+  requestAnimationFrame(() => {
+    fadeIntro.style.opacity = "0";
+    setTimeout(() => fadeIntro.style.display = "none", 450);
+  });
+}
+
+window.onload = playCountdown;
+</script>
+
+<div id="fadeWhite"></div>
+</body>
+</html>
