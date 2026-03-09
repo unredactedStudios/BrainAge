@@ -1,709 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Photo Memory</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Photo Memory</title>
 
-<style>
-  :root{
-    --ds-bg:#bfbfbf;
-    --panel:#ffffff;
-    --panel-border:#cfcfcf;
-    --ink:#000000;
-  }
+  <style>
+    :root {
+      --ds-bg: #bfbfbf;
+      --panel: #ffffff;
+      --panel-border: #cfcfcf;
+      --ink: #000000;
+    }
 
-  @font-face {
-    font-family: "DSSystem";
-    src: url("assets/SYSTEM.otf") format("opentype");
-    font-weight: normal;
-    font-style: normal;
-  }
+    @font-face {
+      font-family: "DSSystem";
+      src: url("assets/SYSTEM.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
 
-  html,body{
-    margin:0;
-    height:100%;
-    overflow:hidden;
-    font-family:"DSSystem", sans-serif;
-    background:#bdbdbd;
-  }
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: "DSSystem", sans-serif;
+      background: #bdbdbd;
+    }
 
-  .wrap{
-    position:fixed;
-    inset:0;
-    background:linear-gradient(#cfcfcf,#bdbdbd);
-  }
+    .wrap {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(#cfcfcf, #bdbdbd);
+    }
 
-  .screens{
-    position:absolute;
-    inset:0;
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-  }
+    .screens {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
 
-  .screen{
-    position:relative;
-    background:var(--ds-bg);
-    box-shadow: inset 0 0 0 4px #a9a9a9;   /* thinner outer */
-  }
+    .screen {
+      position: relative;
+      background: var(--ds-bg);
+      box-shadow: inset 0 0 0 4px #a9a9a9;
+      /* thinner outer */
+    }
 
-  /* Inner bezel (thinner) */
-  .bezel{
-    position:absolute;
-    left:22px;
-    right:22px;
-    top:14px;
-    bottom:14px;
-    background:linear-gradient(#cfcfcf,#bdbdbd);
-    border:4px solid #ff0000;   /* thinner */
-    box-shadow:
-      inset 0 0 0 4px #dedede,
-      inset 0 0 0 6px #f9f9f9;
-  }
+    /* Inner bezel (thinner) */
+    .bezel {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 14px;
+      bottom: 14px;
+      background: linear-gradient(#cfcfcf, #bdbdbd);
+      border: 4px solid #ff0000;
+      /* thinner */
+      box-shadow:
+        inset 0 0 0 4px #dedede,
+        inset 0 0 0 6px #f9f9f9;
+    }
 
-  /* White content */
-  .content{
-    position:absolute;
-    left:38px;
-    right:38px;
-    top:36px;
-    bottom:36px;
-    background:var(--panel);
-    border:4px solid var(--panel-border);   /* thinner */
-    box-shadow: inset 0 0 0 2px #fdfdfd;
-    padding:0;
-    box-sizing:border-box;
-  }
+    /* White content */
+    .content {
+      position: absolute;
+      left: 38px;
+      right: 38px;
+      top: 36px;
+      bottom: 36px;
+      background: var(--panel);
+      border: 4px solid var(--panel-border);
+      /* thinner */
+      box-shadow: inset 0 0 0 2px #fdfdfd;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* --- Fix: header overflow (2-line question) --- */
-  .header{
-    position:absolute;
-    left:12px;
-    right:12px;
-    top:12px;
+    /* --- Fix: header overflow (2-line question) --- */
+    .header {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 12px;
 
-    /* was 90px -> too small for 2 lines */
-    height:140px;
+      /* was 90px -> too small for 2 lines */
+      height: 140px;
 
-    background:#f3f3f3;
-    border:4px solid #bfbfbf;
-    box-shadow: inset 0 0 0 2px #ffffff;
+      background: #f3f3f3;
+      border: 4px solid #bfbfbf;
+      box-shadow: inset 0 0 0 2px #ffffff;
 
-    padding:18px 18px;   /* a bit more breathing room */
-    box-sizing:border-box;
+      padding: 18px 18px;
+      /* a bit more breathing room */
+      box-sizing: border-box;
 
-    color:var(--ink);
-    font-size:40px;
-    line-height:1.05;
+      color: var(--ink);
+      font-size: 40px;
+      line-height: 1.05;
 
-    white-space:pre-line;
-    overflow:hidden;      /* just in case */
-  }
+      white-space: pre-line;
+      overflow: hidden;
+      /* just in case */
+    }
 
-  /* main must start below the taller header */
-  .main{
-    position:absolute;
-    left:12px;
-    right:12px;
+    /* main must start below the taller header */
+    .main {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 168px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-    /* was 118px (based on old header) */
-    top:168px;
+    /* Right screen has no header, so fill space */
+    .screen:last-child .main {
+      top: 12px;
+    }
 
-    bottom:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
+    /* PHOTO FRAME (unchanged size, thinner border) */
+    .photoFrame {
+      width: 92%;
+      height: 78%;
+      max-width: 760px;
+      max-height: 520px;
+      background: #fafafa;
+      border: 8px solid #e5e5e5;
+      /* thinner */
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-  /* PHOTO FRAME (unchanged size, thinner border) */
-  .photoFrame{
-    width:92%;
-    height:78%;
-    max-width:760px;
-    max-height:520px;
-    background:#fafafa;
-    border:8px solid #e5e5e5;        /* thinner */
-    box-shadow: 0 2px 0 rgba(0,0,0,0.12);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-  }
-  .photoFrame img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-  }
+    .photoFrame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-  .gotItImg{
-    cursor:pointer;
-    image-rendering:pixelated;
-    user-select:none;
-    width: 320px;      /* adjust this size */
-    height: auto;
-  }
+    .gotItImg {
+      cursor: pointer;
+      image-rendering: pixelated;
+      user-select: none;
+      width: 320px;
+      /* adjust this size */
+      height: auto;
+    }
 
-  /* Options layout unchanged size */
-  .optionsWrap{
-    width:92%;
-    height:78%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
+    /* Options layout unchanged size */
+    .optionsWrap {
+      width: 92%;
+      height: 78%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-  .optionsGrid{
-    width:100%;
-    height:100%;
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap:24px;
-  }
+    .optionsGrid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, minmax(120px, 1fr));
+      gap: 14px;
+    }
 
-  /* Thinner thumbnail borders */
-  .thumb{
-    position:relative;
-    background:#fafafa;
-    border:8px solid #e5e5e5;       /* thinner */
-    box-shadow: 0 2px 0 rgba(0,0,0,0.12);
-    cursor:pointer;
-    overflow:hidden;
-  }
-  .thumb img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-  }
+    /* Thinner thumbnail borders */
+    .thumb {
+      position: relative;
+      background: #fafafa;
+      border: 8px solid #e5e5e5;
+      /* thinner */
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      overflow: hidden;
+    }
 
-.thumbKey{
-  position:absolute;
-  left:6px;
-  top:6px;
-  font-size:14px;        /* smaller number */
-  padding:1px 4px;       /* tighter box */
-  background:rgba(255,255,255,0.92);
-  border:1px solid #d7d7d7;  /* thinner border */
-}
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-  /* Toast smaller */
-  #toast{
-    position:fixed;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    font-size:64px;
-    background:rgba(255,255,255,0.96);
-    border:4px solid #d7d7d7;
-    padding:14px 28px;
-    box-shadow: 0 10px 0 rgba(0,0,0,0.12);
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 0.18s ease;
-    z-index:3000;
-  }
+    .thumbKey {
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      font-size: 14px;
+      /* smaller number */
+      padding: 1px 4px;
+      /* tighter box */
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #d7d7d7;
+      /* thinner border */
+    }
 
-  /* Countdown unchanged */
-  #countdown{
-    position:fixed;
-    inset:0;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:4000;
-  }
-  #countImg{
-    height:200px;
-    image-rendering:pixelated;
-  }
+    /* Toast smaller */
+    #toast {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 64px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 4px solid #d7d7d7;
+      padding: 14px 28px;
+      box-shadow: 0 10px 0 rgba(0, 0, 0, 0.12);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+      z-index: 3000;
+    }
 
-  #fade{
-    position:fixed;
-    inset:0;
-    background:#fff;
-    opacity:1;
-    pointer-events:none;
-    transition:opacity 0.4s ease;
-    z-index:3500;
-  }
+    /* Countdown unchanged */
+    #countdown {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4000;
+    }
 
-  #game{
-    opacity:0;
-    transition:opacity 0.4s ease;
-  }
+    #countImg {
+      height: 200px;
+      image-rendering: pixelated;
+    }
 
-  .resultOverlay{ z-index: 5; }
-  .thumbKey{ z-index: 6; }
-</style>
+    #fade {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      opacity: 1;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 3500;
+    }
+
+    #game {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .resultOverlay {
+      z-index: 5;
+    }
+
+    .thumbKey {
+      z-index: 6;
+    }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
-  <!-- Sounds (same set as Reading Aloud) -->
-  <audio id="waitSound" src="assets/wait.ogg"></audio>
-  <audio id="goSound" src="assets/go.ogg"></audio>
-  <audio id="pageForward" src="assets/SUCCESS.ogg"></audio>
-  <audio id="pageBack" src="assets/FAIL.ogg"></audio>
-  <audio id="finishSound" src="assets/FINISH.ogg"></audio>
+  <div class="wrap">
+    <!-- Sounds (same set as Reading Aloud) -->
+    <audio id="waitSound" src="assets/wait.ogg"></audio>
+    <audio id="goSound" src="assets/go.ogg"></audio>
+    <audio id="pageForward" src="assets/SUCCESS.ogg"></audio>
+    <audio id="pageBack" src="assets/FAIL.ogg"></audio>
+    <audio id="finishSound" src="assets/FINISH.ogg"></audio>
 
-  <div id="countdown">
-    <img id="countImg" src="assets/3.webp" alt="">
-  </div>
+    <div id="countdown">
+      <img id="countImg" src="assets/3.webp" alt="">
+    </div>
 
-  <div id="fade"></div>
-  <div id="toast"></div>
+    <div id="fade"></div>
+    <div id="toast"></div>
 
-  <div id="game" class="screens">
-    <!-- LEFT SCREEN -->
-    <div class="screen">
-      <div class="content">
-        <div id="leftHeader" class="header">Memorise the photo.</div>
-        <div class="main">
-          <div class="photoFrame">
-            <img id="bigPhoto" alt="">
+    <div id="game" class="screens">
+      <!-- LEFT SCREEN -->
+      <div class="screen">
+        <div class="content">
+          <div id="leftHeader" class="header">Memorise the photo.</div>
+          <div class="main">
+            <div class="photoFrame">
+              <img id="bigPhoto" alt="">
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- RIGHT SCREEN -->
-    <div class="screen">
-      <div class="content">
-        <div id="rightHeader"></div>
-        <div class="main" id="rightMain"></div>
+      <!-- RIGHT SCREEN -->
+      <div class="screen">
+        <div class="content">
+          <div class="main" id="rightMain"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-/* -------------------------------------------------------
-   Photo Memory (Brain Age DS-ish)
-   Uses assets/MEMORY1.webp ... assets/MEMORY13.webp
-
-   Rounds:
-     4 photos, 4 photos, 6 photos, 6 photos, repeat...
-   The game continues until the player has correctly remembered
-   EACH image at least once (i.e., answered correctly when that
-   image was the "previous photo").
--------------------------------------------------------- */
-
-function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-function playSfx(audioEl){
-  if(!audioEl) return;
-  audioEl.pause();
-  audioEl.currentTime = 0;
-  audioEl.play().catch(() => {});
-}
-
-const waitSound = document.getElementById("waitSound");
-const goSound = document.getElementById("goSound");
-const pageForward = document.getElementById("pageForward");
-const pageBack = document.getElementById("pageBack");
-const finishSound = document.getElementById("finishSound");
-
-const leftHeader = document.getElementById("leftHeader");
-const rightHeader = document.getElementById("rightHeader");
-const rightMain = document.getElementById("rightMain");
-const bigPhoto = document.getElementById("bigPhoto");
-
-
-/* Photos */
-const photos = Array.from({ length: 13 }, (_, i) => ({
-  id: i,
-  name: `MEMORY${i+1}`,
-  src: `assets/MEMORY${i+1}.webp`
-}));
-
-/* Mastery tracking: true when that image has been correctly chosen at least once */
-const mastered = new Array(photos.length).fill(false);
-
-/* Round pattern */
-const roundPattern = [4,4,6,6];
-let roundPtr = 0;
-
-/* Round state (sequence of photo indices) */
-let roundSeq = [];
-let step = 0;            // index in roundSeq for memorise stage
-let stage = "memorise";  // "memorise" | "question" | "finish"
-let inputBlocked = false;
-
-/* For question stage */
-let correctPrevIdx = -1;
-let activeOptions = [];
-
-/* UI helpers */
-function setBigPhotoByIndex(idx){
-  bigPhoto.src = photos[idx].src;
-  bigPhoto.alt = photos[idx].name;
-}
-
-function clearRight(){
-  rightMain.innerHTML = "";
-}
-
-function createOptionsGrid(optionIdxs){
-  clearRight();
-
-  const wrap = document.createElement("div");
-  wrap.className = "optionsWrap";
-
-  const grid = document.createElement("div");
-  grid.className = "optionsGrid";
-
-  // Fill 2x2 with up to 4 options; if fewer than 4, leave empty tiles hidden
-  for(let i=0;i<4;i++){
-  const tile = document.createElement("div");
-  tile.className = "thumb";
-
-  if(i >= optionIdxs.length){
-    tile.style.visibility = "hidden";
-    grid.appendChild(tile);
-    continue;
-  }
-
-  const idx = optionIdxs[i];
-
-  // ✅ store which photo this tile represents
-  tile.dataset.idx = String(idx);
-
-  const img = document.createElement("img");
-  img.src = photos[idx].src;
-  img.alt = photos[idx].name;
-
-  const key = document.createElement("div");
-  key.className = "thumbKey";
-  key.textContent = String(i+1);
-
-  tile.appendChild(img);
-  tile.appendChild(key);
-
-  tile.addEventListener("click", () => {
-    if(inputBlocked) return;
-    handlePick(idx);
-  });
-
-  grid.appendChild(tile);
-}
-
-  wrap.appendChild(grid);
-  rightMain.appendChild(wrap);
-}
-
-/* Picking options:
-   - always include correct previous
-   - add 1-3 distractors (up to 4 total)
-*/
-function makeOptionSet(correctIdx){
-  const set = new Set([correctIdx]);
-
-  // Difficulty: use 2 options early in round, then 3, then 4
-  // (Still keeps your DS 2x2 layout.)
-  const target = (step < 2) ? 2 : (step < 4 ? 3 : 4);
-  const maxTarget = Math.min(4, photos.length, target);
-
-  while(set.size < maxTarget){
-    set.add(Math.floor(Math.random() * photos.length));
-  }
-
-  const arr = [...set];
-
-  // Shuffle
-  for(let i = arr.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-
-  return arr;
-}
-
-/* Build a new round sequence:
-   Prefer unmastered images, but allow mastered ones as filler if needed.
-*/
-function buildRoundSequence(count){
-  const unmastered = [];
-  const masteredList = [];
-  for(let i=0;i<photos.length;i++){
-    if(mastered[i]) masteredList.push(i);
-    else unmastered.push(i);
-  }
-
-  // Shuffle helper
-  const shuffle = (arr) => {
-    const a = [...arr];
-    for(let i=a.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [a[i],a[j]] = [a[j],a[i]];
-    }
-    return a;
-  };
-
-  const pick = [];
-  const u = shuffle(unmastered);
-  const m = shuffle(masteredList);
-
-  // Take as many unmastered as possible first
-  while(pick.length < count && u.length) pick.push(u.pop());
-  while(pick.length < count && m.length) pick.push(m.pop());
-
-  // If still short (shouldn't happen), just random fill
-  while(pick.length < count){
-    pick.push(Math.floor(Math.random()*photos.length));
-  }
-
-  // Shuffle final sequence so it’s not grouped
-  return shuffle(pick);
-}
-
-function startNextRound(skipIntro){
-  const count = roundPattern[roundPtr % roundPattern.length];
-  roundPtr++;
-
-  roundSeq = buildRoundSequence(count);
-  step = 0;
-
-  if(skipIntro){
-    // No "Memorise the photo." and no GOTIT — go straight to question flow.
-    // Make sure the question header stays persistent.
-    leftHeader.textContent = "Which was the\nprevious photo?";
-    goToQuestion();
-  }else{
-    renderMemorise();
-  }
-}
-
-function allMastered(){
-  for(const v of mastered) if(!v) return false;
-  return true;
-}
-
-/* Stages */
-function renderMemorise(){
-  stage = "memorise";
-  inputBlocked = false;
-
-  leftHeader.textContent = "Memorise the photo.";
-  rightHeader.textContent = "";
-
-  setBigPhotoByIndex(roundSeq[step]);
-
-  clearRight();
-
-  const img = document.createElement("img");
-  img.src = "assets/GOTIT.webp";
-  img.className = "gotItImg";
-  img.alt = "Got It";
-
-  // Pressed state
-  img.addEventListener("mousedown", () => {
-    img.src = "assets/GOTIT_PRESSED.webp";
-  });
-
-  img.addEventListener("mouseup", () => {
-    img.src = "assets/GOTIT.webp";
-  });
-
-  img.addEventListener("mouseleave", () => {
-    img.src = "assets/GOTIT.webp";
-  });
-
-  img.addEventListener("click", () => {
-    if(inputBlocked) return;
-
-    // After first click, keep question header persistent
-    leftHeader.textContent = "Which was the\nprevious photo?";
-
-    goToQuestion();
-  });
-
-  rightMain.appendChild(img);
-}
-
-function goToQuestion(){
-  // We show the NEXT photo big, and ask for PREVIOUS.
-  // If step is last in roundSeq, we still need to test it once:
-  // Use a filler "current" photo so the last photo can be the previous.
-  const prevIdx = roundSeq[step];
-  let currIdx;
-
-  if(step < roundSeq.length - 1){
-    currIdx = roundSeq[step + 1];
-  }else{
-    // filler current (can be anything except prev, if possible)
-    currIdx = Math.floor(Math.random() * photos.length);
-    if(photos.length > 1){
-      while(currIdx === prevIdx) currIdx = Math.floor(Math.random() * photos.length);
-    }
-  }
-
-  stage = "question";
-  inputBlocked = false;
-
-  leftHeader.textContent = "Which was the\nprevious photo?";
-  rightHeader.textContent = "";
-
-  setBigPhotoByIndex(currIdx);
-
-  correctPrevIdx = prevIdx;
-  activeOptions = makeOptionSet(correctPrevIdx);
-  createOptionsGrid(activeOptions);
-}
-
-function showMemoriseOnly(){
-  stage = "memorise";
-  inputBlocked = true;
-
-  // Keep the question header persistent (do NOT clear it)
-  // leftHeader stays whatever it already was.
-
-  setBigPhotoByIndex(roundSeq[step]);
-  // IMPORTANT: do not touch rightMain here (prevents flicker)
-}
-
-async function handlePick(pickedIdx){
-  inputBlocked = true;
-
-  const ok = (pickedIdx === correctPrevIdx);
-
-  if(ok){
-    mastered[correctPrevIdx] = true;
-    playSfx(pageForward);
-  }else{
-    playSfx(pageBack);
-  }
-
-  // Hide all thumbnails except the one clicked
-  const tiles = rightMain.querySelectorAll(".thumb");
-
-  tiles.forEach(tile => {
-    const idx = parseInt(tile.dataset.idx || "-1", 10);
-
-    // skip empty hidden filler tiles
-    if(idx < 0) return;
-
-    if(idx !== pickedIdx){
-      tile.style.visibility = "hidden";
-      return;
+  <script>
+    /* -------------------------------------------------------
+       Photo Memory (Brain Age DS-ish)
+       Uses assets/MEMORY1.webp ... assets/MEMORY13.webp
+    
+       Rounds:
+         4 photos, 4 photos, 6 photos, 6 photos, repeat...
+       The game continues until the player has correctly remembered
+       EACH image at least once (i.e., answered correctly when that
+       image was the "previous photo").
+    -------------------------------------------------------- */
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function playSfx(audioEl) {
+      if (!audioEl) return;
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      audioEl.play().catch(() => { });
     }
 
-    // ✅ keep clicked tile visible + overlay result
-    tile.style.visibility = "visible";
+    const waitSound = document.getElementById("waitSound");
+    const goSound = document.getElementById("goSound");
+    const pageForward = document.getElementById("pageForward");
+    const pageBack = document.getElementById("pageBack");
+    const finishSound = document.getElementById("finishSound");
 
-    // Remove any previous overlay if it exists
-    const old = tile.querySelector(".resultOverlay");
-    if(old) old.remove();
+    const leftHeader = document.getElementById("leftHeader");
+    const rightMain = document.getElementById("rightMain");
+    const bigPhoto = document.getElementById("bigPhoto");
 
-    const overlay = document.createElement("img");
-    overlay.className = "resultOverlay";
-    overlay.src = ok ? "assets/CORRECT.webp" : "assets/WRONG.webp";
+    const countImg = document.getElementById("countImg");
+    const countdown = document.getElementById("countdown");
+    const fade = document.getElementById("fade");
+    const game = document.getElementById("game");
 
-    overlay.style.position = "absolute";
-    overlay.style.left = "50%";
-    overlay.style.top = "50%";
-    overlay.style.transform = "translate(-50%, -50%)";
-    overlay.style.width = "100%";
-    overlay.style.pointerEvents = "none";
+    /* Photos */
+    const photos = Array.from({ length: 13 }, (_, i) => ({
+      id: i,
+      name: `MEMORY${i + 1}`,
+      src: `assets/MEMORY${i + 1}.webp`
+    }));
 
-    tile.appendChild(overlay);
-  });
+    /*
+      Exactly 10 questions total.
+      Each number is how many answer choices should be shown for that question.
+    */
+    const questionPattern = [2, 2, 4, 4, 6, 6, 6, 6, 6, 6];
 
-  // Short pause so player sees result
-  setTimeout(() => {
+    let questionIndex = 0;
+    let stage = "memorise";   // "memorise" | "question" | "finish"
+    let inputBlocked = false;
 
-    const isLastInRound = (step >= roundSeq.length - 1);
+    let prevPhotoIdx = -1;
+    let currentPhotoIdx = -1;
+    let activeOptions = [];
 
-    if(!isLastInRound){
-      step++;
+    /* ---------------- UI helpers ---------------- */
 
-      showMemoriseOnly();
+    function setBigPhotoByIndex(idx) {
+      bigPhoto.src = photos[idx].src;
+      bigPhoto.alt = photos[idx].name;
+    }
+
+    function clearRight() {
+      rightMain.innerHTML = "";
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickDifferentPhotoIdx(exceptIdx) {
+      let idx = Math.floor(Math.random() * photos.length);
+      if (photos.length > 1) {
+        while (idx === exceptIdx) {
+          idx = Math.floor(Math.random() * photos.length);
+        }
+      }
+      return idx;
+    }
+
+    function makeOptionSet(correctIdx, count) {
+      const pool = Array.from({ length: photos.length }, (_, i) => i).filter(i => i !== correctIdx);
+      const shuffled = shuffle(pool);
+      const neededDistractors = Math.max(0, count - 1);
+
+      const arr = [correctIdx, ...shuffled.slice(0, neededDistractors)];
+      return shuffle(arr);
+    }
+
+    function createOptionsGrid(optionIdxs) {
+      clearRight();
+
+      const wrap = document.createElement("div");
+      wrap.className = "optionsWrap";
+
+      const grid = document.createElement("div");
+      grid.className = "optionsGrid";
+
+      for (let i = 0; i < 6; i++) {
+        const tile = document.createElement("div");
+        tile.className = "thumb";
+
+        if (i >= optionIdxs.length) {
+          tile.style.visibility = "hidden";
+          grid.appendChild(tile);
+          continue;
+        }
+
+        const idx = optionIdxs[i];
+        tile.dataset.idx = String(idx);
+
+        const img = document.createElement("img");
+        img.src = photos[idx].src;
+        img.alt = photos[idx].name;
+
+        const key = document.createElement("div");
+        key.className = "thumbKey";
+        key.textContent = String(i + 1);
+
+        tile.appendChild(img);
+        tile.appendChild(key);
+
+        tile.addEventListener("click", () => {
+          if (inputBlocked) return;
+          handlePick(idx);
+        });
+
+        grid.appendChild(tile);
+      }
+
+      wrap.appendChild(grid);
+      rightMain.appendChild(wrap);
+    }
+
+    /* ---------------- Game flow ---------------- */
+
+    function renderStartMemorise() {
+      stage = "memorise";
+      inputBlocked = false;
+
+      leftHeader.textContent = "Memorise the photo.";
+
+      prevPhotoIdx = Math.floor(Math.random() * photos.length);
+      setBigPhotoByIndex(prevPhotoIdx);
+
+      clearRight();
+
+      const img = document.createElement("img");
+      img.src = "assets/GOTIT.webp";
+      img.className = "gotItImg";
+      img.alt = "Got It";
+
+      img.addEventListener("mousedown", () => {
+        img.src = "assets/GOTIT_PRESSED.webp";
+      });
+
+      img.addEventListener("mouseup", () => {
+        img.src = "assets/GOTIT.webp";
+      });
+
+      img.addEventListener("mouseleave", () => {
+        img.src = "assets/GOTIT.webp";
+      });
+
+      img.addEventListener("click", () => {
+        if (inputBlocked) return;
+        startQuestion();
+      });
+
+      rightMain.appendChild(img);
+    }
+
+    function startQuestion() {
+      if (questionIndex >= questionPattern.length) {
+        finish();
+        return;
+      }
+
+      stage = "question";
+      inputBlocked = false;
+
+      leftHeader.textContent = "Which was the\nprevious photo?";
+
+
+      currentPhotoIdx = pickDifferentPhotoIdx(prevPhotoIdx);
+      setBigPhotoByIndex(currentPhotoIdx);
+
+      const optionCount = questionPattern[questionIndex];
+      activeOptions = makeOptionSet(prevPhotoIdx, optionCount);
+
+      createOptionsGrid(activeOptions);
+    }
+
+    function showNextMemorisePhoto() {
+      stage = "memorise";
+      inputBlocked = true;
+
+      prevPhotoIdx = currentPhotoIdx;
+      setBigPhotoByIndex(prevPhotoIdx);
+    }
+
+    /* ---------------- Pick handling ---------------- */
+
+    function handlePick(pickedIdx) {
+      inputBlocked = true;
+
+      const ok = (pickedIdx === prevPhotoIdx);
+
+      if (ok) {
+        playSfx(pageForward);
+      } else {
+        playSfx(pageBack);
+      }
+
+      const tiles = rightMain.querySelectorAll(".thumb");
+
+      tiles.forEach(tile => {
+        const idx = parseInt(tile.dataset.idx || "-1", 10);
+
+        if (idx < 0) return;
+
+        if (idx !== pickedIdx) {
+          tile.style.visibility = "hidden";
+          return;
+        }
+
+        tile.style.visibility = "visible";
+
+        const old = tile.querySelector(".resultOverlay");
+        if (old) old.remove();
+
+        const overlay = document.createElement("img");
+        overlay.className = "resultOverlay";
+        overlay.src = ok ? "assets/CORRECT.webp" : "assets/WRONG.webp";
+
+        overlay.style.position = "absolute";
+        overlay.style.left = "50%";
+        overlay.style.top = "50%";
+        overlay.style.transform = "translate(-50%, -50%)";
+        overlay.style.width = "100%";
+        overlay.style.pointerEvents = "none";
+
+        tile.appendChild(overlay);
+      });
 
       setTimeout(() => {
-        goToQuestion();
-      }, 650);
+        questionIndex++;
 
-    } else {
-    if(allMastered()){
-      finish();
-    }else{
-      // If user failed, do NOT show Got It / Memorise intro
-      startNextRound(!ok);
+        // After the 10th click, end immediately
+        if (questionIndex >= questionPattern.length) {
+          finish();
+          return;
+        }
+
+        showNextMemorisePhoto();
+
+        setTimeout(() => {
+          startQuestion();
+        }, 650);
+
+      }, 600);
     }
-  }
 
-  }, 600); // result display time
-}
+    /* ---------------- Finish ---------------- */
 
-function finish(){
-  stage = "finish";
-  inputBlocked = true;
+    function finish() {
+      stage = "finish";
+      inputBlocked = true;
 
-  playSfx(finishSound);
+      playSfx(finishSound);
 
-  leftHeader.textContent = "Finished!";
-  rightHeader.textContent = "";
+      leftHeader.textContent = "";
 
-  // Show a nice static end state
-  setBigPhotoByIndex(roundSeq[Math.min(step, roundSeq.length-1)]);
+      clearRight();
 
-  clearRight();
-  const btn = document.createElement("div");
-  btn.className = "gotItBtn";
-  btn.style.cursor = "default";
-  btn.style.fontSize = "62px";
-  btn.textContent = "All photos cleared!";
-  rightMain.appendChild(btn);
+      let exited = false;
 
-  // Optional: go back to training menu after sound
-  // const fallbackMs = 6000;
-  // const t = setTimeout(() => window.location.href="training.html", fallbackMs);
-  // finishSound.addEventListener("ended", () => { clearTimeout(t); window.location.href="training.html"; }, { once:true });
-}
+      const doExit = () => {
+        if (exited) return;
+        exited = true;
 
-/* Keyboard: 1-4 picks options during question stage */
-document.addEventListener("keydown", (e) => {
-  if(inputBlocked) return;
-  if(stage !== "question") return;
+        fade.style.transition = "opacity 0.5s ease";
+        fade.style.opacity = "1";
 
-  const n = parseInt(e.key, 10);
-  if(!Number.isFinite(n)) return;
+        setTimeout(() => {
+          window.location.href = "training.html";
+        }, 500);
+      };
 
-  const idx = n - 1;
-  if(idx < 0 || idx >= activeOptions.length) return;
+      finishSound.addEventListener("ended", doExit, { once: true });
+      setTimeout(doExit, Math.max(1000, (finishSound.duration || 0) * 1000 + 150));
+    }
 
-  e.preventDefault();
-  handlePick(activeOptions[idx]);
-}, { passive:false });
+    /* ---------------- Keyboard ---------------- */
 
-/* Countdown intro (Reading Aloud style) */
-const countImg = document.getElementById("countImg");
-const countdown = document.getElementById("countdown");
-const fade = document.getElementById("fade");
-const game = document.getElementById("game");
+    document.addEventListener("keydown", (e) => {
+      if (inputBlocked) return;
+      if (stage !== "question") return;
 
-async function playCountdown(){
-  const sequence = ["3.webp","2.webp","1.webp"];
+      const n = parseInt(e.key, 10);
+      if (!Number.isFinite(n)) return;
 
-  for(const img of sequence){
-    countImg.src = "assets/" + img;
-    playSfx(waitSound);
-    await sleep(1000);
-  }
+      const idx = n - 1;
+      if (idx < 0 || idx >= activeOptions.length) return;
 
-  playSfx(goSound);
-  countdown.style.display = "none";
+      e.preventDefault();
+      handlePick(activeOptions[idx]);
+    }, { passive: false });
 
-  // Start first round
-  startNextRound();
+    /* ---------------- Countdown ---------------- */
 
-  requestAnimationFrame(() => {
-    fade.style.opacity = "0";
-    game.style.opacity = "1";
-  });
-}
+    async function playCountdown() {
+      const sequence = ["3.webp", "2.webp", "1.webp"];
 
-window.onload = playCountdown;
-</script>
+      for (const img of sequence) {
+        countImg.src = "assets/" + img;
+        playSfx(waitSound);
+        await sleep(1000);
+      }
+
+      playSfx(goSound);
+      countdown.style.display = "none";
+
+      renderStartMemorise();
+
+      requestAnimationFrame(() => {
+        fade.style.opacity = "0";
+        game.style.opacity = "1";
+      });
+    }
+
+    window.onload = playCountdown;
+  </script>
 </body>
+
 </html>

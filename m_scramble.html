@@ -1,250 +1,264 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Word Scramble</title>
-<style>
-  :root{
-    --ds-bg:#bfbfbf;
-    --panel:#ffffff;
-    --panel-border:#cfcfcf;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Word Scramble</title>
+  <style>
+    :root {
+      --ds-bg: #bfbfbf;
+      --panel: #ffffff;
+      --panel-border: #cfcfcf;
+    }
 
-  html,body{
-    margin:0;
-    height:100%;
-    background:#bdbdbd;
-    font-family:"Times New Roman", Times, serif;
-    overflow:hidden;
-  }
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: #bdbdbd;
+      font-family: "Times New Roman", Times, serif;
+      overflow: hidden;
+    }
 
-  /* FULLSCREEN LAYOUT */
-  .wrap{
-    height:100%;
-    width:100%;
-  }
+    /* FULLSCREEN LAYOUT */
+    .wrap {
+      height: 100%;
+      width: 100%;
+    }
 
-  .ds{
-    width:100vw;
-    height:100vh;
-    background:linear-gradient(#cfcfcf,#bdbdbd);
-    position:relative;
-  }
+    .ds {
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(#cfcfcf, #bdbdbd);
+      position: relative;
+    }
 
-  .screens{
-    position:absolute;
-    inset:0;
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-  }
+    .screens {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
 
-  .screen{
-    position:relative;
-    background:var(--ds-bg);
-    border-left:3px solid #888;
-  }
+    .screen {
+      position: relative;
+      background: var(--ds-bg);
+      border-left: 3px solid #888;
+    }
 
-  .screen:first-child{
-    border-left:none;
-    border-right:3px solid #888;
-  }
+    .screen:first-child {
+      border-left: none;
+      border-right: 3px solid #888;
+    }
 
-  .panel{
-    position:absolute;
-    left:6%;
-    right:6%;
-    top:4%;      /* was 8% */
-    bottom:10%;  /* was 20% */
-    background:var(--panel);
-    border:6px solid var(--panel-border);
-    box-shadow: inset 0 0 0 2px #e8e8e8;
-  }
+    .panel {
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 4%;
+      /* was 8% */
+      bottom: 10%;
+      /* was 20% */
+      background: var(--panel);
+      border: 6px solid var(--panel-border);
+      box-shadow: inset 0 0 0 2px #e8e8e8;
+    }
 
-  .lettersArea{
-    position:absolute;
-    inset:0;
-    overflow:hidden;
-  }
+    .lettersArea {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      contain: layout paint style;
+    }
 
-  .letter{
-    position:absolute;
-    left:50%;
-    top:44%;
-    font-size:2.6vw;
-    color:#111;
-    user-select:none;
-    /* Important: we animate around center, but keep letters upright */
-    transform: translate(-50%,-50%);
-    will-change: transform;
-  }
+    .letter {
+      position: absolute;
+      left: 50%;
+      top: 44%;
+      font-size: 2.6vw;
+      color: #111;
+      user-select: none;
+      transform: translate3d(-50%, -50%, 0);
+      will-change: transform;
+      backface-visibility: hidden;
+    }
 
-  .slots{
-    position:absolute;
-    left:10%;
-    right:10%;
-    bottom:6%;
-    height:22%;
-    background:#f7f7f7;
-    border:4px solid #c9c9c9;
-    display:grid;
-    place-items:center;
-  }
+    .slots {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 6%;
+      height: 22%;
+      background: #f7f7f7;
+      border: 4px solid #c9c9c9;
+      display: grid;
+      place-items: center;
+    }
 
-  .slots .underscores{
-    font-size:3vw;
-    letter-spacing:10px;
-  }
+    .slots .underscores {
+      font-size: 3vw;
+      letter-spacing: 10px;
+    }
 
-  .passBtn{
-    position:absolute;
-    top:4%;
-    right:6%;
-    width:12%;
-    cursor:pointer;
-    user-select:none;
-    image-rendering:pixelated;
-  }
+    .passBtn {
+      position: absolute;
+      top: 4%;
+      right: 6%;
+      width: 12%;
+      cursor: pointer;
+      user-select: none;
+      image-rendering: pixelated;
+    }
 
-  .writeArea{
-    position:absolute;
-    left:6%;
-    right:6%;
-    top:18%;
-    bottom:28%;
-    background:#fff;
-    border:6px solid #cfcfcf;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-  }
+    .writeArea {
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 18%;
+      bottom: 28%;
+      background: #fff;
+      border: 6px solid #cfcfcf;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
 
-  .typed{
-    font-size:5vw;
-    letter-spacing:8px;
-  }
+    .typed {
+      font-size: 5vw;
+      letter-spacing: 8px;
+    }
 
-  .eraseBtn{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:8%;
-    height:10%;
-    width:auto;              /* keep natural image width */
-    cursor:pointer;
-    user-select:none;
-    image-rendering:pixelated;
-  }
+    .eraseBtn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 8%;
+      height: 10%;
+      width: auto;
+      /* keep natural image width */
+      cursor: pointer;
+      user-select: none;
+      image-rendering: pixelated;
+    }
 
-  .resultOverlay{
-    position:absolute;
-    inset:0;
-    display:none;
-    place-items:center;
-  }
+    .resultOverlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+    }
 
-  .resultOverlay img{
-    max-width:60%;
-    image-rendering:pixelated;
-  }
+    .resultOverlay img {
+      max-width: 60%;
+      image-rendering: pixelated;
+    }
 
-  .resultOverlay.show{
-    display:grid;
-  }
+    .resultOverlay.show {
+      display: grid;
+    }
 
-  .level{
-    position:absolute;
-    left:6%;
-    top:4%;
-    font-size:1.2vw;
-  }
+    .level {
+      position: absolute;
+      left: 6%;
+      top: 4%;
+      font-size: 1.2vw;
+    }
 
-  .hint{
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:6px;
-    text-align:center;
-    font-size:1vw;
-    opacity:.6;
-  }
+    .hint {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 6px;
+      text-align: center;
+      font-size: 1vw;
+      opacity: .6;
+    }
 
-  .passOverlay{
-  position:absolute;
-  inset:0;
-  display:none;
-  pointer-events:none;
-  z-index:15;
-}
+    .passOverlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      pointer-events: none;
+      z-index: 15;
+    }
 
-.passOverlay.show{ display:block; }
+    .passOverlay.show {
+      display: block;
+    }
 
-.passOverlay img{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%, -50%);
-  width:70%;            /* was 100% */
-  height:auto;
-  image-rendering:pixelated;
-}
+    .passOverlay img {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      /* was 100% */
+      height: auto;
+      image-rendering: pixelated;
+    }
 
-/* Smaller answer text */
-.passAnswer{
-  position:absolute;
-  left:50%;
-  top:50%;              /* adjust vertical placement */
-  transform:translateX(-50%);
-  width:70%;            /* match image width */
-  text-align:center;
-  font-size:3vw;      /* was 4vw */
-  letter-spacing:6px;   /* was 10px */
-  color:#111;
-  text-shadow: 0 2px 0 rgba(255,255,255,.8);
-}
+    /* Smaller answer text */
+    .passAnswer {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      /* adjust vertical placement */
+      transform: translateX(-50%);
+      width: 70%;
+      /* match image width */
+      text-align: center;
+      font-size: 3vw;
+      /* was 4vw */
+      letter-spacing: 6px;
+      /* was 10px */
+      color: #111;
+      text-shadow: 0 2px 0 rgba(255, 255, 255, .8);
+    }
 
-#fadeWhite{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity 0.5s linear;
-  z-index:9999;
-}
+    #fadeWhite {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s linear;
+      z-index: 9999;
+    }
 
-#fadeWhite.show{
-  opacity:1;
-}
+    #fadeWhite.show {
+      opacity: 1;
+    }
 
-/* Countdown overlay */
-#countdown{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:2000;
-}
+    /* Countdown overlay */
+    #countdown {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
 
-#countImg{
-  height:200px;
-  image-rendering:pixelated;
-}
+    #countImg {
+      height: 200px;
+      image-rendering: pixelated;
+    }
 
-/* Intro fade overlay */
-#fadeIntro{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  opacity:1;
-  pointer-events:none;
-  transition:opacity 0.4s ease;
-  z-index:1500;
-}
-</style>
+    /* Intro fade overlay */
+    #fadeIntro {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      opacity: 1;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 1500;
+    }
+  </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="ds" id="ds">
@@ -252,16 +266,16 @@
         <!-- LEFT SCREEN -->
         <div class="screen">
           <div class="panel">
-          <div class="lettersArea" id="lettersArea"></div>
+            <div class="lettersArea" id="lettersArea"></div>
 
-          <div class="passOverlay" id="passOverlay">
-            <img id="passImg" alt="Scramble Answer" src="assets/SCRAMBLE_ANSWER.webp" />
-            <div class="passAnswer" id="passAnswerText"></div>
-          </div>
-            <div class="slots">
-                          <div class="resultOverlay" id="resultOverlay">
-              <img id="resultImg" alt="Result" src="" />
+            <div class="passOverlay" id="passOverlay">
+              <img id="passImg" alt="Scramble Answer" src="assets/SCRAMBLE_ANSWER.webp" />
+              <div class="passAnswer" id="passAnswerText"></div>
             </div>
+            <div class="slots">
+              <div class="resultOverlay" id="resultOverlay">
+                <img id="resultImg" alt="Result" src="" />
+              </div>
               <div class="underscores" id="underscores">____</div>
             </div>
           </div>
@@ -269,459 +283,582 @@
 
         <!-- RIGHT SCREEN -->
         <div class="screen">
-          <img
-            src="assets/PASS.webp"
-            id="passBtn"
-            class="passBtn"
-            alt="Pass"
-            draggable="false"
-          />
+          <img src="assets/PASS.webp" id="passBtn" class="passBtn" alt="Pass" draggable="false" />
           <div class="level" id="levelText"></div>
           <div class="writeArea" id="writeArea">
             <div class="typed" id="typed"> </div>
           </div>
 
-          <img
-            src="assets/ERASE.webp"
-            id="eraseBtn"
-            class="eraseBtn"
-            alt="Erase"
-            draggable="false"
-          />
+          <img src="assets/ERASE.webp" id="eraseBtn" class="eraseBtn" alt="Erase" draggable="false" />
         </div>
       </div>
 
       <div id="countdown">
-  <img id="countImg" src="assets/3.webp" alt="Countdown">
-</div>
+        <img id="countImg" src="assets/3.webp" alt="Countdown">
+      </div>
 
-<div id="fadeIntro"></div>
+      <div id="fadeIntro"></div>
 
     </div>
   </div>
 
-<script>
-/**
- * Word list is here (progressively harder: mostly increasing length).
- * Add/remove words freely.
- */
-const WORDS = [
-  "PLAN",
-  "FABLE",
-  "GRAVE",
-  "SHOPS",
-  "CAREER",
-  "WOODEN",
-  "LEAGUE",
-  "SEVENTY",
-  "KNOCKOUT"
-];
+  <script>
+    /**
+     * Word list is here (progressively harder: mostly increasing length).
+     * Add/remove words freely.
+     */
+    const LEVEL_POOLS = [
+      // Level 1 - 4 letters
+      [
+        "PLAN", "FORK", "LAMP,PALM", "FISH", "BOOK", "STAR,ARTS,RATS", "WAVE", "RING,GRIN",
+        "TREE", "MILK", "WIND", "DOOR", "GAME,MEGA", "SHIP,HIPS", "RAIN", "FROG",
+        "HAND", "SAND", "KING", "MOON,MONO", "FARM", "BELL", "ROAD", "CAKE",
+        "FIRE", "ROCK,CORK", "POOL,LOOP,POLO", "NOTE,TONE", "SNOW", "FISH", "CARD", "LION"
+      ],
 
-const els = {
-  
-  lettersArea: document.getElementById("lettersArea"),
-  underscores: document.getElementById("underscores"),
-  typed: document.getElementById("typed"),
-  eraseBtn: document.getElementById("eraseBtn"),
-  passBtn: document.getElementById("passBtn"),
-  overlay: document.getElementById("resultOverlay"),
-  resultImg: document.getElementById("resultImg"),
-  writeArea: document.getElementById("writeArea"),
-  levelText: document.getElementById("levelText"),
-  ds: document.getElementById("ds"),
-  passOverlay: document.getElementById("passOverlay"),
-  passAnswerText: document.getElementById("passAnswerText")
-};
+      // Level 2 - 5 letters
+      [
+        "FABLE", "GRAPE,PAGER", "BRICK", "PLANT", "SMILE,MILES", "CLOUD,COULD", "TRAIN", "SHEEP",
+        "STONE,NOTES", "BREAD,BEARD", "CHAIR", "SNAKE", "SPOON,SNOOP", "LIGHT", "DRIVE,DIVER", "PLATE,PETAL",
+        "WATER", "SWEET", "FLAME", "MOUSE", "APPLE", "BEACH", "HOUSE", "TIGER",
+        "CROWN", "FRAME", "GRASS", "HEART,EARTH", "JUICE", "KNIFE", "LEMON,MELON", "MUSIC"
+      ],
 
-const countdown = document.getElementById("countdown");
-const countImg = document.getElementById("countImg");
-const fadeIntro = document.getElementById("fadeIntro");
+      // Level 3 - 5 letters
+      [
+        "GRAVE", "SHOPS", "CRANE", "BRAIN", "CLOCK", "BRUSH,SHRUB", "SHINE", "GLASS,SLAGS",
+        "CANDY", "SMOKE", "PLANE,PANEL", "DREAM,ARMED", "RIVER", "SWORD,WORDS", "BRAVE", "TRACK",
+        "SHELF,FLESH", "FIELD,FILED", "FLOOD", "MARCH,CHARM", "NURSE,RUNES", "PAINT", "QUEEN", "RADIO",
+        "SHEET,THESE", "THROW,WORTH", "VIVID", "WAGON", "YEAST", "ZEBRA", "BERRY", "CORAL"
+      ],
 
-const sounds = {
-  success: new Audio("assets/success.ogg"),
-  fail: new Audio("assets/fail.ogg"),
-  pass: new Audio("assets/PASS.ogg"),
-  erase: new Audio("assets/ERASE.ogg"),
-  finish: new Audio("assets/FINISH.ogg"),
-  wait: new Audio("assets/wait.ogg"),
-  go: new Audio("assets/go.ogg")
-};
+      // Level 4 - 5 letters
+      [
+        "SCALE,LACES", "PUNCH", "BLADE,ABLED", "CARRY", "FAITH", "GHOST,GOTHS", "HONEY", "JELLY",
+        "KNOCK", "LASER", "MANGO,AMONG", "NOBLE", "OCEAN,CANOE", "PILOT", "SMOKE", "ROAST,SORTA",
+        "SALAD", "THUMB", "UNITY", "WHEEL", "YOUNG", "FRIED,FIRED", "ADULT",
+        "BASIC", "CHARM,MARCH", "JOINT", "EAGER,AGREE", "FROST", "GIANT", "HUMAN", "RIZLA"
+      ],
 
-sounds.success.preload = "auto";
-sounds.fail.preload = "auto";
-sounds.pass.preload = "auto";
-sounds.erase.preload = "auto";
+      // Level 5 - 6 letters
+      [
+        "CAREER", "WOODEN", "POCKET", "BRIDGE", "MARKET", "STREAM,MASTER", "PLANET", "BUTTON",
+        "CANDLE", "GARDEN,DANGER,GRANDE", "SPIRIT", "THRONE,HORNET", "WINTER", "FLOWER", "HANDLE", "INVITE",
+        "JUNGLE", "KITTEN", "LADDER", "MIRROR", "NATION", "ORANGE", "PILLOW", "SPLIFF",
+        "ROCKET", "SILVER,SLIVER,RIVELS,LIVERS", "TUNNEL", "VALLEY", "WEALTH", "YELLOW", "VAPOUR", "ANCHOR"
+      ],
 
-let index = 0;
-let answer = "";
-let locked = true; // start locked for countdown
-let orbitState = { raf: null, running: false };
-let gameDone = false;
+      // Level 6 - 6 letters
+      [
+        "LEAGUE", "BOTTLE", "CIRCLE,CLERIC", "DINNER", "ENGINE", "FROZEN", "GUITAR",
+        "ISLAND", "JACKET", "DONUTS", "LEGEND", "MOTION", "NICKEL,NICKLE", "OFFICE", "PEANUT",
+        "QUARTZ", "RESCUE,SECURE", "SIGNAL,ALIGNS", "TARGET", "UNIFORM", "VISION", "WISDOM", "WONDER",
+        "ZIPPER", "ABSENT", "BEACON", "COPPER", "DOCTOR", "EFFECT", "FABRIC", "GALAXY"
+      ],
 
-async function playCountdown(){
-  // Block input during intro
-  locked = true;
+      // Level 7 - 7 letters
+      [
+        "SEVENTY", "CAPTAIN,CAPITAN", "BALANCE", "CRYSTAL", "FANTASY", "HARVEST", "JOURNEY", "KINGDOM",
+        "LIBRARY", "MACHINE", "NATURAL", "FLOWERS", "PASSAGE", "QUALITY", "REWARDS,DRAWERS,REWARDS", "SCIENCE",
+        "TEXTURE", "UPLIFTS", "VICTORY", "WEATHER", "ANIMALS", "HARBOUR", "ANCIENT", "BROTHER",
+        "CHOICES", "DYNAMIC", "EMERALD", "FREEDOM", "JEALOUS", "HORIZON", "IMAGINE", "JUSTICE"
+      ],
 
-  const sequence = ["3.webp","2.webp","1.webp"];
+            // Level 8 - 8 letters
+      [
+        "KNOCKOUT",
+        "NOTEBOOK",
+        "ELEPHANT",
+        "MOUNTAIN",
+        "PAINTING"
+      ],
 
-  for(const img of sequence){
-    countImg.src = "assets/" + img;
-    playSound("wait");
-    await sleep(1000);
-  }
+      // Level 9 - 8 letters
+      [
+        "TREASURE",
+        "BUILDING",
+        "DISCOVER,DIVORCES",
+        "BASEBALL",
+        "CANNABIS"
+      ],
 
-  playSound("go");
-  countdown.style.display = "none";
+      // Level 10 - 8 letters
+      [
+        "DAYLIGHT",
+        "EXCHANGE",
+        "FIREWORK",
+        "GRAPHICS",
+        "HOSPITAL"
+      ],
 
-  // Start the actual game now (this starts orbit too)
-  loadWord(0);
+      // Level 11 - 8 letters
+      [
+        "LANGUAGE",
+        "MIDNIGHT",
+        "OPERATOR",
+        "PASSPORT",
+        "QUESTION"
+      ],
 
-  requestAnimationFrame(() => {
-    fadeIntro.style.opacity = "0";
-    // optionally remove after fade
-    setTimeout(() => fadeIntro.style.display = "none", 450);
-  });
-}
+      // Level 12 - 8 letters
+      [
+        "TOMATOES",
+        "SAPPHIRE",
+        "TOMORROW,ROOTWORM,WORMROOT",
+        "UMBRELLA",
+        "VACATION"
+      ],
 
-function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+      // Level 13 - 8 letters
+      [
+        "WATERFALL",
+        "YEARBOOK",
+        "ZIPLINES",
+        "MERCURY"
+      ],
 
-function waitAudioEnd(a){
-  if(!a) return Promise.resolve();
-  return new Promise(res => a.addEventListener("ended", res, { once:true }));
-}
+      // Level 14 - 8 letters
+      [
+        "BIRTHDAY",
+        "CAMPFIRE",
+        "DRAGONFLY"
+      ]
 
-async function finishSequence(){
-  if(gameDone) return;
-  gameDone = true;
-  locked = true;
 
-  // freeze orbit in-place
-  stopOrbit();
+    ];
 
-  // play finish sound (overlap-capable)
-  const fin = playSound("finish");
+    const els = {
 
-  // start fade to white (0.5s)
-  const fadeWhite = document.getElementById("fadeWhite");
-  fadeWhite.classList.add("show");
+      lettersArea: document.getElementById("lettersArea"),
+      underscores: document.getElementById("underscores"),
+      typed: document.getElementById("typed"),
+      eraseBtn: document.getElementById("eraseBtn"),
+      passBtn: document.getElementById("passBtn"),
+      overlay: document.getElementById("resultOverlay"),
+      resultImg: document.getElementById("resultImg"),
+      writeArea: document.getElementById("writeArea"),
+      levelText: document.getElementById("levelText"),
+      ds: document.getElementById("ds"),
+      passOverlay: document.getElementById("passOverlay"),
+      passAnswerText: document.getElementById("passAnswerText")
+    };
 
-  // wait: at least the fade duration, AND until audio ends (if we got it)
-  const fadeMin = sleep(500);
-  const audioDone = fin
-    ? new Promise(res => fin.addEventListener("ended", res, { once:true }))
-    : sleep(500);
+    const countdown = document.getElementById("countdown");
+    const countImg = document.getElementById("countImg");
+    const fadeIntro = document.getElementById("fadeIntro");
 
-  await Promise.all([fadeMin, audioDone]);
+    const sounds = {
+      success: new Audio("assets/success.ogg"),
+      fail: new Audio("assets/fail.ogg"),
+      pass: new Audio("assets/PASS.ogg"),
+      erase: new Audio("assets/ERASE.ogg"),
+      finish: new Audio("assets/FINISH.ogg"),
+      wait: new Audio("assets/wait.ogg"),
+      go: new Audio("assets/go.ogg")
+    };
 
-  // redirect
-  window.location.href = "training.html";
-}
+    sounds.success.preload = "auto";
+    sounds.fail.preload = "auto";
+    sounds.pass.preload = "auto";
+    sounds.erase.preload = "auto";
 
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+    let index = 0;
+    let answer = "";
+    let locked = true;
+    let orbitState = {
+      raf: null,
+      running: false,
+      nodes: [],
+      radius: 140,
+      speed: 0.9,
+      verticalOffset: -60,
+      centerX: 0,
+      centerY: 0
+    };
+    let gameDone = false;
+    let passCount = 0;
+    let currentWord = "";
+    let currentAcceptedAnswers = new Set();
+    const TOTAL_LEVELS = LEVEL_POOLS.length;
+    const normalizeWord = (w) => w.toUpperCase().replace(/[^A-Z]/g, "");
 
-function positionsFor(n){
-  // Relative positions (percent). Looks like scattered letters.
-  // If more letters, we reuse and jitter slightly.
-  const base = [
-    {x:22,y:20},{x:60,y:18},{x:78,y:42},{x:30,y:58},{x:58,y:62},
-    {x:18,y:42},{x:75,y:22},{x:40,y:30},{x:50,y:48},{x:32,y:78},
-    {x:68,y:78},{x:18,y:70},{x:82,y:66}
-  ];
-  const out = [];
-  for(let i=0;i<n;i++){
-    const b = base[i % base.length];
-    const jitter = (i >= base.length) ? 6 : 2;
-    out.push({
-      x: b.x + (Math.random()*jitter - jitter/2),
-      y: b.y + (Math.random()*jitter - jitter/2)
-    });
-  }
-  return out;
-}
+    function parseEntry(entry) {
+      const answers = String(entry)
+        .split(",")
+        .map(s => normalizeWord(s))
+        .filter(Boolean);
 
-function setUnderscores(len){
-  // Store length so we can render filled slots
-  els.underscores.dataset.len = String(len);
-  renderSlots();
-}
-
-function renderSlots(){
-  const len = Number(els.underscores.dataset.len || "0");
-  const slots = [];
-  for(let i=0;i<len;i++){
-    slots.push(answer[i] ? answer[i] : "_");
-  }
-  els.underscores.textContent = slots.join(" ");
-}
-
-function setTypedText(){
-  // RIGHT SIDE: only show the last typed letter (or blank)
-  const last = answer.length ? answer[answer.length - 1] : " ";
-  els.typed.textContent = last;
-
-  // LEFT SIDE: fill the slot line(s)
-  renderSlots();
-}
-
-function clearOverlay(){
-  els.overlay.classList.remove("show");
-  els.resultImg.src = "";
-}
-
-function showOverlay(type){
-  // Images are inside /assets/
-  els.resultImg.src = (type === "correct")
-    ? "assets/CORRECT.webp"
-    : "assets/WRONG.webp";
-
-  els.overlay.classList.add("show");
-}
-
-function canTypeLetter(ch){
-  const target = WORDS[index].toUpperCase();
-
-  // Count how many times ch appears in target
-  let allowed = 0;
-  for (const c of target) if (c === ch) allowed++;
-
-  // Count how many times ch is already used in current answer
-  let used = 0;
-  for (const c of answer) if (c === ch) used++;
-
-  return used < allowed;
-}
-
-function stopOrbit(){
-  orbitState.running = false;
-  if(orbitState.raf) cancelAnimationFrame(orbitState.raf);
-  orbitState.raf = null;
-}
-
-function renderLetters(word){
-  // stop any previous orbit loop
-  stopOrbit();
-
-  els.lettersArea.innerHTML = "";
-  const letters = shuffle(word.split(""));
-  const n = letters.length;
-
-  const radius = 140;  // px
-  const speed  = 0.9;  // radians/sec
-
-  const nodes = letters.map((ch, i) => {
-    const div = document.createElement("div");
-    div.className = "letter";
-    div.textContent = ch;
-    els.lettersArea.appendChild(div);
-
-    return { div, angleOffset: (i / n) * Math.PI * 2 };
-  });
-
-  let start = performance.now();
-  orbitState.running = true;
-
-  function tick(now){
-    if(!orbitState.running) return;
-
-    const t = (now - start) / 1000;
-    const baseAngle = t * speed;
-
-    const verticalOffset = -60; // keep your "move letters up" setting here
-
-    for(const node of nodes){
-      const a = baseAngle + node.angleOffset;
-      const x = Math.cos(a) * radius;
-      const y = Math.sin(a) * radius;
-
-      node.div.style.transform =
-        `translate(-50%,-50%) translate(${x}px, ${y + verticalOffset}px)`;
+      return {
+        displayWord: answers[0] || "",
+        acceptedAnswers: new Set(answers)
+      };
     }
 
-    orbitState.raf = requestAnimationFrame(tick);
-  }
+    function isAcceptedAnswer(input, acceptedAnswers) {
+      const typed = normalizeWord(input);
+      return acceptedAnswers.has(typed);
+    }
 
-  orbitState.raf = requestAnimationFrame(tick);
-}
+    async function playCountdown() {
+      // Block input during intro
+      locked = true;
 
-function loadWord(i){
-  index = i;
-  answer = "";
-  locked = false;
-  clearOverlay();
-  els.passBtn.src = "assets/PASS.webp";
-  els.passOverlay.classList.remove("show");
+      const sequence = ["3.webp", "2.webp", "1.webp"];
 
-  const word = WORDS[index].toUpperCase();
-  renderLetters(word);
-  setUnderscores(word.length);
-  setTypedText();
-  els.levelText.textContent = ``;
-}
+      for (const img of sequence) {
+        countImg.src = "assets/" + img;
+        playSound("wait");
+        await sleep(1000);
+      }
 
-function checkAnswer(){
-  if(locked) return;
-  const target = WORDS[index].toUpperCase();
-  if(answer.length !== target.length) return;
+      playSound("go");
+      countdown.style.display = "none";
 
-  locked = true;
+      // Start the actual game now (this starts orbit too)
+      loadWord(0);
 
-  if(answer === target){
-    showOverlay("correct");
-    const sfx = playSound("success");
-
-    if(index < WORDS.length - 1){
-      // normal: keep your old timing
-      setTimeout(() => {
-        clearOverlay();
-        loadWord(index + 1);
-      }, 800);
-    } else {
-      // FINAL WORD: wait for success sound to finish, then finishSequence
-      waitAudioEnd(sfx).then(() => {
-        clearOverlay();
-        finishSequence();
+      requestAnimationFrame(() => {
+        fadeIntro.style.opacity = "0";
+        // optionally remove after fade
+        setTimeout(() => fadeIntro.style.display = "none", 450);
       });
     }
-  } else {
-    // WRONG
-    showOverlay("wrong");
-    playSound("fail");
-    els.writeArea.classList.add("shake");
 
-    setTimeout(() => {
-      els.writeArea.classList.remove("shake");
-      clearOverlay();
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-      // Clear typed letters after failure
+    function waitAudioEnd(a) {
+      if (!a) return Promise.resolve();
+      return new Promise(res => a.addEventListener("ended", res, { once: true }));
+    }
+
+    async function finishSequence() {
+      if (gameDone) return;
+      gameDone = true;
+      locked = true;
+
+      // freeze orbit in-place
+      stopOrbit();
+
+      // play finish sound (overlap-capable)
+      const fin = playSound("finish");
+
+      // start fade to white (0.5s)
+      const fadeWhite = document.getElementById("fadeWhite");
+      fadeWhite.classList.add("show");
+
+      // wait: at least the fade duration, AND until audio ends (if we got it)
+      const fadeMin = sleep(500);
+      const audioDone = fin
+        ? new Promise(res => fin.addEventListener("ended", res, { once: true }))
+        : sleep(500);
+
+      await Promise.all([fadeMin, audioDone]);
+
+      // redirect
+      window.location.href = "training.html";
+    }
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function positionsFor(n) {
+      // Relative positions (percent). Looks like scattered letters.
+      // If more letters, we reuse and jitter slightly.
+      const base = [
+        { x: 22, y: 20 }, { x: 60, y: 18 }, { x: 78, y: 42 }, { x: 30, y: 58 }, { x: 58, y: 62 },
+        { x: 18, y: 42 }, { x: 75, y: 22 }, { x: 40, y: 30 }, { x: 50, y: 48 }, { x: 32, y: 78 },
+        { x: 68, y: 78 }, { x: 18, y: 70 }, { x: 82, y: 66 }
+      ];
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const b = base[i % base.length];
+        const jitter = (i >= base.length) ? 6 : 2;
+        out.push({
+          x: b.x + (Math.random() * jitter - jitter / 2),
+          y: b.y + (Math.random() * jitter - jitter / 2)
+        });
+      }
+      return out;
+    }
+
+    function setUnderscores(len) {
+      // Store length so we can render filled slots
+      els.underscores.dataset.len = String(len);
+      renderSlots();
+    }
+
+    function renderSlots() {
+      const len = Number(els.underscores.dataset.len || "0");
+      const slots = [];
+      for (let i = 0; i < len; i++) {
+        slots.push(answer[i] ? answer[i] : "_");
+      }
+      els.underscores.textContent = slots.join(" ");
+    }
+
+    function setTypedText() {
+      // RIGHT SIDE: only show the last typed letter (or blank)
+      const last = answer.length ? answer[answer.length - 1] : " ";
+      els.typed.textContent = last;
+
+      // LEFT SIDE: fill the slot line(s)
+      renderSlots();
+    }
+
+    function clearOverlay() {
+      els.overlay.classList.remove("show");
+      els.resultImg.src = "";
+    }
+
+    function showOverlay(type) {
+      // Images are inside /assets/
+      els.resultImg.src = (type === "correct")
+        ? "assets/CORRECT.webp"
+        : "assets/WRONG.webp";
+
+      els.overlay.classList.add("show");
+    }
+
+    function canTypeLetter(ch) {
+      const target = currentWord;
+
+      let allowed = 0;
+      for (const c of target) if (c === ch) allowed++;
+
+      let used = 0;
+      for (const c of answer) if (c === ch) used++;
+
+      return used < allowed;
+    }
+
+    function stopOrbit() {
+      orbitState.running = false;
+      if (orbitState.raf) {
+        cancelAnimationFrame(orbitState.raf);
+        orbitState.raf = null;
+      }
+      orbitState.nodes = [];
+    }
+
+    function renderLetters(word) {
+      stopOrbit();
+
+      els.lettersArea.innerHTML = "";
+      const letters = shuffle(word.split(""));
+      const n = letters.length;
+
+      const frag = document.createDocumentFragment();
+
+      orbitState.nodes = letters.map((ch, i) => {
+        const div = document.createElement("div");
+        div.className = "letter";
+        div.textContent = ch;
+        frag.appendChild(div);
+
+        return {
+          div,
+          angleOffset: (i / n) * Math.PI * 2
+        };
+      });
+
+      els.lettersArea.appendChild(frag);
+
+      orbitState.running = true;
+      orbitState.start = performance.now();
+
+      function tick(now) {
+        if (!orbitState.running) return;
+
+        const t = (now - orbitState.start) * 0.001;
+        const baseAngle = t * orbitState.speed;
+        const r = orbitState.radius;
+        const vOff = orbitState.verticalOffset;
+
+        for (let i = 0; i < orbitState.nodes.length; i++) {
+          const node = orbitState.nodes[i];
+          const a = baseAngle + node.angleOffset;
+          const x = Math.cos(a) * r;
+          const y = Math.sin(a) * r + vOff;
+
+          node.div.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), 0)`;
+        }
+
+        orbitState.raf = requestAnimationFrame(tick);
+      }
+
+      orbitState.raf = requestAnimationFrame(tick);
+    }
+
+    function loadWord(i) {
+      index = i;
       answer = "";
-      setTypedText();     // updates right side
-      renderSlots();      // updates left slots
-
       locked = false;
-    }, 650);
+
+      clearOverlay();
+      els.passBtn.src = "assets/PASS.webp";
+      els.passOverlay.classList.remove("show");
+
+      const pool = LEVEL_POOLS[index];
+      const pickedEntry = pool[Math.floor(Math.random() * pool.length)];
+      const parsed = parseEntry(pickedEntry);
+
+      currentWord = parsed.displayWord;
+      currentAcceptedAnswers = parsed.acceptedAnswers;
+
+      renderLetters(currentWord);
+      setUnderscores(currentWord.length);
+      setTypedText();
+      els.levelText.textContent = "";
+    }
+
+    function checkAnswer() {
+      if (locked) return;
+
+      const target = currentWord;
+      if (answer.length !== target.length) return;
+
+      locked = true;
+
+      if (isAcceptedAnswer(answer, currentAcceptedAnswers)) {
+        passCount = 0;
+        showOverlay("correct");
+        const sfx = playSound("success");
+
+        if (index < TOTAL_LEVELS - 1) {
+          setTimeout(() => {
+            clearOverlay();
+            loadWord(index + 1);
+          }, 800);
+        } else {
+          waitAudioEnd(sfx).then(() => {
+            clearOverlay();
+            finishSequence();
+          });
+        }
+      } else {
+        showOverlay("wrong");
+        playSound("fail");
+        els.writeArea.classList.add("shake");
+
+        setTimeout(() => {
+          els.writeArea.classList.remove("shake");
+          clearOverlay();
+          answer = "";
+          setTypedText();
+          renderSlots();
+          locked = false;
+        }, 650);
       }
     }
 
-function erase(){
-  if(gameDone) return;
-  if(locked) return;
-  answer = "";
-  setTypedText();
-}
-
-async function pass(){
-  if(gameDone) return;
-  if(locked) return;
-  locked = true;
-
-  const isLast = (index >= WORDS.length - 1);
-
-  // play pass sound
-  const passSfx = playSound("pass");
-
-  // show WRONG sprite (pass counts as incorrect)
-  showOverlay("wrong");
-
-  // freeze letters
-  stopOrbit();
-
-  // show SCRAMBLE overlay + answer text for 1s
-  const target = WORDS[index].toUpperCase();
-  els.passAnswerText.textContent = target.split("").join(" ");
-  els.passOverlay.classList.add("show");
-
-  // wait for the reveal duration AND the pass sound to finish
-  await Promise.all([
-    sleep(1000),
-    waitAudioEnd(passSfx)
-  ]);
-
-  // hide overlays after both are done
-  els.passOverlay.classList.remove("show");
-  clearOverlay();
-
-  if(!isLast){
-    loadWord(index + 1);
-  } else {
-    finishSequence();
-  }
-}
-
-function playSound(key){
-  const src = sounds[key]?.src;
-  if(!src) return null;
-
-  const a = new Audio(src); // new instance => overlapping allowed
-  a.preload = "auto";
-  a.play();
-  return a;
-}
-
-document.addEventListener("keydown", (e) => {
-  if(gameDone) return;
-  if(locked) return;
-
-  const target = WORDS[index].toUpperCase();
-
-  // allow letters only
-  if(e.key.length === 1 && /[a-zA-Z]/.test(e.key)){
-  const ch = e.key.toUpperCase();
-  const target = WORDS[index].toUpperCase();
-
-  // Only allow letters that exist somewhere in the word
-  if(!target.includes(ch)) return;
-
-  if(answer.length < target.length){
-    answer += ch;
-    setTypedText();
-    checkAnswer();
-  }
-
-  return;
-}
-
-  if(e.key === "Backspace"){
-    // only play if there IS text
-    if(answer.length > 0){
-      playSound("erase");
-      answer = answer.slice(0, -1);
+    function erase() {
+      if (gameDone) return;
+      if (locked) return;
+      answer = "";
       setTypedText();
     }
-    return;
-  }
 
-  if(e.key === "Escape"){
-    // ALWAYS play, even if empty
-    playSound("erase");
-    erase();
-    return;
-  }
+    async function pass() {
+      if (gameDone) return;
+      if (locked) return;
 
-  if(e.key === "Enter"){
-    // early submit only if full length (keeps it simple)
-    checkAnswer();
-    return;
-  }
-});
+      locked = true;
 
-els.eraseBtn.addEventListener("click", () => {
-  playSound("erase");
-  erase();
-});
-els.passBtn.addEventListener("click", pass);
-els.passBtn.addEventListener("mousedown", () => {
-  els.passBtn.src = "assets/PASS_PRESSED.webp";
-});
-// Start
-window.onload = playCountdown;
-</script>
-<div id="fadeWhite"></div>
+      const passSfx = playSound("pass");
+      showOverlay("wrong");
+      stopOrbit();
+
+      const target = currentWord;
+      els.passAnswerText.textContent = target.split("").join(" ");
+      els.passOverlay.classList.add("show");
+
+      await Promise.all([
+        sleep(1000),
+        waitAudioEnd(passSfx)
+      ]);
+
+      els.passOverlay.classList.remove("show");
+      clearOverlay();
+
+      passCount++;
+
+      if (passCount >= 2) {
+        passCount = 0;
+        loadWord(Math.max(0, index - 1));
+        return;
+      }
+
+      loadWord(index);
+    }
+
+    function playSound(key) {
+      const src = sounds[key]?.src;
+      if (!src) return null;
+
+      const a = new Audio(src);
+      a.preload = "auto";
+      a.play().catch(() => { });
+      return a;
+    }
+    document.addEventListener("keydown", (e) => {
+      if (gameDone) return;
+      if (locked) return;
+
+      const target = currentWord;
+
+      if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+        const ch = e.key.toUpperCase();
+
+        if (!target.includes(ch)) return;
+        if (!canTypeLetter(ch)) return;
+
+        if (answer.length < target.length) {
+          answer += ch;
+          setTypedText();
+          checkAnswer();
+        }
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        if (answer.length > 0) {
+          playSound("erase");
+          answer = answer.slice(0, -1);
+          setTypedText();
+        }
+        return;
+      }
+
+      if (e.key === "Escape") {
+        playSound("erase");
+        erase();
+        return;
+      }
+
+      if (e.key === "Enter") {
+        checkAnswer();
+        return;
+      }
+    });
+
+    els.eraseBtn.addEventListener("click", () => {
+      playSound("erase");
+      erase();
+    });
+    els.passBtn.addEventListener("click", pass);
+    els.passBtn.addEventListener("mousedown", () => {
+      els.passBtn.src = "assets/PASS_PRESSED.webp";
+    });
+    // Start
+    window.onload = playCountdown;
+  </script>
+  <div id="fadeWhite"></div>
 </body>
+
 </html>

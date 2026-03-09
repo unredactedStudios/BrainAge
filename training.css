@@ -557,3 +557,198 @@ html, body {
 .menuScreen {
     animation: gridMove 2s linear infinite;
 }
+
+/* homeMenu bike area */
+#homeMenu #rightPane {
+  position: relative;
+  overflow: hidden;
+}
+
+#homeMenu .bikeStage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#homeMenu .bikeAnim {
+  position: absolute;
+  top: 75%;
+  left: 0;
+  width: min(12vw, 130px);
+  height: auto;
+  transform: translateY(-50%) scaleX(1);
+  transform-origin: center center;
+  image-rendering: pixelated;
+  will-change: left, transform;
+  opacity: 1 !important;
+}
+
+#homeMenu .bikeLabel {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 30px;
+  color: #111;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Results layout (homeMenu left side) */
+
+#homeMenu .resultsPane {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#homeMenu .resultImg {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  image-rendering: pixelated;
+}
+
+#homeMenu .timeUsed {
+  top: 35%;
+  width: min(26vw, 320px);
+}
+
+#homeMenu .penalty {
+  top: 60%;
+  width: min(26vw, 320px);
+}
+
+/* results layout */
+
+#homeMenu .resultsPane{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#homeMenu .resultImg{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  image-rendering:pixelated;
+}
+
+#homeMenu .timeUsed{
+  top:32%;
+  width:min(26vw,320px);
+}
+
+#homeMenu .penalty{
+  top:65%;
+  width:min(26vw,320px);
+}
+
+
+/* TIME VALUE */
+
+#timeUsedValue{
+  position:absolute;
+  top:44%;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:2.6vw;
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+.timeNumber{
+  color:#000;
+}
+
+.timeUnit{
+  color:#888;
+  font-size:0.55em;
+  margin-left:2px;
+}
+
+#penaltyPanel {
+  position: absolute;
+  left: 50%;
+  top: 66%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 140px;
+}
+
+.penNum {
+  position: absolute;
+  color: #000;
+  font-weight: 700;
+  line-height: 1;
+  font-size: 5.2vw;
+}
+
+.penUnit,
+.penMissedLabel,
+.penEquals,
+.penTimes {
+  position: absolute;
+  color: #8a8a8a;
+  line-height: 1;
+}
+
+.penMissedLabel {
+  left: 3%;
+  top: 33%;
+  font-size: 1.7vw;
+  font-weight: 700;
+}
+
+.penMissedNum {
+  left: 12%;
+  top: 54%;
+}
+
+.penTimes {
+  left: 34%;
+  top: 17%;
+  font-size: 3.9vw;
+  color: #000;
+}
+
+.penTwenty {
+  left: 45%;
+  top: 0%;
+}
+
+.penTwentyUnit {
+  left: 57%;
+  top: 73%;
+  font-size: 1.5vw;
+}
+
+.penEquals {
+  left: 74%;
+  top: 53%;
+  font-size: 3.7vw;
+}
+
+.penMinNum {
+  left: 88%;
+  top: 54%;
+}
+
+.penMinUnit {
+  left: 102%;
+  top: 78%;
+  font-size: 1.5vw;
+}
+
+.penSecNum {
+  left: 116%;
+  top: 54%;
+}
+
+.penSecUnit {
+  left: 130%;
+  top: 78%;
+  font-size: 1.5vw;
+}

@@ -1,4 +1,4 @@
-const APP_VERSION = "ver1.0-0603260248 beta";
+const APP_VERSION = "ver1.0-0903260023 beta";
 
 let activeMenu = null;
 const speechScripts = {

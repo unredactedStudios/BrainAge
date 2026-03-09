@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BRAIN TRAINING: Web Edition</title>
+    <link rel="stylesheet" href="training.css">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Dr Kawashima's BRAIN TRAINING: Web Edition" />
+    <meta name="title" content="Dr Kawashima's BRAIN TRAINING: Web Edition">
+    <meta property="og:description"
+        content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning." />
+    <meta name="description" content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning.">
+    <meta property="og:image" content="assets/BANNER.webp" />
+    <meta name="image" content="assets/BANNER.webp" />
+
+    <!-- Optional: Discord / Theme Color -->
+    <meta name="theme-color" content="#7289DA" />
+
+    <!-- Default favicon: animated GIF -->
+    <link rel="icon" type="image/gif" href="assets/favicon.gif">
+</head>
+
+<body>
+
+    <audio id="bgm" src="assets/HOME.ogg" loop style="display:none;"></audio>
+
+    <!-- Main Menu -->
+    <div id="mainMenu" class="menuScreen" style="display:block;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>My Brain Training</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn endBtn" src="assets/END.webp">
+                <span></span>
+                <img class="topBarBtn leftBtn" src="assets/LEFT_GREYED.webp">
+                <img class="topBarBtn leftBtn" src="assets/CALENDER.webp">
+                <img class="topBarBtn leftBtn" src="assets/RIGHT_GREYED.webp">
+                <span></span>
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <div class="calendarWrap">
+                    <img class="leftStaticAbove" src="assets/INFO.webp" alt="">
+                    <img id="calendarAnim" class="calendarAnim" src="assets/CAL.webp" alt="">
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <div id="buttonStack">
+                    <div class="button button1a">Training</div>
+                    <!-- <div class="button button2a">Themes</div> -->
+                </div>
+                <div id="buttonStack2">
+                    <!-- <div class="button button3a">Brain Age Check</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Brain Training Menu / Introduction -->
+    <div id="homeMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>Title</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane" class="resultsPane">
+                <img class="resultImg timeUsed" src="assets/TIMEUSED.webp" alt="Time Used">
+                <div id="timeUsedValue" class="resultValue"></div>
+
+                <img class="resultImg penalty" src="assets/PENALTY.webp" alt="Penalty">
+
+                <div id="penaltyPanel">
+                    <div class="penMissedLabel">Missed</div>
+
+                    <div id="missedValue" class="penNum penMissedNum">0</div>
+
+                    <div class="penTimes">×</div>
+
+                    <div class="penNum penTwenty">20</div>
+                    <div class="penUnit penTwentyUnit">Sec.</div>
+
+                    <div class="penEquals">=</div>
+
+                    <div id="penMin" class="penNum penMinNum">0</div>
+                    <div class="penUnit penMinUnit">Min.</div>
+
+                    <div id="penSec" class="penNum penSecNum">0</div>
+                    <div class="penUnit penSecUnit">Sec.</div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <div class="bikeStage">
+                    <img class="rightImage bikeAnim" id="bikeAnim" src="assets/BIKE1.webp" alt="">
+                </div>
+
+                <div class="bikeLabel">Cycling Speed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Submenu (minigames list) -->
+    <div id="trainingMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>Training</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <span></span>
+                <img class="topBarBtn leftBtn" src="assets/LEFT_GREYED.webp">
+                <img class="topBarBtn leftBtn" src="assets/CALENDER.webp">
+                <img class="topBarBtn leftBtn" src="assets/RIGHT_GREYED.webp">
+                <span></span>
+            </div>
+        </div>
+
+        <div id="menuBody">
+            <div id="leftPane">
+                <div class="calendarWrap">
+                    <img class="leftStaticAbove" src="assets/INFO.webp" alt="">
+                    <img id="calendarAnim" class="calendarAnim" src="assets/CAL.webp" alt="">
+                </div>
+            </div>
+
+            <div id="divider"></div>
+
+            <div id="rightPane">
+                <div id="buttonStack">
+                    <div class="button button2">Reading Aloud</div>
+                    <div class="button button2">Word Scramble</div>
+                    <div class="button button2">Photo Memory</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Minigame Intro Screen -->
+    <div id="minigameIntroMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1 id="minigameTitle">Training</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
+
+        <div id="menuBody">
+            <div id="leftPane">
+                <img class="head" src="assets/HEAD.webp">
+                <div id="speech">
+                    <img src="assets/SPEECH.webp">
+                    <div id="speechText"></div>
+                </div>
+            </div>
+
+            <div id="divider"></div>
+
+            <div id="rightPane">
+                <!-- optional: show a preview image for the minigame -->
+                <img class="rightImage" id="minigamePreview" src="">
+                <img id="startBtn" class="startBtn" src="assets/START.webp" alt="Start" style="display:none;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Options Menu -->
+    <div id="optionsMenu" class="menuScreen" style="display:none;">
+        <div id="topBar"></div>
+        <div id="menuBody">
+            <div id="leftPane">
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+            </div>
+        </div>
+    </div>
+
+    <!-- About Menu -->
+    <div id="aboutMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1>About This Game</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <img class="head" src="assets/HEAD.webp">
+                <div id="speech">
+                    <img src="assets/SPEECH.webp">
+                    <div id="speechText"></div>
+                </div>
+            </div>
+            <div id="divider"></div>
+            <div id="rightPane">
+                <img class="rightImage Studios" src="">
+            </div>
+        </div>
+    </div>
+
+    <div id="whiteOverlay" aria-hidden="true"></div>
+    <script>
+        const APP_VERSION = "ver1.0-0603260248 beta";
+
+        let menuTransitionInProgress = false;
+        let moreState = "normal"; // "normal" | "grey" | "blink"
+        let activeMenu = null;
+
+        function getActiveHead() {
+            return activeMenu?.querySelector(".head");
+        }
+
+        let currentSpeechList = [];
+        let currentSpeechIndex = 0;
+        let speechInProgress = false;
+        let blinkInterval = null;
+        let bikeFrameInterval = null;
+        let bikeMoveRaf = null;
+        let bikeLastTime = 0;
+        let bikeDirection = -1; // -1 = moving left, 1 = moving right
+        let bikeX = 0;
+        let bikeSpeed = 220; // pixels per second
+        let bikeFrames = [
+            "assets/BIKE1.webp",
+            "assets/BIKE2.webp",
+            "assets/BIKE3.webp",
+            "assets/BIKE4.webp"
+        ];
+        let bikeFrameIndex = 0;
+
+        function playSfx(src, volume = 1) {
+            const s = new Audio(src);
+            s.volume = volume;
+            s.play().catch(() => { });
+        }
+
+        function hideStartBtn() {
+            const btn = document.getElementById("startBtn");
+            if (!btn) return;
+            btn.style.display = "none";
+            btn.replaceWith(btn.cloneNode(true)); // remove old listeners
+        }
+
+        function showStartBtn(nextPage) {
+            const btn = document.getElementById("startBtn");
+            if (!btn) return;
+
+            // reset listeners by cloning (matches your pattern)
+            btn.replaceWith(btn.cloneNode(true));
+            const newBtn = document.getElementById("startBtn");
+
+            newBtn.style.display = "block";
+            newBtn.src = "assets/START.webp";
+
+            // press/release visuals
+            newBtn.addEventListener("mousedown", () => {
+                newBtn.src = "assets/START_PRESSED.webp";
+            });
+
+            const restore = () => (newBtn.src = "assets/START.webp");
+            newBtn.addEventListener("mouseup", restore);
+            newBtn.addEventListener("mouseleave", restore);
+
+            // click -> fade -> redirect
+            newBtn.addEventListener("click", () => {
+                // Play OK sound 
+                playSfx("assets/OK.ogg", 1);
+
+                const overlay = document.getElementById("whiteOverlay");
+                if (!overlay) {
+                    window.location.href = nextPage;
+                    return;
+                }
+
+                overlay.style.pointerEvents = "auto";
+                overlay.style.opacity = "1";
+
+                setTimeout(() => {
+                    window.location.href = nextPage;
+                }, 500);
+            });
+        }
+
+        function stopBikeAnimation() {
+            if (bikeFrameInterval) {
+                clearInterval(bikeFrameInterval);
+                bikeFrameInterval = null;
+            }
+
+            if (bikeMoveRaf) {
+                cancelAnimationFrame(bikeMoveRaf);
+                bikeMoveRaf = null;
+            }
+
+            bikeLastTime = 0;
+        }
+
+        function startBikeAnimation() {
+            stopBikeAnimation();
+
+            const bike = document.getElementById("bikeAnim");
+            const pane = document.querySelector("#homeMenu #rightPane");
+            if (!bike || !pane) return;
+
+            bikeFrameIndex = 0;
+            bike.src = bikeFrames[bikeFrameIndex];
+
+            requestAnimationFrame(() => {
+                const paneWidth = pane.clientWidth;
+                const bikeWidth = bike.getBoundingClientRect().width || 200;
+
+                // start just off the right side
+                bikeX = paneWidth;
+                bikeDirection = -1;
+                bike.style.left = `${bikeX}px`;
+                bike.style.transform = `translateY(-50%) scaleX(-1)`;
+
+                bikeFrameInterval = setInterval(() => {
+                    bikeFrameIndex = (bikeFrameIndex + 1) % bikeFrames.length;
+                    bike.src = bikeFrames[bikeFrameIndex];
+                }, 250);
+
+                function step(now) {
+                    if (!document.getElementById("homeMenu") || activeMenu?.id !== "homeMenu") {
+                        stopBikeAnimation();
+                        return;
+                    }
+
+                    if (!bikeLastTime) bikeLastTime = now;
+                    const dt = (now - bikeLastTime) / 1000;
+                    bikeLastTime = now;
+
+                    const currentPaneWidth = pane.clientWidth;
+                    const currentBikeWidth = bike.getBoundingClientRect().width || bikeWidth;
+
+                    bikeX += bikeDirection * bikeSpeed * dt;
+
+                    // hit left edge -> turn right
+                    if (bikeDirection === -1 && bikeX <= 0) {
+                        bikeX = 0;
+                        bikeDirection = 1;
+                        bike.style.transform = `translateY(-50%) scaleX(1)`;
+                    }
+
+                    // hit right edge -> turn left
+                    if (bikeDirection === 1 && bikeX >= currentPaneWidth - currentBikeWidth) {
+                        bikeX = currentPaneWidth - currentBikeWidth;
+                        bikeDirection = -1;
+                        bike.style.transform = `translateY(-50%) scaleX(-1)`;
+                    }
+
+                    bike.style.left = `${bikeX}px`;
+                    bikeMoveRaf = requestAnimationFrame(step);
+                }
+
+                bikeMoveRaf = requestAnimationFrame(step);
+            });
+        }
+
+        function clearMenuTopButtons() {
+            const back = activeMenu?.querySelector(".leftBtn");
+            if (back) back.replaceWith(back.cloneNode(true));
+
+            const more = activeMenu?.querySelector(".moreBtn");
+            if (more) more.replaceWith(more.cloneNode(true));
+        }
+
+        function handleEndButton() {
+            const endBtn = document.querySelector("#mainMenu .endBtn");
+            if (!endBtn) return;
+
+            endBtn.replaceWith(endBtn.cloneNode(true));
+            const newEnd = document.querySelector("#mainMenu .endBtn");
+
+            newEnd.addEventListener("mousedown", () => {
+                newEnd.src = "assets/END_PRESSED.webp";
+            });
+
+            function restoreEndVisual() {
+                newEnd.src = "assets/END.webp";
+            }
+
+            newEnd.addEventListener("mouseup", restoreEndVisual);
+            newEnd.addEventListener("mouseleave", restoreEndVisual);
+
+            newEnd.addEventListener("click", () => {
+                const overlay = document.getElementById("whiteOverlay");
+
+                if (overlay) {
+                    overlay.style.pointerEvents = "auto";
+                    overlay.style.opacity = "1";
+                }
+
+                setTimeout(() => {
+                    window.location.href = "index.html#fastboot";
+                }, 500);
+            });
+        }
+
+        function formatTimeUsed(seconds) {
+
+            seconds = Math.floor(seconds);
+
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+
+            let html = "";
+
+            if (minutes > 0) {
+                html += `<span class="timeNumber">${minutes}</span><span class="timeUnit"> min</span>`;
+            }
+
+            if (minutes > 0 && secs > 0) {
+                html += " ";
+            }
+
+            if (secs > 0 || minutes === 0) {
+                html += `<span class="timeNumber">${secs}</span><span class="timeUnit"> sec</span>`;
+            }
+
+            return html;
+        }
+
+        function handleBackButton() {
+            const backBtn = activeMenu?.querySelector(".leftBtn");
+            if (!backBtn) return;
+
+            // replace node to remove previous listeners (keeps your pattern)
+            backBtn.replaceWith(backBtn.cloneNode(true));
+            const newBack = activeMenu.querySelector(".leftBtn");
+
+            // PRESS
+            newBack.addEventListener("mousedown", () => {
+                newBack.src = "assets/BACK_PRESSED.webp";
+            });
+
+            // RELEASE
+            function restoreBackVisual() {
+                newBack.src = "assets/BACK.webp";
+            }
+
+            newBack.addEventListener("mouseup", restoreBackVisual);
+            newBack.addEventListener("mouseleave", restoreBackVisual);
+
+
+            newBack.addEventListener("click", () => {
+                speechInProgress = false;
+                if (blinkInterval) {
+                    clearInterval(blinkInterval);
+                    blinkInterval = null;
+                }
+                setMoreState("normal");
+
+                transitionWithOverlay("mainMenu", "assets/HOME.ogg");
+            });
+
+        }
+
+        function calculateFinalTime(timeUsedSeconds, missedWords) {
+            const penalty = missedWords * 20;
+            const finalTime = timeUsedSeconds + penalty;
+            return finalTime;
+        }
+
+        function renderPenalty(missed) {
+
+            const penaltySeconds = missed * 20;
+
+            const minutes = Math.floor(penaltySeconds / 60);
+            const secs = penaltySeconds % 60;
+
+            document.getElementById("missedValue").textContent = missed;
+            document.getElementById("penMin").textContent = minutes;
+            document.getElementById("penSec").textContent = secs;
+
+        }
+
+        function handleMoreButton() {
+            const moreBtn = activeMenu?.querySelector(".moreBtn");
+            if (!moreBtn) return;
+
+            moreBtn.replaceWith(moreBtn.cloneNode(true));
+            const newMore = activeMenu.querySelector(".moreBtn");
+
+            // PRESS
+            newMore.addEventListener("mousedown", () => {
+                if (moreState === "grey") return; // stay greyed
+                newMore.src = "assets/MORE_PRESSED.webp";
+            });
+
+            // RELEASE
+            function restoreMoreVisual() {
+                if (moreState === "grey") {
+                    newMore.src = "assets/MORE_GREYED.webp";
+                } else {
+                    setMoreState(moreState); // restore normal or blink
+                }
+            }
+
+            newMore.addEventListener("mouseup", restoreMoreVisual);
+            newMore.addEventListener("mouseleave", restoreMoreVisual);
+
+            // CLICK ACTION
+            newMore.addEventListener("click", () => {
+                if (speechInProgress || moreState === "grey") return;
+                playSfx("assets/NEXT_PRESSED.ogg", 1);
+
+                currentSpeechIndex++;
+
+                if (currentSpeechIndex < currentSpeechList.length) {
+                    // Next speech line
+                    typeSpeechLine(
+                        currentSpeechList[currentSpeechIndex],
+                        "speechText",
+                        "assets/SPEAK.ogg"
+                    );
+                } else {
+                    // Last line reached
+                    const lastLine = currentSpeechList[currentSpeechList.length - 1];
+                    const nextPage = lastLine.nextPage;
+
+                    if (nextPage) {
+                        // Fade white overlay, then navigate to new page
+                        const overlay = document.getElementById("whiteOverlay");
+                        overlay.style.pointerEvents = "auto";
+                        overlay.style.opacity = "1";
+
+                        setTimeout(() => {
+                            window.location.href = nextPage;
+                        }, 500); // give the overlay 0.5s to fade in
+                    } else {
+                        // Default: go back to main menu
+                        transitionWithOverlay("mainMenu", "assets/HOME.ogg");
+                    }
+
+                    setMoreState("normal");
+                }
+            });
+        }
+
+
+        const moreBtn = document.getElementById("moreBtn");
+
+        function getActiveMoreBtn() {
+            return activeMenu?.querySelector(".moreBtn");
+        }
+
+        function setMoreState(state) {
+            const moreBtn = getActiveMoreBtn();
+            if (!moreBtn) return;
+
+            moreState = state; // track state globally
+
+            if (blinkInterval) {
+                clearInterval(blinkInterval);
+                blinkInterval = null;
+            }
+
+            if (state === "grey") {
+                moreBtn.src = "assets/MORE_GREYED.webp";
+            }
+
+            if (state === "blink") {
+                let on = false;
+                blinkInterval = setInterval(() => {
+                    moreBtn.src = on ? "assets/MORE.webp" : "assets/MORE_BLINK.webp";
+                    on = !on;
+                }, 250);
+            }
+
+            if (state === "normal") {
+                moreBtn.src = "assets/MORE.webp";
+            }
+        }
+
+
+        const mainMenu = document.getElementById("mainMenu");
+        const bgm = document.getElementById("bgm");
+
+
+        const buttons = document.querySelectorAll(".button");
+        const menuScreens = document.querySelectorAll(".menuScreen");
+
+        function fadeAudio(audio, targetVolume = 0, duration = 500) {
+            const startVolume = audio.volume;
+            const startTime = performance.now();
+
+            return new Promise(resolve => {
+                function step(now) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    audio.volume = startVolume + (targetVolume - startVolume) * progress;
+                    if (progress < 1) requestAnimationFrame(step);
+                    else resolve();
+                }
+                requestAnimationFrame(step);
+            });
+        }
+
+        let calInterval = null;
+
+        function startCalendarAnim() {
+            const cal = activeMenu?.querySelector("#calendarAnim");
+            if (!cal) return;
+
+            if (calInterval) {
+                clearInterval(calInterval);
+                calInterval = null;
+            }
+
+            let on = false;
+            cal.src = "assets/CAL1.webp";
+
+            // sync once after first paint
+            requestAnimationFrame(() => syncStaticAboveWidth());
+
+            calInterval = setInterval(() => {
+                on = !on;
+                cal.src = on ? "assets/CAL.webp" : "assets/CAL1.webp";
+                // keep width matched
+                requestAnimationFrame(() => syncStaticAboveWidth());
+            }, 500);
+        }
+
+        function syncStaticAboveWidth() {
+            const wrap = activeMenu?.querySelector(".calendarWrap");
+            if (!wrap) return;
+
+            const cal = wrap.querySelector(".calendarAnim");
+            const top = wrap.querySelector(".leftStaticAbove");
+            if (!cal || !top) return;
+
+            // when the calendar image has a layout width, match it
+            const w = cal.getBoundingClientRect().width;
+            if (w > 0) top.style.width = `${w}px`;
+        }
+
+        function getTrackName(src) {
+            if (!src) return "";
+            try {
+                return new URL(src, window.location.href)
+                    .pathname
+                    .split("/")
+                    .pop();
+            } catch {
+                return String(src).split("/").pop();
+            }
+        }
+
+        function switchMenu(targetMenuId, newBGMsrc) {
+            if (menuTransitionInProgress) return;
+            menuTransitionInProgress = true;
+
+            const currentMenu =
+                activeMenu || document.querySelector(".menuScreen:not([style*='display:none'])");
+            const targetMenu = document.getElementById(targetMenuId);
+
+            if (!targetMenu) {
+                menuTransitionInProgress = false;
+                return;
+            }
+
+            const currentTrack = getTrackName(bgm.src);
+            const requestedTrack = getTrackName(newBGMsrc);
+            const trackChanges = currentTrack !== requestedTrack;
+
+            const doSwap = () => {
+                // hide old screen
+                if (currentMenu) {
+                    currentMenu.style.display = "none";
+                    currentMenu.classList.remove("fading");
+                }
+
+                // show new screen
+                targetMenu.style.display = "block";
+                if (targetMenuId === "mainMenu") targetMenu.classList.remove("fading");
+                else targetMenu.classList.add("fading");
+
+                activeMenu = targetMenu;
+                startCalendarAnim();
+                updateVersionLabel();
+
+                if (targetMenuId === "homeMenu") {
+                    startBikeAnimation();
+                } else {
+                    stopBikeAnimation();
+                }
+                if (targetMenuId === "aboutMenu") startSpeech("aboutIntro");
+                if (targetMenuId === "homeMenu") startSpeech("introduction");
+                if (targetMenuId === "minigameIntroMenu" && selectedMinigame)
+                    startSpeech(selectedMinigame.script);
+
+                clearMenuTopButtons();
+                handleBackButton();
+                handleMoreButton();
+
+                menuTransitionInProgress = false;
+            };
+
+            // 🎵 If track changes → fade out & switch
+            if (trackChanges) {
+                fadeAudio(bgm, 0, 500).then(() => {
+                    bgm.pause();
+                    bgm.currentTime = 0;
+
+                    bgm.src = newBGMsrc;
+                    bgm.volume = 1;
+                    bgm.play().catch(() => { });
+
+                    doSwap();
+                });
+            } else {
+                // 🎵 Same track → DO NOT fade, DO NOT pause, DO NOT reset src
+                if (bgm.paused) bgm.play().catch(() => { });
+                doSwap();
+            }
+        }
+
+        function setMinigameIntroUI(game) {
+            const title = document.getElementById("minigameTitle");
+            if (title) title.textContent = game.title;
+
+            // optional preview image (uses your .rightImage styling)
+            const preview = document.getElementById("minigamePreview");
+            if (preview) {
+                if (game.preview) {
+                    preview.src = game.preview;
+                    preview.style.opacity = "1";
+                } else {
+                    preview.style.opacity = "0";
+                    preview.src = "";
+                }
+            }
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener("click", () => {
+                if (menuTransitionInProgress) return;
+
+                // Play OK.ogg sound immediately
+                const okSound = new Audio("assets/OK.ogg");
+                okSound.volume = 1;
+                okSound.play().catch(() => { });
+
+                button.style.pointerEvents = "none";
+
+                // Get button's current position
+                const rect = button.getBoundingClientRect();
+
+                // Fix it in place at its current coordinates
+                button.style.position = "fixed";
+                button.style.top = `${rect.top}px`;
+                button.style.left = `${rect.left}px`;
+                button.style.transform = "none";
+                button.style.zIndex = 999;
+
+                // Shift clicked button down/right by 5px
+                button.style.transition = "transform 0.1s ease-in-out";
+                button.style.transform = "translate(5px, 5px)";
+
+                // Hide only other buttons inside the same menu screen
+                const currentScreen = button.closest(".menuScreen");
+                if (currentScreen) {
+                    currentScreen.querySelectorAll(".button").forEach(b => {
+                        if (b !== button) b.style.display = "none";
+                    });
+                }
+
+                // Delay a tiny bit to see the click shift
+                setTimeout(() => {
+                    const text = button.textContent;
+                    if (text === "Training") transitionWithOverlay("trainingMenu", "assets/HOME.ogg");
+                    else if (text === "My Brain Training") {
+                        const overlay = document.getElementById("whiteOverlay");
+                        overlay.style.pointerEvents = "auto";
+                        overlay.style.opacity = "1";
+
+                        setTimeout(() => {
+                            window.location.href = "training.html";
+                        }, 500); // 0.5s fade
+                    }
+
+                    else if (text === "Options") transitionWithOverlay("optionsMenu", "assets/OPTIONS.ogg");
+                    else if (text === "About") transitionWithOverlay("aboutMenu", "assets/ABOUT.ogg");
+
+                    else if (text === "Reading Aloud") {
+                        selectedMinigame = {
+                            title: "Reading Aloud",
+                            script: "minigame_reading",
+                            preview: "" // e.g. "assets/READING_PREVIEW.webp"
+                        };
+                        transitionWithOverlay("minigameIntroMenu", "assets/HOME.ogg");
+                    }
+
+                    else if (text === "Word Scramble") {
+                        selectedMinigame = {
+                            title: "Word Scramble",
+                            script: "minigame_scramble",
+                            preview: "" // optional
+                        };
+                        transitionWithOverlay("minigameIntroMenu", "assets/HOME.ogg");
+                    }
+
+                    else if (text === "Photo Memory") {
+                        selectedMinigame = {
+                            title: "Photo Memory",
+                            script: "minigame_photo",
+                            preview: "" // optional
+                        };
+                        transitionWithOverlay("minigameIntroMenu", "assets/HOME.ogg");
+                    }
+                }, 150);
+            });
+        });
+
+        function typeSpeech(text, containerId, speakSrc, interval = 50) {
+            const container = document.getElementById(containerId);
+            container.textContent = ""; // clear previous text
+            let index = 0;
+
+            function addLetter() {
+                if (index < text.length) {
+                    container.textContent += text[index];
+
+                    // Play SPEAK.ogg with overlap
+                    const speak = new Audio(speakSrc);
+                    speak.volume = 1;
+                    speak.play().catch(err => console.warn("SPEAK.ogg blocked:", err));
+
+                    index++;
+                    setTimeout(addLetter, interval);
+                }
+            }
+
+            addLetter();
+        }
+
+        function typeSpeechLine(line, containerId, speakSrc, interval = 30, onComplete) {
+            // find container inside active menu first; fallback to document
+            const container = (activeMenu && activeMenu.querySelector(`#${containerId}`)) || document.getElementById(containerId);
+            if (!container) {
+                console.error("speech container not found:", containerId, "activeMenu:", activeMenu);
+                return;
+            }
+
+            container.innerHTML = "";
+            speechInProgress = true;
+            hideStartBtn();
+            setMoreState("grey");
+
+            // Set head image
+            const headImg = getActiveHead();
+            if (line.head && headImg) headImg.src = line.head;
+
+            // Set right image
+            const rightImg = getActiveRightImage();
+            if (line.rightImage && rightImg) {
+                rightImg.src = line.rightImage;
+                rightImg.style.opacity = "1";
+                rightImg.classList.add("floating");
+            } else if (rightImg) {
+                rightImg.style.opacity = "0";
+                rightImg.classList.remove("floating");
+            }
+
+            const text = line.text;
+            let i = 0;
+            let htmlBuffer = "";
+
+            function addLetter() {
+                if (i >= text.length) {
+                    container.innerHTML = htmlBuffer;
+                    speechInProgress = false;
+                    setMoreState("blink");
+                    if (onComplete) onComplete();
+                    if (line.nextPage && activeMenu?.id === "minigameIntroMenu") {
+                        showStartBtn(line.nextPage);
+                    }
+                    return;
+                }
+
+                if (text[i] === "<") {
+                    const tagEnd = text.indexOf(">", i);
+                    if (tagEnd !== -1) {
+                        htmlBuffer += text.slice(i, tagEnd + 1);
+                        i = tagEnd + 1;
+                    } else {
+                        htmlBuffer += text[i];
+                        i++;
+                    }
+                } else {
+                    htmlBuffer += text[i];
+                    i++;
+                }
+
+                // update visible HTML each step
+                container.innerHTML = htmlBuffer;
+
+                // play voice tick
+                const speak = new Audio(speakSrc);
+                speak.volume = 1;
+                speak.play().catch(() => { });
+
+                setTimeout(addLetter, interval);
+            }
+
+            addLetter();
+        }
+
+        function startSpeech() {
+            currentSpeechList = speechScript;
+            currentSpeechIndex = 0;
+
+            typeSpeechLine(
+                currentSpeechList[currentSpeechIndex],
+                "speechText",
+                "assets/SPEAK.ogg"
+            );
+        }
+
+        function getActiveRightImage() {
+            return activeMenu?.querySelector(".rightImage");
+        }
+
+        function resetMainMenuButtons() {
+            // Restore inline styles applied when a button was clicked
+            const mainButtons = document.querySelectorAll("#mainMenu .button");
+            mainButtons.forEach(b => {
+                // Remove any inline positioning/transform/pointer/etc applied during click
+                b.style.position = "";
+                b.style.top = "";
+                b.style.left = "";
+                b.style.transform = "";
+                b.style.zIndex = "";
+                b.style.transition = "";
+                b.style.display = "";          // allow CSS to decide (was hidden by inline style previously)
+                b.style.pointerEvents = "";    // re-enable pointer events
+                b.classList.remove("clicked"); // if you used that class
+            });
+
+            // Also ensure any top-bar buttons inside mainMenu are visible / clickable if present
+            const topBarBtns = document.querySelectorAll("#mainMenu .topBarBtn, #mainMenu .moreBtn, #mainMenu .leftBtn, #mainMenu .rightBtn");
+            topBarBtns.forEach(btn => {
+                btn.style.display = "";
+                btn.style.pointerEvents = "";
+            });
+        }
+
+        function updateVersionLabel() {
+            const label = document.getElementById("versionLabel");
+            if (!label) return;
+
+            if (activeMenu?.id === "mainMenu") {
+                label.textContent = APP_VERSION;
+                label.style.display = "block";
+            } else {
+                label.style.display = "none";
+            }
+        }
+
+        function transitionWithOverlay(targetMenuId, newBGMsrc) {
+            const overlay = document.getElementById("whiteOverlay");
+            if (!overlay) {
+                switchMenu(targetMenuId, newBGMsrc);
+                return;
+            }
+
+            overlay.style.pointerEvents = "auto";
+            overlay.style.opacity = "1";
+
+            setTimeout(() => {
+                resetMainMenuButtons();
+                switchMenu(targetMenuId, newBGMsrc);
+
+                // Fade out ASAP (not dependent on bgm "playing")
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    overlay.style.opacity = "0";
+                }));
+
+                const fallbackTimeout = setTimeout(() => {
+                    if (overlay.style.opacity === "1") overlay.style.opacity = "0";
+                }, 1200);
+
+                overlay.addEventListener("transitionend", function handler(e) {
+                    if (e.propertyName !== "opacity") return;
+                    if (overlay.style.opacity === "0") {
+                        overlay.style.pointerEvents = "none";
+                        clearTimeout(fallbackTimeout);
+                        overlay.removeEventListener("transitionend", handler);
+                    }
+                });
+            }, 500); // wait 0.5s for fade-in
+        }
+
+        function animateMainMenuButtons() {
+            const buttons = document.querySelectorAll(
+                "#buttonStack .button, #buttonStack2 .button"
+            );
+
+            buttons.forEach((btn, index) => {
+                // Reset animation state
+                btn.style.animation = "none";
+                btn.style.opacity = "0";
+                btn.style.visibility = "hidden";
+                btn.style.transform = "translateX(100vw)";
+
+                // Force reflow so animation can restart
+                btn.getBoundingClientRect();
+
+                // Apply animation
+                btn.style.visibility = "visible";
+                btn.style.animation = `slideInFromRight 0.6s forwards`;
+                btn.style.animationDelay = `${index * 0.1}s`;
+            });
+        }
+
+        function getHashParams() {
+            const hash = window.location.hash;
+
+            if (!hash.startsWith("#/")) return {};
+
+            const params = hash.substring(2).split("&");
+            const out = {};
+
+            params.forEach(p => {
+                const [key, value] = p.split("=");
+                if (key) out[key] = decodeURIComponent(value || "");
+            });
+
+            return out;
+        }
+
+        window.addEventListener("load", () => {
+            const overlay = document.getElementById("whiteOverlay");
+
+            // hide every menu first
+            document.querySelectorAll(".menuScreen").forEach(menu => {
+                menu.style.display = "none";
+            });
+
+            // show the intro screen
+            activeMenu = document.getElementById("homeMenu");
+            activeMenu.style.display = "block";
+            startBikeAnimation();
+
+            const params = getHashParams();
+
+            const timeSeconds = Number(params.time || 0);
+            const missedWords = Number(params.penalty || 0);
+
+            const finalTime = calculateFinalTime(timeSeconds, missedWords);
+
+            document.getElementById("timeUsedValue").innerHTML =
+                formatTimeUsed(timeSeconds);
+
+            renderPenalty(missedWords);
+
+            clearMenuTopButtons();
+            handleBackButton();
+            handleMoreButton();
+
+            if (overlay) {
+                overlay.style.opacity = "1";
+                overlay.style.pointerEvents = "auto";
+                overlay.getBoundingClientRect();
+
+                requestAnimationFrame(() => {
+                    overlay.style.opacity = "0";
+                });
+
+                overlay.addEventListener("transitionend", () => {
+                    overlay.style.pointerEvents = "none";
+                
+                }, { once: true });
+            } else {
+            
+            }
+        });
+    </script>
+</body>
+
+</html>
