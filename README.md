@@ -107,32 +107,33 @@ Training Menu
 <img src="screenshots/AboutThisGame.jpeg" width="400"><br>
 About This Game
 </td>
+</tr>
 
+<tr>
 <td align="center">
 <img src="screenshots/ReadingAloud.jpeg" width="400"><br>
 Reading Aloud Gameplay
 </td>
-</tr>
 
-<tr>
 <td align="center">
 <img src="screenshots/WordScramble.jpeg" width="400"><br>
 Word Scramble Gameplay
 </td>
+</tr>
 
+<tr>
 <td align="center">
 <img src="screenshots/PhotoMemory.jpeg" width="400"><br>
 Photo Memory Gameplay
 </td>
-</tr>
 
-<tr>
 <td align="center">
 <img src="screenshots/WordBuster.jpeg" width="400"><br>
 Word Buster Gameplay
 </td>
 </tr>
 </table>
+
 <br><br>
 
 ## Disclaimer
