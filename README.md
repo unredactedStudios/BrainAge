@@ -1,7 +1,7 @@
 
 <div align="center">
   <a href="https://github.com/unredactedStudios/BrainAge/">
-    <img src="assets/BANNER.jpeg" alt="Logo" height="200">
+    <img src="assets/favicon.gif" alt="Logo" height="100">
   </a>
 
 <p></p>
@@ -13,12 +13,11 @@
     © 2026 unredactedStudios
     <br>
     © 2005–2009 Nintendo. All rights reserved.
-    <br />
-    <br />
   </p>
+
 </div>
 
-<br><br>
+
 ## About
 
 **Brain Training: Web Edition** is a fan-made web adaptation of the Nintendo DS Brain Age series.
