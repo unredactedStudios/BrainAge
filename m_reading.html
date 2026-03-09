@@ -1,114 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Reading Aloud</title>
+  <meta charset="UTF-8">
 
-<style>
-html, body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#fff;
-  font-family:"Times New Roman", Times, serif;
-}
+  <title>BRAIN TRAINING: Web Edition</title>
+  <!-- Default favicon: animated GIF -->
+  <link rel="icon" type="image/gif" href="assets/favicon.gif">
 
-/* Split layout */
-#game{
-  position:fixed;
-  inset:0;
-  display:flex;
-  opacity:0;
-  transition:opacity 0.4s ease;
-}
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #fff;
+      font-family: "Times New Roman", Times, serif;
+    }
 
-.column{
-  flex:1;
-  padding:80px 60px;
-  box-sizing:border-box;
-  font-size:28px;
-  line-height:1.6;
-}
+    /* Split layout */
+    #game {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
 
-/* Buttons */
-.navBtn{
-  position:fixed;
-  top:15px;
-  height:50px;
-  width:auto;
-  cursor:pointer;
-  image-rendering:pixelated;
-  z-index:1000;
-}
+    .column {
+      flex: 1;
+      padding: 80px 60px;
+      box-sizing: border-box;
+      font-size: 28px;
+      line-height: 1.6;
+    }
 
-#nextBtn{ right:15px; }
-#backBtn{ left:15px; display:none; }
+    /* Buttons */
+    .navBtn {
+      position: fixed;
+      top: 15px;
+      height: 50px;
+      width: auto;
+      cursor: pointer;
+      image-rendering: pixelated;
+      z-index: 1000;
+    }
 
-/* Countdown overlay */
-#countdown{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:2000;
-}
+    #nextBtn {
+      right: 15px;
+    }
 
-#countImg{
-  height:200px;
-  image-rendering:pixelated;
-}
+    #backBtn {
+      left: 15px;
+      display: none;
+    }
 
-/* Fade overlay */
-#fade{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  opacity:1;
-  pointer-events:none;
-  transition:opacity 0.4s ease;
-  z-index:1500;
-}
-</style>
+    /* Countdown overlay */
+    #countdown {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    #countImg {
+      height: 200px;
+      image-rendering: pixelated;
+    }
+
+    /* Fade overlay */
+    #fade {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      opacity: 1;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 1500;
+    }
+  </style>
 </head>
 
 <body>
 
-<audio id="waitSound" src="assets/wait.ogg"></audio>
-<audio id="goSound" src="assets/go.ogg"></audio>
-<audio id="pageForward" src="assets/PAGE_FORWARD.ogg"></audio>
-<audio id="pageBack" src="assets/PAGE_BACK.ogg"></audio>
+  <audio id="waitSound" src="assets/wait.ogg"></audio>
+  <audio id="goSound" src="assets/go.ogg"></audio>
+  <audio id="pageForward" src="assets/PAGE_FORWARD.ogg"></audio>
+  <audio id="pageBack" src="assets/PAGE_BACK.ogg"></audio>
 
-<!-- ✅ finish sound -->
-<audio id="finishSound" src="assets/FINISH.ogg"></audio>
+  <!-- ✅ finish sound -->
+  <audio id="finishSound" src="assets/FINISH.ogg"></audio>
 
-<div id="countdown">
-  <img id="countImg" src="assets/3.webp">
-</div>
+  <div id="countdown">
+    <img id="countImg" src="assets/3.webp">
+  </div>
 
-<div id="fade"></div>
+  <div id="fade"></div>
 
-<img id="backBtn" class="navBtn" src="assets/BACK_READING.webp" alt="">
-<img id="nextBtn" class="navBtn" src="assets/NEXT_READING.webp" alt="">
+  <img id="backBtn" class="navBtn" src="assets/BACK_READING.webp" alt="">
+  <img id="nextBtn" class="navBtn" src="assets/NEXT_READING.webp" alt="">
 
-<div id="game">
-  <div class="column" id="leftText"></div>
-  <div class="column" id="rightText"></div>
-</div>
+  <div id="game">
+    <div class="column" id="leftText"></div>
+    <div class="column" id="rightText"></div>
+  </div>
 
-<script>
-/* ---------------- BOOK DATA ---------------- */
+  <script>
+    /* ---------------- BOOK DATA ---------------- */
 
-const books = [
+    const books = [
 
-{
-title:"Pride and Prejudice — Jane Austen",
-pages:[
+      {
+        title: "Pride and Prejudice — Jane Austen",
+        pages: [
 
-`<p>It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.</p>
+          `<p>It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.</p>
 
 <p>However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so firmly fixed in the minds of the surrounding families that he is considered the rightful property of someone or other of their daughters.</p>
 
@@ -118,7 +129,7 @@ pages:[
 
 <p>"But it is," returned she; "for Mrs. Long has just been here, and she told me all about it."</p>`,
 
-`<p>Mr. Bennet made no answer.</p>
+          `<p>Mr. Bennet made no answer.</p>
 
 <p>"Do you not want to know who has taken it?" cried his wife impatiently.</p>
 
@@ -128,7 +139,7 @@ pages:[
 
 <p>"Why, my dear, you must know, Mrs. Long says that Netherfield is taken by a young man of large fortune from the north of England."</p>`,
 
-`<p>The astonishment of the ladies was just what he wished; that of Mrs. Bennet perhaps surpassing the rest.</p>
+          `<p>The astonishment of the ladies was just what he wished; that of Mrs. Bennet perhaps surpassing the rest.</p>
 
 <p>"If I can but see one of my daughters happily settled at Netherfield," said Mrs. Bennet to her husband, "and all the others equally well married, I shall have nothing to wish for."</p>
 
@@ -138,7 +149,7 @@ pages:[
 
 <p>But the day came, and she had better have stayed at home.</p>`,
 
-`<p>Elizabeth Bennet had been obliged, by the scarcity of gentlemen, to sit down for two dances.</p>
+          `<p>Elizabeth Bennet had been obliged, by the scarcity of gentlemen, to sit down for two dances.</p>
 
 <p>During part of that time Mr. Darcy had been standing near enough for her to hear a conversation between him and Mr. Bingley.</p>
 
@@ -148,7 +159,7 @@ pages:[
 
 <p>Elizabeth remained with no very cordial feelings toward him.</p>`,
 
-`<p>She told the story, however, with great spirit among her friends.</p>
+          `<p>She told the story, however, with great spirit among her friends.</p>
 
 <p>For she had a lively, playful disposition which delighted in anything ridiculous.</p>
 
@@ -158,7 +169,7 @@ pages:[
 
 <p>Mrs. Bennet was perfectly satisfied.</p>`,
 
-`<p>The next morning brought with it a renewal of conversation about Mr. Bingley.</p>
+          `<p>The next morning brought with it a renewal of conversation about Mr. Bingley.</p>
 
 <p>Jane listened with delight.</p>
 
@@ -168,7 +179,7 @@ pages:[
 
 <p>It was the beginning of many discussions yet to come.</p>`,
 
-`<p>Elizabeth soon found that she was regarded by her friend as deserving of every compliment.</p>
+          `<p>Elizabeth soon found that she was regarded by her friend as deserving of every compliment.</p>
 
 <p>Her quickness of observation amused him greatly.</p>
 
@@ -178,7 +189,7 @@ pages:[
 
 <p>Conversation moved easily between them.</p>`,
 
-`<p>Mr. Darcy meanwhile remained reserved.</p>
+          `<p>Mr. Darcy meanwhile remained reserved.</p>
 
 <p>His manners gave little encouragement to those around him.</p>
 
@@ -188,7 +199,7 @@ pages:[
 
 <p>It intrigued him more than he cared to admit.</p>`,
 
-`<p>The neighbourhood continued to speak of little else.</p>
+          `<p>The neighbourhood continued to speak of little else.</p>
 
 <p>Every visit and every ball renewed the subject.</p>
 
@@ -198,7 +209,7 @@ pages:[
 
 <p>And thus the society of Hertfordshire was set in motion.</p>`,
 
-`<p>Elizabeth walked home slowly that evening.</p>
+          `<p>Elizabeth walked home slowly that evening.</p>
 
 <p>The sky was fading to dusk.</p>
 
@@ -208,14 +219,14 @@ pages:[
 
 <p>And she wondered what new turns the coming days might bring.</p>`
 
-]
-},
+        ]
+      },
 
-{
-title:"Sherlock Holmes — Arthur Conan Doyle",
-pages:[
+      {
+        title: "Sherlock Holmes — Arthur Conan Doyle",
+        pages: [
 
-`<p>To Sherlock Holmes she is always the woman.</p>
+          `<p>To Sherlock Holmes she is always the woman.</p>
 
 <p>I have seldom heard him mention her under any other name.</p>
 
@@ -225,7 +236,7 @@ pages:[
 
 <p>All emotions were abhorrent to his cold and precise mind.</p>`,
 
-`<p>I had seen little of Holmes lately.</p>
+          `<p>I had seen little of Holmes lately.</p>
 
 <p>My marriage had drifted us away from each other.</p>
 
@@ -235,7 +246,7 @@ pages:[
 
 <p>There he continued his investigations.</p>`,
 
-`<p>One night it was on the twentieth of March that I was returning from a journey.</p>
+          `<p>One night it was on the twentieth of March that I was returning from a journey.</p>
 
 <p>My way led me through Baker Street.</p>
 
@@ -245,7 +256,7 @@ pages:[
 
 <p>I was seized with a keen desire to see Holmes again.</p>`,
 
-`<p>He was pacing the room swiftly.</p>
+          `<p>He was pacing the room swiftly.</p>
 
 <p>His head was sunk upon his chest.</p>
 
@@ -255,7 +266,7 @@ pages:[
 
 <p>His mind was evidently engaged in some keen examination.</p>`,
 
-`<p>"You have been in Afghanistan, I perceive."</p>
+          `<p>"You have been in Afghanistan, I perceive."</p>
 
 <p>These were the words that first astonished me.</p>
 
@@ -265,7 +276,7 @@ pages:[
 
 <p>The remark revealed the extraordinary powers of reasoning that would soon become famous.</p>`,
 
-`<p>Holmes smiled quietly at my astonishment.</p>
+          `<p>Holmes smiled quietly at my astonishment.</p>
 
 <p>"The train of reasoning was simple," he said.</p>
 
@@ -275,7 +286,7 @@ pages:[
 
 <p>I listened with growing admiration.</p>`,
 
-`<p>The case which he described that evening proved singular indeed.</p>
+          `<p>The case which he described that evening proved singular indeed.</p>
 
 <p>A client of rank had come to him.</p>
 
@@ -285,7 +296,7 @@ pages:[
 
 <p>Her intelligence matched Holmes's own.</p>`,
 
-`<p>For once, Holmes had met an adversary worthy of him.</p>
+          `<p>For once, Holmes had met an adversary worthy of him.</p>
 
 <p>The adventure required disguise and careful planning.</p>
 
@@ -295,7 +306,7 @@ pages:[
 
 <p>Such was the completeness of his transformation.</p>`,
 
-`<p>The plan succeeded beyond expectation.</p>
+          `<p>The plan succeeded beyond expectation.</p>
 
 <p>The hiding place of the photograph was discovered.</p>
 
@@ -305,7 +316,7 @@ pages:[
 
 <p>She left behind only a letter.</p>`,
 
-`<p>Holmes read it with quiet appreciation.</p>
+          `<p>Holmes read it with quiet appreciation.</p>
 
 <p>She had anticipated every move.</p>
 
@@ -315,14 +326,14 @@ pages:[
 
 <p>From that day forward, Irene Adler was simply "the woman."</p>`
 
-]
-},
+        ]
+      },
 
-{
-title:"Moby-Dick — Herman Melville",
-pages:[
+      {
+        title: "Moby-Dick — Herman Melville",
+        pages: [
 
-`<p>Call me Ishmael.</p>
+          `<p>Call me Ishmael.</p>
 
 <p>Some years ago—never mind how long precisely—having little or no money in my purse, I thought I would sail about a little and see the watery part of the world.</p>
 
@@ -332,7 +343,7 @@ pages:[
 
 <p>This is my substitute for pistol and ball.</p>`,
 
-`<p>There now is your insular city of the Manhattoes.</p>
+          `<p>There now is your insular city of the Manhattoes.</p>
 
 <p>Belted round by wharves as Indian isles by coral reefs.</p>
 
@@ -342,7 +353,7 @@ pages:[
 
 <p>Its extreme downtown is the battery.</p>`,
 
-`<p>Look at the crowds of water-gazers there.</p>
+          `<p>Look at the crowds of water-gazers there.</p>
 
 <p>Stand on that promenade and observe the sea.</p>
 
@@ -352,7 +363,7 @@ pages:[
 
 <p>The ocean calls to them.</p>`,
 
-`<p>There is magic in it.</p>
+          `<p>There is magic in it.</p>
 
 <p>Let the most absent-minded of men be plunged in his deepest reveries.</p>
 
@@ -362,7 +373,7 @@ pages:[
 
 <p>The sea exerts a mysterious influence.</p>`,
 
-`<p>This is why sailors love their craft.</p>
+          `<p>This is why sailors love their craft.</p>
 
 <p>The endless horizon promises discovery.</p>
 
@@ -372,7 +383,7 @@ pages:[
 
 <p>And every voyage begins with a simple decision to depart.</p>`,
 
-`<p>It was with this feeling that I signed aboard a whaling ship.</p>
+          `<p>It was with this feeling that I signed aboard a whaling ship.</p>
 
 <p>The vessel was called the Pequod.</p>
 
@@ -382,7 +393,7 @@ pages:[
 
 <p>Fewer still understood him.</p>`,
 
-`<p>The ship left port under a pale winter sky.</p>
+          `<p>The ship left port under a pale winter sky.</p>
 
 <p>The sea stretched endlessly before us.</p>
 
@@ -392,7 +403,7 @@ pages:[
 
 <p>None of us yet knew its true purpose.</p>`,
 
-`<p>For Captain Ahab sought one thing alone.</p>
+          `<p>For Captain Ahab sought one thing alone.</p>
 
 <p>A whale of terrible size and power.</p>
 
@@ -402,7 +413,7 @@ pages:[
 
 <p>Moby Dick.</p>`,
 
-`<p>The hunt would take us across oceans.</p>
+          `<p>The hunt would take us across oceans.</p>
 
 <p>Storms would rise against us.</p>
 
@@ -412,7 +423,7 @@ pages:[
 
 <p>The whale remained his single obsession.</p>`,
 
-`<p>Thus the Pequod sailed onward.</p>
+          `<p>Thus the Pequod sailed onward.</p>
 
 <p>The crew watched the horizon day after day.</p>
 
@@ -422,14 +433,14 @@ pages:[
 
 <p>And always the white whale waited somewhere ahead.</p>`
 
-]
-},
+        ]
+      },
 
-{
-title:"A Tale of Two Cities — Charles Dickens",
-pages:[
+      {
+        title: "A Tale of Two Cities — Charles Dickens",
+        pages: [
 
-`<p>It was the best of times, it was the worst of times.</p>
+          `<p>It was the best of times, it was the worst of times.</p>
 
 <p>It was the age of wisdom, it was the age of foolishness.</p>
 
@@ -439,7 +450,7 @@ pages:[
 
 <p>It was the spring of hope, it was the winter of despair.</p>`,
 
-`<p>We had everything before us.</p>
+          `<p>We had everything before us.</p>
 
 <p>We had nothing before us.</p>
 
@@ -449,7 +460,7 @@ pages:[
 
 <p>In short, the period was so far like the present period.</p>`,
 
-`<p>There were a king with a large jaw and a queen with a plain face.</p>
+          `<p>There were a king with a large jaw and a queen with a plain face.</p>
 
 <p>There were a king with a large jaw and a queen with a fair face on the throne of England.</p>
 
@@ -459,7 +470,7 @@ pages:[
 
 <p>Such was the certainty of the age.</p>`,
 
-`<p>The road lay quiet beneath the night sky.</p>
+          `<p>The road lay quiet beneath the night sky.</p>
 
 <p>A messenger rode quickly through the darkness.</p>
 
@@ -469,7 +480,7 @@ pages:[
 
 <p>Lives would soon change because of it.</p>`,
 
-`<p>"Recalled to life."</p>
+          `<p>"Recalled to life."</p>
 
 <p>The words carried strange meaning.</p>
 
@@ -479,7 +490,7 @@ pages:[
 
 <p>Now he would return.</p>`,
 
-`<p>Paris stirred with restless energy.</p>
+          `<p>Paris stirred with restless energy.</p>
 
 <p>The streets were crowded.</p>
 
@@ -489,7 +500,7 @@ pages:[
 
 <p>History was moving quietly beneath the surface.</p>`,
 
-`<p>London meanwhile went about its business.</p>
+          `<p>London meanwhile went about its business.</p>
 
 <p>Carriages rolled through narrow streets.</p>
 
@@ -499,7 +510,7 @@ pages:[
 
 <p>Few guessed how closely their fate was tied to France.</p>`,
 
-`<p>Among these lives stood Charles Darnay.</p>
+          `<p>Among these lives stood Charles Darnay.</p>
 
 <p>His past was hidden behind careful silence.</p>
 
@@ -509,7 +520,7 @@ pages:[
 
 <p>And with them came danger.</p>`,
 
-`<p>Lucie Manette brought light wherever she went.</p>
+          `<p>Lucie Manette brought light wherever she went.</p>
 
 <p>Her kindness touched everyone around her.</p>
 
@@ -519,7 +530,7 @@ pages:[
 
 <p>A symbol of hope in uncertain times.</p>`,
 
-`<p>Thus began a story that would cross two cities.</p>
+          `<p>Thus began a story that would cross two cities.</p>
 
 <p>Love and sacrifice would shape its path.</p>
 
@@ -529,250 +540,251 @@ pages:[
 
 <p>A reminder that even in darkness, compassion survives.</p>`
 
-]
+        ]
 
-}
+      }
 
-];
+    ];
 
-/* ---------------- RANDOM BOOK SELECTION ---------------- */
+    /* ---------------- RANDOM BOOK SELECTION ---------------- */
 
-function getRandomBooks(count){
-  const shuffled = [...books].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-}
-
-const selectedBooks = getRandomBooks(4);
-let currentBookIndex = 0;
-let currentSpreadIndex = 0; // 0 = pages 0+1, 1 = pages 2+3, etc
-
-/* ---------------- ELEMENTS ---------------- */
-
-const leftText = document.getElementById("leftText");
-const rightText = document.getElementById("rightText");
-const nextBtn = document.getElementById("nextBtn");
-const backBtn = document.getElementById("backBtn");
-const pageForward = document.getElementById("pageForward");
-const pageBack = document.getElementById("pageBack");
-const finishSound = document.getElementById("finishSound");
-
-/* ---------------- INPUT BLOCKING + EXIT ---------------- */
-
-let inputBlocked = false;
-
-function blockAllInput(){
-  inputBlocked = true;
-
-  // disable mouse input
-  nextBtn.style.pointerEvents = "none";
-  backBtn.style.pointerEvents = "none";
-
-  // also disable cursor feel (optional)
-  nextBtn.style.cursor = "default";
-  backBtn.style.cursor = "default";
-}
-
-function redirectToTraining(){
-  window.location.href = "training.html";
-}
-
-function playSfx(audioEl) {
-  if (!audioEl) return;
-  audioEl.pause();
-  audioEl.currentTime = 0;
-  audioEl.play().catch(() => {});
-}
-
-/* ENTER key: instant exit (only if NOT blocked) */
-document.addEventListener("keydown", (e) => {
-  if (inputBlocked) return;
-  if (e.key === "Enter") {
-    e.preventDefault();
-    redirectToTraining();
-  }
-}, { passive: false });
-
-/* ---------------- PAGE RENDER ---------------- */
-
-function renderPage(){
-  const book = selectedBooks[currentBookIndex];
-  const leftPage = book.pages[currentSpreadIndex * 2] || "";
-  const rightPage = book.pages[currentSpreadIndex * 2 + 1] || "";
-
-  leftText.innerHTML = leftPage;
-  rightText.innerHTML = rightPage;
-
-  backBtn.style.display =
-    (currentSpreadIndex > 0 || currentBookIndex > 0)
-      ? "block"
-      : "none";
-
-  /* ---- TIMER START (only for first forward visit) ---- */
-
-  const key = currentBookIndex + "_" + currentSpreadIndex;
-
-  if(!pageVisitedForward.has(key)){
-    pageVisitedForward.add(key);
-    pageStartTime = performance.now();
-  }
-}
-
-/* True when user is on the very last spread of the very last book */
-function isAtVeryEnd(){
-  if (currentBookIndex !== selectedBooks.length - 1) return false;
-  const book = selectedBooks[currentBookIndex];
-  const maxSpread = Math.ceil(book.pages.length / 2) - 1;
-  return currentSpreadIndex >= maxSpread;
-}
-
-function failReading(){
-  blockAllInput();
-
-  fade.style.transition = "opacity 0.25s ease";
-  fade.style.opacity = "1";
-
-  setTimeout(()=>{
-    window.location.href = "m_reading_fail.html";
-  },250);
-}
-
-function finishAndExit(){
-  blockAllInput();
-  playSfx(finishSound);
-
-  // redirect when sound finishes; fallback in case 'ended' doesn't fire
-  const fallbackMs = 6000;
-  const t = setTimeout(redirectToTraining, fallbackMs);
-
-  finishSound.addEventListener("ended", () => {
-    clearTimeout(t);
-    redirectToTraining();
-  }, { once: true });
-}
-
-/* ---------------- BUTTON VISUALS ---------------- */
-
-nextBtn.addEventListener("mousedown", () => {
-  if (inputBlocked) return;
-  nextBtn.src="assets/NEXT_READING_PRESSED.webp";
-});
-nextBtn.addEventListener("mouseup", () => {
-  if (inputBlocked) return;
-  nextBtn.src="assets/NEXT_READING.webp";
-});
-nextBtn.addEventListener("mouseleave", () => {
-  if (inputBlocked) return;
-  nextBtn.src="assets/NEXT_READING.webp";
-});
-
-backBtn.addEventListener("mousedown", () => {
-  if (inputBlocked) return;
-  backBtn.src="assets/BACK_READING_PRESSED.webp";
-});
-backBtn.addEventListener("mouseup", () => {
-  if (inputBlocked) return;
-  backBtn.src="assets/BACK_READING.webp";
-});
-backBtn.addEventListener("mouseleave", () => {
-  if (inputBlocked) return;
-  backBtn.src="assets/BACK_READING.webp";
-});
-
-/* ---------------- NAVIGATION ---------------- */
-
-nextBtn.addEventListener("click", () => {
-  if (inputBlocked) return;
-
-  const book = selectedBooks[currentBookIndex];
-  const maxSpread = Math.ceil(book.pages.length / 2) - 1;
-
-  const lastPage =
-    currentBookIndex === selectedBooks.length - 1 &&
-    currentSpreadIndex === maxSpread;
-
-  /* ---- TIMER CHECK ---- */
-
-  if(!lastPage){
-    const elapsed = (performance.now() - pageStartTime) / 1000;
-
-    if(elapsed < 10){
-      failReading();
-      return;
+    function getRandomBooks(count) {
+      const shuffled = [...books].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
     }
-  }
 
-  /* ---- END GAME ---- */
+    const selectedBooks = getRandomBooks(4);
+    let currentBookIndex = 0;
+    let currentSpreadIndex = 0; // 0 = pages 0+1, 1 = pages 2+3, etc
 
-  if (isAtVeryEnd()) {
-    finishAndExit();
-    return;
-  }
+    /* ---------------- ELEMENTS ---------------- */
 
-  playSfx(pageForward);
+    const leftText = document.getElementById("leftText");
+    const rightText = document.getElementById("rightText");
+    const nextBtn = document.getElementById("nextBtn");
+    const backBtn = document.getElementById("backBtn");
+    const pageForward = document.getElementById("pageForward");
+    const pageBack = document.getElementById("pageBack");
+    const finishSound = document.getElementById("finishSound");
 
-  if(currentSpreadIndex < maxSpread){
-    currentSpreadIndex++;
-  } else if(currentBookIndex < selectedBooks.length - 1){
-    currentBookIndex++;
-    currentSpreadIndex = 0;
-  }
+    /* ---------------- INPUT BLOCKING + EXIT ---------------- */
 
-  renderPage();
-});
+    let inputBlocked = false;
 
-backBtn.addEventListener("click", () => {
-  if (inputBlocked) return;
+    function blockAllInput() {
+      inputBlocked = true;
 
-  playSfx(pageBack);
+      // disable mouse input
+      nextBtn.style.pointerEvents = "none";
+      backBtn.style.pointerEvents = "none";
 
-  if(currentSpreadIndex > 0){
-    currentSpreadIndex--;
-  } else if(currentBookIndex > 0){
-    currentBookIndex--;
-    const prevBook = selectedBooks[currentBookIndex];
-    currentSpreadIndex = Math.ceil(prevBook.pages.length / 2) - 1;
-  }
+      // also disable cursor feel (optional)
+      nextBtn.style.cursor = "default";
+      backBtn.style.cursor = "default";
+    }
 
-  renderPage();
-});
+    function redirectToTraining() {
+      window.location.href = "training.html";
+    }
 
-/* ---------------- PAGE TIMER ---------------- */
+    function playSfx(audioEl) {
+      if (!audioEl) return;
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      audioEl.play().catch(() => { });
+    }
 
-let pageStartTime = 0;
-let pageVisitedForward = new Set(); 
+    /* ENTER key: instant exit (only if NOT blocked) */
+    document.addEventListener("keydown", (e) => {
+      if (inputBlocked) return;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        redirectToTraining();
+      }
+    }, { passive: false });
 
-/* ---------------- COUNTDOWN INTRO ---------------- */
+    /* ---------------- PAGE RENDER ---------------- */
 
-const countImg = document.getElementById("countImg");
-const countdown = document.getElementById("countdown");
-const waitSound = document.getElementById("waitSound");
-const goSound = document.getElementById("goSound");
-const fade = document.getElementById("fade");
-const game = document.getElementById("game");
+    function renderPage() {
+      const book = selectedBooks[currentBookIndex];
+      const leftPage = book.pages[currentSpreadIndex * 2] || "";
+      const rightPage = book.pages[currentSpreadIndex * 2 + 1] || "";
 
-async function playCountdown(){
-  const sequence = ["3.webp","2.webp","1.webp"];
+      leftText.innerHTML = leftPage;
+      rightText.innerHTML = rightPage;
 
-  for(let img of sequence){
-    countImg.src = "assets/" + img;
-    waitSound.currentTime = 0;
-    waitSound.play().catch(() => {});
-    await new Promise(r => setTimeout(r,1000));
-  }
+      backBtn.style.display =
+        (currentSpreadIndex > 0 || currentBookIndex > 0)
+          ? "block"
+          : "none";
 
-  goSound.play().catch(() => {});
-  countdown.style.display = "none";
+      /* ---- TIMER START (only for first forward visit) ---- */
 
-  renderPage();
+      const key = currentBookIndex + "_" + currentSpreadIndex;
 
-  requestAnimationFrame(()=>{
-    fade.style.opacity = "0";
-    game.style.opacity = "1";
-  });
-}
+      if (!pageVisitedForward.has(key)) {
+        pageVisitedForward.add(key);
+        pageStartTime = performance.now();
+      }
+    }
 
-window.onload = playCountdown;
-</script>
+    /* True when user is on the very last spread of the very last book */
+    function isAtVeryEnd() {
+      if (currentBookIndex !== selectedBooks.length - 1) return false;
+      const book = selectedBooks[currentBookIndex];
+      const maxSpread = Math.ceil(book.pages.length / 2) - 1;
+      return currentSpreadIndex >= maxSpread;
+    }
+
+    function failReading() {
+      blockAllInput();
+
+      fade.style.transition = "opacity 0.25s ease";
+      fade.style.opacity = "1";
+
+      setTimeout(() => {
+        window.location.href = "m_reading_fail.html";
+      }, 250);
+    }
+
+    function finishAndExit() {
+      blockAllInput();
+      playSfx(finishSound);
+
+      // redirect when sound finishes; fallback in case 'ended' doesn't fire
+      const fallbackMs = 6000;
+      const t = setTimeout(redirectToTraining, fallbackMs);
+
+      finishSound.addEventListener("ended", () => {
+        clearTimeout(t);
+        redirectToTraining();
+      }, { once: true });
+    }
+
+    /* ---------------- BUTTON VISUALS ---------------- */
+
+    nextBtn.addEventListener("mousedown", () => {
+      if (inputBlocked) return;
+      nextBtn.src = "assets/NEXT_READING_PRESSED.webp";
+    });
+    nextBtn.addEventListener("mouseup", () => {
+      if (inputBlocked) return;
+      nextBtn.src = "assets/NEXT_READING.webp";
+    });
+    nextBtn.addEventListener("mouseleave", () => {
+      if (inputBlocked) return;
+      nextBtn.src = "assets/NEXT_READING.webp";
+    });
+
+    backBtn.addEventListener("mousedown", () => {
+      if (inputBlocked) return;
+      backBtn.src = "assets/BACK_READING_PRESSED.webp";
+    });
+    backBtn.addEventListener("mouseup", () => {
+      if (inputBlocked) return;
+      backBtn.src = "assets/BACK_READING.webp";
+    });
+    backBtn.addEventListener("mouseleave", () => {
+      if (inputBlocked) return;
+      backBtn.src = "assets/BACK_READING.webp";
+    });
+
+    /* ---------------- NAVIGATION ---------------- */
+
+    nextBtn.addEventListener("click", () => {
+      if (inputBlocked) return;
+
+      const book = selectedBooks[currentBookIndex];
+      const maxSpread = Math.ceil(book.pages.length / 2) - 1;
+
+      const lastPage =
+        currentBookIndex === selectedBooks.length - 1 &&
+        currentSpreadIndex === maxSpread;
+
+      /* ---- TIMER CHECK ---- */
+
+      if (!lastPage) {
+        const elapsed = (performance.now() - pageStartTime) / 1000;
+
+        if (elapsed < 10) {
+          failReading();
+          return;
+        }
+      }
+
+      /* ---- END GAME ---- */
+
+      if (isAtVeryEnd()) {
+        finishAndExit();
+        return;
+      }
+
+      playSfx(pageForward);
+
+      if (currentSpreadIndex < maxSpread) {
+        currentSpreadIndex++;
+      } else if (currentBookIndex < selectedBooks.length - 1) {
+        currentBookIndex++;
+        currentSpreadIndex = 0;
+      }
+
+      renderPage();
+    });
+
+    backBtn.addEventListener("click", () => {
+      if (inputBlocked) return;
+
+      playSfx(pageBack);
+
+      if (currentSpreadIndex > 0) {
+        currentSpreadIndex--;
+      } else if (currentBookIndex > 0) {
+        currentBookIndex--;
+        const prevBook = selectedBooks[currentBookIndex];
+        currentSpreadIndex = Math.ceil(prevBook.pages.length / 2) - 1;
+      }
+
+      renderPage();
+    });
+
+    /* ---------------- PAGE TIMER ---------------- */
+
+    let pageStartTime = 0;
+    let pageVisitedForward = new Set();
+
+    /* ---------------- COUNTDOWN INTRO ---------------- */
+
+    const countImg = document.getElementById("countImg");
+    const countdown = document.getElementById("countdown");
+    const waitSound = document.getElementById("waitSound");
+    const goSound = document.getElementById("goSound");
+    const fade = document.getElementById("fade");
+    const game = document.getElementById("game");
+
+    async function playCountdown() {
+      const sequence = ["3.webp", "2.webp", "1.webp"];
+
+      for (let img of sequence) {
+        countImg.src = "assets/" + img;
+        waitSound.currentTime = 0;
+        waitSound.play().catch(() => { });
+        await new Promise(r => setTimeout(r, 1000));
+      }
+
+      goSound.play().catch(() => { });
+      countdown.style.display = "none";
+
+      renderPage();
+
+      requestAnimationFrame(() => {
+        fade.style.opacity = "0";
+        game.style.opacity = "1";
+      });
+    }
+
+    window.onload = playCountdown;
+  </script>
 
 </body>
+
 </html>
