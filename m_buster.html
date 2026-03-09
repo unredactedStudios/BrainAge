@@ -362,6 +362,46 @@
     .eraseBtn.disabled {
       cursor: not-allowed !important;
     }
+
+    /* circular letter pulse burst */
+    /* circular letter pulse burst */
+    .letterBurstLayer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 25;
+      overflow: hidden;
+    }
+
+    .burstChar {
+      position: absolute;
+      left: 50%;
+      top: 66%;
+      transform: translate(-50%, -50%);
+      font-size: 2.2vw;
+      line-height: 1;
+      color: #111;
+      text-transform: lowercase;
+      white-space: pre;
+      animation: burstOut 420ms cubic-bezier(.2, .8, .2, 1) forwards;
+    }
+
+    @keyframes burstOut {
+      0% {
+        transform: translate(-50%, -50%) translate(0, 0) scale(0.9);
+        opacity: 1;
+      }
+
+      60% {
+        opacity: 1;
+      }
+
+      100% {
+        transform:
+          translate(-50%, -50%) translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) scale(1.05);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
@@ -387,6 +427,7 @@
             </div>
 
             <div class="resultOverlay" id="resultOverlay">
+              <div class="letterBurstLayer" id="letterBurstLayer"></div>
               <img id="resultImg" alt="Result" src="" />
             </div>
           </div>
@@ -416,20 +457,20 @@
 
   <script>
     /**
-     * Word list (progressively harder).
-     * Add/remove freely.
+     * 10 possible words per round.
+     * One word is chosen when the round starts and stays the same for that round,
+     * including when the user presses Again.
      */
-    const WORDS = [
-      "BRING",
-      "REVOLVE",
-      "INTERVIEW",
-      "IMPORTANT",
-      "MALEVOLENT",
-      "INTUITIVELY",
-      "PALESTINIAN",
-      "RAMBUNCTIOUS",
-      "COMPUTATIONAL",
-      "CLASSIFICATION"
+    const ROUND_POOLS = [
+      ["BRING", "CLOUD", "FREE", "GAZA", "SMILE", "PLANT", "GRAPE", "STONE", "LIGHT", "SPOON", "TRAIN", "WATER"],
+      ["REVOLVE", "FLOWERS", "ANCIENT", "ANOTHER", "CAPTURE", "HARMONY", "JOURNEY", "KINGDOM", "LIBRARY", "MYSTERY"],
+      ["INTERVIEW", "IMPORTANT", "NOTEBOOK", "BASEBALL", "LANGUAGE", "PAINTING", "REMEMBER", "SANDWICH", "SUNSHINE", "TREASURE"],
+      ["MALEVOLENT", "BLUEBERRY", "CHOCOLATEY", "DISCOVERY", "EVERYBODY", "HOUSEPLANT", "MOONLIGHT", "PLAYGROUND", "SOMETHING", "WONDERFULLY"],
+      ["INTUITIVELY", "ADVENTUROUS", "BASKETBALLS", "CELEBRATION", "DELICIOUSLY", "ELECTRICALS", "FRIENDSHIPS", "GRATEFULLY", "PALESTINIAN", "WATERFALLS"],
+      ["PALESTINIAN", "APPRECIATED", "CONNECTIONS", "DETERMINING", "FOUNDATIONAL", "ILLUSIONIST", "RESPECTABLE", "SCIENTIFICS", "UNDERSTANDING", "WILDERNESSS"],
+      ["RAMBUNCTIOUS", "ACCOUNTABLE", "BREATHTAKING", "CANDLELIGHTS", "DEVELOPMENTS", "INTERACTIONS", "FINGERPRINTS", "MOTHERBOARDS", "SWEETHEARTED", "THUNDERSTORM"],
+      ["COMPUTATIONAL", "ACCIDENTALLY", "CARTOGRAPHER", "COMMUNICATOR", "CONSTRUCTION", "DECLARATIONS", "ENCYCLOPEDIA", "OBSERVATIONAL", "TRANSLATIONS", "UNDERCURRENTS"],
+      ["CLASSIFICATION", "ARCHITECTURAL", "CONCENTRATION", "CONVERSATION", "EXCLAMATIONS", "INFORMATIONAL", "INTERVENTIONS", "MICROSCOPICAL", "TRANSPORTATION", "UNDERSTANDING"]
     ];
 
     const els = {
@@ -464,44 +505,40 @@
       buster2: new Audio("assets/2_BUSTER.ogg"),
       buster1: new Audio("assets/1_BUSTER.ogg"),
 
-      key: new Audio("assets/KEY_PRESS.ogg")
+      key: new Audio("assets/KEY_PRESS.ogg"),
+      fail: new Audio("assets/fail.ogg")
     };
 
     Object.values(sounds).forEach(a => a && (a.preload = "auto"));
 
-    let index = 0;
-    let target = "";
+    let index = 0;               // round index
+    let target = "";             // chosen word for current round
     let answer = "";
-    let locked = true;     // locked during countdown / transitions
+    let locked = true;
     let gameDone = false;
+    let againCount = 0;
 
-    let againCount = 0;    // per-word
-    let hideTimer = null;  // manages hiding the left word
+    let wrongLetterTimer = null;
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     function playSound(key) {
       const src = sounds[key]?.src;
       if (!src) return null;
-      const a = new Audio(src); // overlap-friendly
+      const a = new Audio(src);
       a.preload = "auto";
       a.play();
       return a;
     }
 
-    function setAgainPressedVisual(on) {
-      if (on) {
-        els.rightGreyout.classList.add("show");
-        els.againBtn.src = "assets/AGAIN_PRESSED.webp";
-      } else {
-        els.rightGreyout.classList.remove("show");
-        els.againBtn.src = "assets/AGAIN.webp";
-      }
-    }
-
     function waitAudioEnd(a) {
       if (!a) return Promise.resolve();
       return new Promise(res => a.addEventListener("ended", res, { once: true }));
+    }
+
+    function pickWordForRound(roundIndex) {
+      const pool = ROUND_POOLS[roundIndex];
+      return pool[Math.floor(Math.random() * pool.length)];
     }
 
     function clearOverlay() {
@@ -516,68 +553,6 @@
       els.overlay.classList.add("show");
     }
 
-    function stopHideTimer() {
-      if (hideTimer) {
-        clearTimeout(hideTimer);
-        hideTimer = null;
-      }
-    }
-
-    let wrongLetterTimer = null;
-
-    async function playWordCountdown() {
-      locked = true;
-      clearWrongLetter();
-      setPromptMemorise();
-      setRightDisabled(true);
-
-      // hide the word during countdown
-      els.answerDisplay.textContent = " ";
-
-      els.wordCountdown.classList.add("show");
-
-      const sequence = [
-        { img: "assets/3_buster.webp", sound: "buster3" },
-        { img: "assets/2_buster.webp", sound: "buster2" },
-        { img: "assets/1_buster.webp", sound: "buster1" }
-      ];
-
-      for (const step of sequence) {
-        els.wordCountdownImg.src = step.img;
-        playSound(step.sound);
-        await sleep(700);
-      }
-
-      // hide countdown
-      els.wordCountdown.classList.remove("show");
-
-      // blank for 50ms before flash
-      els.answerDisplay.textContent = " ";
-      await sleep(50);
-
-      // flash word longer each time Again is pressed on this word
-      const revealMs = 250 + (againCount * 250);
-      els.answerDisplay.textContent = target.toLowerCase();
-      await sleep(revealMs);
-
-      // blank again for 50ms after flash
-      els.answerDisplay.textContent = " ";
-      await sleep(50);
-
-      // then back to typing view
-      setPromptWrite();
-      setAnswerDisplay();
-      setRightDisabled(false);
-
-      locked = false;
-    }
-
-    function setAnswerDisplay() {
-      const shown = answer.toLowerCase();
-      const hasMore = answer.length < target.length;
-      els.answerDisplay.textContent = shown + (hasMore ? "_" : "");
-    }
-
     function showWrongLetter(letter) {
       els.wrongBox.textContent = letter.toLowerCase();
 
@@ -586,18 +561,6 @@
         els.wrongBox.textContent = " ";
         wrongLetterTimer = null;
       }, 500);
-    }
-
-    function setRightDisabled(on) {
-      els.rightGreyout.classList.toggle("show", on);
-      els.againBtn.classList.toggle("disabled", on);
-      els.eraseBtn.classList.toggle("disabled", on);
-
-      if (on) {
-        els.againBtn.src = "assets/AGAIN_PRESSED.webp";
-      } else {
-        els.againBtn.src = "assets/AGAIN.webp";
-      }
     }
 
     function clearWrongLetter() {
@@ -616,6 +579,94 @@
       els.promptText.innerHTML = "Write down<br>the word.";
     }
 
+    function setAnswerDisplay() {
+      const shown = answer.toLowerCase();
+      const hasMore = answer.length < target.length;
+      els.answerDisplay.textContent = shown + (hasMore ? "_" : "");
+    }
+
+    function setRightDisabled(on) {
+      els.rightGreyout.classList.toggle("show", on);
+      els.againBtn.classList.toggle("disabled", on);
+      els.eraseBtn.classList.toggle("disabled", on);
+      els.againBtn.src = on ? "assets/AGAIN_PRESSED.webp" : "assets/AGAIN.webp";
+    }
+
+    function playCorrectWordBurst(word) {
+      const layer = document.getElementById("letterBurstLayer");
+      if (!layer || !word) return;
+
+      layer.innerHTML = "";
+
+      const sourceLetters = word.toLowerCase().split("");
+      const burstCount = 16;
+
+      // smaller, cleaner circle
+      const radius = Math.min(window.innerWidth, window.innerHeight) * 0.18;
+
+      for (let i = 0; i < burstCount; i++) {
+        const ch = sourceLetters[Math.floor(Math.random() * sourceLetters.length)];
+
+        // perfectly even circle
+        const angle = (Math.PI * 2 * i) / burstCount - Math.PI / 2;
+
+        const dx = Math.cos(angle) * radius;
+        const dy = Math.sin(angle) * radius;
+
+        const span = document.createElement("span");
+        span.className = "burstChar";
+        span.textContent = ch;
+
+        span.style.setProperty("--dx", dx.toFixed(2));
+        span.style.setProperty("--dy", dy.toFixed(2));
+
+        layer.appendChild(span);
+
+        span.addEventListener("animationend", () => {
+          span.remove();
+        }, { once: true });
+      }
+    }
+
+    async function playWordCountdown() {
+      locked = true;
+      clearWrongLetter();
+      setPromptMemorise();
+      setRightDisabled(true);
+
+      els.answerDisplay.textContent = " ";
+      els.wordCountdown.classList.add("show");
+
+      const sequence = [
+        { img: "assets/3_buster.webp", sound: "buster3" },
+        { img: "assets/2_buster.webp", sound: "buster2" },
+        { img: "assets/1_buster.webp", sound: "buster1" }
+      ];
+
+      for (const step of sequence) {
+        els.wordCountdownImg.src = step.img;
+        playSound(step.sound);
+        await sleep(700);
+      }
+
+      els.wordCountdown.classList.remove("show");
+
+      els.answerDisplay.textContent = " ";
+      await sleep(50);
+
+      const revealMs = 250 + (againCount * 250);
+      els.answerDisplay.textContent = target.toLowerCase();
+      await sleep(revealMs);
+
+      els.answerDisplay.textContent = " ";
+      await sleep(50);
+
+      setPromptWrite();
+      setAnswerDisplay();
+      setRightDisabled(false);
+      locked = false;
+    }
+
     async function loadWord(i) {
       index = i;
       answer = "";
@@ -624,7 +675,8 @@
       clearOverlay();
       clearWrongLetter();
 
-      target = WORDS[index].toUpperCase();
+      // Pick ONCE for this round only.
+      target = pickWordForRound(index).toUpperCase();
 
       await playWordCountdown();
 
@@ -640,10 +692,11 @@
       locked = true;
 
       if (answer === target) {
+        playCorrectWordBurst(target);
         showOverlay("correct");
         const sfx = playSound("success");
 
-        if (index < WORDS.length - 1) {
+        if (index < ROUND_POOLS.length - 1) {
           setTimeout(async () => {
             clearOverlay();
             await loadWord(index + 1);
@@ -694,7 +747,6 @@
       window.location.href = "training.html";
     }
 
-    /* INPUT */
     document.addEventListener("keydown", (e) => {
       if (gameDone || locked) return;
 
@@ -740,40 +792,18 @@
       }
     });
 
-    /* BUTTONS */
-    async function handleAgainPress() {
-      if (gameDone || locked) return;
-
-      againCount++;
-
-      answer = "";
-      clearWrongLetter();
-      els.answerDisplay.textContent = " ";
-
-      await playWordCountdown();
-    }
-
-    els.againBtn.addEventListener("pointerdown", (e) => {
-      if (gameDone || locked) return;
-      e.preventDefault();
-      handleAgainPress();
-    });
-
     async function handleAgainPress() {
       if (gameDone || locked) return;
 
       locked = true;
-      setAgainPressedVisual(true);
-
       againCount++;
 
       answer = "";
       clearWrongLetter();
       els.answerDisplay.textContent = " ";
 
+      // target does NOT change here
       await playWordCountdown();
-
-      setAgainPressedVisual(false);
     }
 
     els.againBtn.addEventListener("pointerdown", (e) => {
@@ -781,11 +811,13 @@
       handleAgainPress();
     });
 
-    /* COUNTDOWN */
+    els.eraseBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      erase();
+    });
+
     async function playCountdown() {
       locked = true;
-
-      // grey right side immediately on game start
       setRightDisabled(true);
 
       const sequence = ["3.webp", "2.webp", "1.webp"];
@@ -804,8 +836,7 @@
       }, 450);
 
       await sleep(450);
-
-      await loadWord(0); // BUSTER countdown begins
+      await loadWord(0);
     }
 
     window.onload = playCountdown;
