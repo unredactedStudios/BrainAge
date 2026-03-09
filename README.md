@@ -63,7 +63,7 @@ No frameworks are required to run the project.
 
 ## Launching the game
 
-<a href="https://github.com/unredactedStudios/BrainAge/archive/refs/heads/main.zip">Download</a> or clone the repository:
+[Download](https://github.com/unredactedStudios/BrainAge/releases) or clone the repository:
 
 ```bash
 git clone https://github.com/yourusername/brain-training-web-edition.git
