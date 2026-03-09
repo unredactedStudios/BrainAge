@@ -5,6 +5,7 @@
   </a>
 
 <p></p>
+<h1 align="center">BRAIN TRAINING: Web Edition</h1>
 
   <p align="center">
     A browser-based adaptation inspired by the Brain Age series for Nintendo DS, recreating the original game's feel using modern web technologies and playable directly in the browser.
