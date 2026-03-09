@@ -104,6 +104,11 @@ Training Menu
 </td>
 
 <td align="center">
+<img src="screenshots/AboutThisGame.jpeg" width="400"><br>
+About This Game
+</td>
+
+<td align="center">
 <img src="screenshots/ReadingAloud.jpeg" width="400"><br>
 Reading Aloud Gameplay
 </td>
@@ -125,11 +130,6 @@ Photo Memory Gameplay
 <td align="center">
 <img src="screenshots/WordBuster.jpeg" width="400"><br>
 Word Buster Gameplay
-</td>
-
-<td align="center">
-<img src="screenshots/AboutThisGame.jpeg" width="400"><br>
-About This Game
 </td>
 </tr>
 </table>
