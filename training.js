@@ -1,4 +1,4 @@
-const APP_VERSION = "ver1.0-0903260023 beta";
+const APP_VERSION = "ver1.0-0903260157 beta";
 
 let activeMenu = null;
 const speechScripts = {
@@ -172,6 +172,36 @@ speechScripts.minigame_scramble = [
     text: "Ready? Set? Go!",
     head: "assets/HEAD1.webp",
     nextPage: "m_scramble.html"   // <-- whatever page you want
+  }
+];
+
+speechScripts.minigame_buster = [
+  { text: "Word Buster is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
+  { text: "It may also help to train your brain's <span class='redText'>evaulation skills</span>!", head: "assets/HEAD2.webp" },
+  {
+    text: "A word will be shown briefly on the left screen.",
+    head: "assets/HEAD1.webp",
+    // rightImage: "assets/WORDBUSTER_PREVIEW.webp"
+  },
+  {
+    text: "<span class='redText'>Write</span> the word out <span class='redText'>correctly</span> on the right screen to proceed.",
+    head: "assets/HEAD1.webp",
+    // rightImage: "assets/WORDBUSTER_PREVIEW.webp"
+  },
+  {
+    text: "Click <span class='redText'>Again</span> to see the word again.",
+    head: "assets/HEAD1.webp",
+    // rightImage: "assets/WORDBUSTER_PREVIEW.webp"
+  },
+  {
+    text: "Each time you click <span class='redText'>Again</span> more than <span class='redText'>five times</span>, the word will stay visible for longer.",
+    head: "assets/HEAD1.webp",
+    // rightImage: "assets/WORDBUSTER_PREVIEW.webp"
+  },
+  {
+    text: "Are you ready? Let's bust some words!",
+    head: "assets/HEAD1.webp",
+    nextPage: "m_buster.html"   // <-- whatever page you want
   }
 ];
 
@@ -660,6 +690,15 @@ buttons.forEach(button => {
         selectedMinigame = {
           title: "Photo Memory",
           script: "minigame_photo",
+          preview: "" // optional
+        };
+        transitionWithOverlay("minigameIntroMenu", "assets/HOME.ogg");
+      }
+
+      else if (text === "Word Buster") {
+        selectedMinigame = {
+          title: "Word Buster",
+          script: "minigame_buster",
           preview: "" // optional
         };
         transitionWithOverlay("minigameIntroMenu", "assets/HOME.ogg");

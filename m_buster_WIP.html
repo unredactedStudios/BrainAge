@@ -1,257 +1,409 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Word Buster</title>
-<style>
-  :root{
-    --ds-bg:#bfbfbf;
-    --panel:#ffffff;
-    --panel-border:#cfcfcf;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Word Buster</title>
+  <style>
+    :root {
+      --ds-bg: #bfbfbf;
+      --panel: #ffffff;
+      --panel-border: #cfcfcf;
+    }
 
-  html,body{
-    margin:0;
-    height:100%;
-    background:#bdbdbd;
-    font-family:"Times New Roman", Times, serif;
-    overflow:hidden;
-  }
+    @font-face {
+      font-family: "DSSystem";
+      src: url("assets/SYSTEM.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
 
-  /* FULLSCREEN LAYOUT */
-  .wrap{ height:100%; width:100%; }
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: #bdbdbd;
+      font-family: "DSSystem", sans-serif;
+      overflow: hidden;
+    }
 
-  .ds{
-    width:100vw;
-    height:100vh;
-    background:linear-gradient(#cfcfcf,#bdbdbd);
-    position:relative;
-  }
+    /* FULLSCREEN LAYOUT */
+    .wrap {
+      height: 100%;
+      width: 100%;
+    }
 
-  .screens{
-    position:absolute;
-    inset:0;
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-  }
+    .ds {
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(#cfcfcf, #bdbdbd);
+      position: relative;
+    }
 
-  .screen{
-    position:relative;
-    background:var(--ds-bg);
-    border-left:3px solid #888;
-  }
+    .screens {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
 
-  .screen:first-child{
-    border-left:none;
-    border-right:3px solid #888;
-  }
+    .screen {
+      position: relative;
+      background: var(--ds-bg);
+      border-left: 3px solid #888;
+      overflow: hidden;
+    }
 
-  .panel{
-    position:absolute;
-    left:6%;
-    right:6%;
-    top:4%;
-    bottom:10%;
-    background:var(--panel);
-    border:6px solid var(--panel-border);
-    box-shadow: inset 0 0 0 2px #e8e8e8;
-  }
+    .screen:first-child {
+      border-left: none;
+      border-right: 3px solid #888;
+    }
 
-  /* LEFT: big word display */
-  .wordArea{
-    position:absolute;
-    inset:0;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-  }
+    /* LEFT SCREEN - Brain Age write-down style */
+    .leftGamePanel {
+      position: absolute;
+      inset: 6% 6% 8% 6%;
+      background: #ffffff;
+      border: 6px solid #b8b8b8;
+      box-shadow: inset 0 0 0 2px #ececec;
+    }
 
-  .wordDisplay{
-    font-size:6vw;
-    letter-spacing:6px;
-    color:#111;
-    user-select:none;
-    opacity:0;
-    transition:opacity 80ms linear;
-  }
+    .promptBar {
+      position: absolute;
+      left: 2.2%;
+      right: 2.2%;
+      top: 2.2%;
+      height: 28%;
+      border: 5px solid #b5b5b5;
+      background: #dbdbdb;
+      display: grid;
+      grid-template-columns: 1fr 24%;
+      align-items: stretch;
+    }
 
-  .wordDisplay.show{ opacity:1; }
+    .promptText {
+      margin: 8px;
+      background: #efefef;
+      border: 4px solid #bdbdbd;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 1.2vw 1vw;
+      font-size: 3vw;
+      line-height: 1.08;
+      color: #111;
+    }
 
-  .slots{
-    position:absolute;
-    left:10%;
-    right:10%;
-    bottom:6%;
-    height:22%;
-    background:#f7f7f7;
-    border:4px solid #c9c9c9;
-    display:grid;
-    place-items:center;
-  }
+    .wrongBox {
+      margin: 8px 8px 8px 0;
+      background: #efefef;
+      border: 4px solid #bdbdbd;
+      display: grid;
+      place-items: center;
+      font-size: 4vw;
+      color: #111;
+      text-transform: lowercase;
+    }
 
-  .slots .underscores{
-    font-size:3vw;
-    letter-spacing:10px;
-    opacity:.25; /* keep the “slot box” look without being loud */
-  }
+    .answerArea {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 26%;
+      bottom: 0;
+      display: grid;
+      place-items: center;
+    }
 
-  .writeArea{
-    position:absolute;
-    left:6%;
-    right:6%;
-    top:18%;
-    bottom:28%;
-    background:#fff;
-    border:6px solid #cfcfcf;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-  }
+    .answerDisplay {
+      font-size: 4.8vw;
+      letter-spacing: .25vw;
+      color: #111;
+      user-select: none;
+      text-transform: lowercase;
+    }
 
-  .typed{
-    font-size:5vw;
-    letter-spacing:8px;
-  }
+    .writeArea {
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 18%;
+      bottom: 28%;
+      background: #d8d8d8;
+      border: 6px solid #cfcfcf;
+    }
 
-  .eraseBtn{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:8%;
-    height:10%;
-    width:auto;
-    cursor:pointer;
-    user-select:none;
-    image-rendering:pixelated;
-  }
+    .againBtn {
+      position: absolute;
+      top: 4%;
+      right: 6%;
+      width: 18%;
+      max-width: 140px;
+      height: auto;
+      cursor: pointer;
+      user-select: none;
+      image-rendering: pixelated;
+      z-index: 12;
+    }
 
-  /* “Again” button (top-right of right screen) */
-  .againBtn{
-    position:absolute;
-    top:4%;
-    right:6%;
-    padding:.6vw 1.1vw;
-    background:#e9e9e9;
-    border:4px solid #c0c0c0;
-    box-shadow: inset 0 0 0 2px #f6f6f6;
-    cursor:pointer;
-    user-select:none;
-    font-size:1.2vw;
-    line-height:1;
-  }
-  .againBtn:active{
-    transform:translateY(1px);
-  }
+    .againBtn.pressed {
+      content: url("assets/AGAIN_PRESSED.webp");
+    }
 
-  .level{
-    position:absolute;
-    left:6%;
-    top:4%;
-    font-size:1.2vw;
-  }
+    .rightGreyout {
+      position: absolute;
+      inset: 0;
+      background: rgba(120, 120, 120, 0.45);
+      display: none;
+      pointer-events: none;
+      z-index: 10;
+    }
 
-  .resultOverlay{
-    position:absolute;
-    inset:0;
-    display:none;
-    place-items:center;
-    pointer-events:none;
-  }
+    .rightGreyout.show {
+      display: block;
+      cursor: not-allowed;
+      pointer-events: auto;
+    }
 
-  .resultOverlay img{
-    max-width:60%;
-    image-rendering:pixelated;
-  }
+    .level {
+      position: absolute;
+      left: 6%;
+      top: 4%;
+      font-size: 1.2vw;
+    }
 
-  .resultOverlay.show{ display:grid; }
+    .resultOverlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      pointer-events: none;
+      z-index: 40;
+    }
 
-  /* Countdown overlay */
-  #countdown{
-    position:fixed;
-    inset:0;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:2000;
-  }
+    .resultOverlay.show {
+      display: block;
+    }
 
-  #countImg{
-    height:200px;
-    image-rendering:pixelated;
-  }
+    .resultOverlay img {
+      position: absolute;
+      left: 50%;
+      top: 66%;
+      transform: translate(-50%, -50%);
+      width: 18%;
+      max-width: 90px;
+      image-rendering: pixelated;
+    }
 
-  /* Intro fade overlay */
-  #fadeIntro{
-    position:fixed;
-    inset:0;
-    background:#fff;
-    opacity:1;
-    pointer-events:none;
-    transition:opacity 0.4s ease;
-    z-index:1500;
-  }
+    .writeArea {
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 18%;
+      bottom: 28%;
+      background: #fff;
+      border: 6px solid #cfcfcf;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
 
-  #fadeWhite{
-    position:fixed;
-    inset:0;
-    background:#fff;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 0.5s linear;
-    z-index:9999;
-  }
-  #fadeWhite.show{ opacity:1; }
+    .eraseBtn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 8%;
+      height: 10%;
+      width: auto;
+      cursor: pointer;
+      user-select: none;
+      image-rendering: pixelated;
+    }
 
-  /* tiny shake on wrong */
-  .shake{ animation: shake .35s linear; }
-  @keyframes shake{
-    0%,100%{ transform:translateX(0); }
-    20%{ transform:translateX(-8px); }
-    40%{ transform:translateX(8px); }
-    60%{ transform:translateX(-6px); }
-    80%{ transform:translateX(6px); }
-  }
-</style>
+    /* “Again” button (top-right of right screen) */
+    .againBtn {
+      position: absolute;
+      top: 4%;
+      right: 6%;
+      width: 13%;
+      max-width: 130px;
+      height: auto;
+      border: none;
+      background: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      user-select: none;
+      image-rendering: pixelated;
+      z-index: 5;
+    }
+
+    .againBtn:active {
+      transform: translateY(1px);
+    }
+
+    .level {
+      position: absolute;
+      left: 6%;
+      top: 4%;
+      font-size: 1.2vw;
+    }
+
+    .resultOverlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .resultOverlay img {
+      max-width: 60%;
+      image-rendering: pixelated;
+    }
+
+    .resultOverlay.show {
+      display: grid;
+    }
+
+    /* Countdown overlay */
+    #countdown {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    #countImg {
+      height: 200px;
+      image-rendering: pixelated;
+    }
+
+    /* Intro fade overlay */
+    #fadeIntro {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      opacity: 1;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 1500;
+    }
+
+    #fadeWhite {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s linear;
+      z-index: 9999;
+    }
+
+    #fadeWhite.show {
+      opacity: 1;
+    }
+
+    /* tiny shake on wrong */
+    .shake {
+      animation: shake .35s linear;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-8px);
+      }
+
+      40% {
+        transform: translateX(8px);
+      }
+
+      60% {
+        transform: translateX(-6px);
+      }
+
+      80% {
+        transform: translateX(6px);
+      }
+    }
+
+    .wordCountdown {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding-top: 18%;
+      z-index: 30;
+      pointer-events: none;
+      background: transparent;
+    }
+
+    .wordCountdown.show {
+      display: flex;
+    }
+
+    .wordCountdown img {
+      width: 12%;
+      max-width: 90px;
+      image-rendering: pixelated;
+    }
+
+    .againBtn.disabled,
+    .eraseBtn.disabled {
+      cursor: not-allowed !important;
+    }
+  </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="ds" id="ds">
       <div class="screens">
+
         <!-- LEFT SCREEN -->
         <div class="screen">
-          <div class="panel">
-            <div class="wordArea">
-              <div class="wordDisplay" id="wordDisplay"></div>
+          <div class="leftGamePanel">
+            <div class="promptBar">
+              <div class="promptText" id="promptText">Memorise<br>the word.</div>
+              <div class="wrongBox" id="wrongBox"> </div>
             </div>
 
-            <div class="slots">
-              <div class="resultOverlay" id="resultOverlay">
-                <img id="resultImg" alt="Result" src="" />
-              </div>
-              <div class="underscores" id="underscores">____</div>
+            <div class="answerArea">
+              <div class="answerDisplay" id="answerDisplay">____</div>
+            </div>
+
+            <div class="wordCountdown" id="wordCountdown">
+              <img id="wordCountdownImg" src="assets/3_buster.webp" alt="Word countdown">
+            </div>
+
+            <div class="resultOverlay" id="resultOverlay">
+              <img id="resultImg" alt="Result" src="" />
             </div>
           </div>
         </div>
 
         <!-- RIGHT SCREEN -->
         <div class="screen">
-          <div class="againBtn" id="againBtn">Again</div>
+          <img src="assets/AGAIN.webp" id="againBtn" class="againBtn" alt="Again" draggable="false" />
+
+          <div class="rightGreyout" id="rightGreyout"></div>
           <div class="level" id="levelText"></div>
 
-          <div class="writeArea" id="writeArea">
-            <div class="typed" id="typed"> </div>
-          </div>
+          <div class="writeArea" id="writeArea" aria-hidden="true"></div>
 
-          <img
-            src="assets/ERASE.webp"
-            id="eraseBtn"
-            class="eraseBtn"
-            alt="Erase"
-            draggable="false"
-          />
+          <img src="assets/ERASE.webp" id="eraseBtn" class="eraseBtn" alt="Erase" draggable="false" />
         </div>
+
       </div>
 
       <div id="countdown">
@@ -262,290 +414,404 @@
     </div>
   </div>
 
-<script>
-/**
- * Word list (progressively harder).
- * Add/remove freely.
- */
-const WORDS = [
-  "PLAN",
-  "FABLE",
-  "GRAVE",
-  "SHOPS",
-  "CAREER",
-  "WOODEN",
-  "LEAGUE",
-  "SEVENTY",
-  "KNOCKOUT"
-];
+  <script>
+    /**
+     * Word list (progressively harder).
+     * Add/remove freely.
+     */
+    const WORDS = [
+      "BRING",
+      "REVOLVE",
+      "INTERVIEW",
+      "IMPORTANT",
+      "MALEVOLENT",
+      "INTUITIVELY",
+      "PALESTINIAN",
+      "RAMBUNCTIOUS",
+      "COMPUTATIONAL",
+      "CLASSIFICATION"
+    ];
 
-const els = {
-  wordDisplay: document.getElementById("wordDisplay"),
-  underscores: document.getElementById("underscores"),
-  typed: document.getElementById("typed"),
-  eraseBtn: document.getElementById("eraseBtn"),
-  againBtn: document.getElementById("againBtn"),
-  overlay: document.getElementById("resultOverlay"),
-  resultImg: document.getElementById("resultImg"),
-  writeArea: document.getElementById("writeArea"),
-  levelText: document.getElementById("levelText"),
-  ds: document.getElementById("ds"),
-};
+    const els = {
+      answerDisplay: document.getElementById("answerDisplay"),
+      wrongBox: document.getElementById("wrongBox"),
+      promptText: document.getElementById("promptText"),
+      eraseBtn: document.getElementById("eraseBtn"),
+      againBtn: document.getElementById("againBtn"),
+      rightGreyout: document.getElementById("rightGreyout"),
+      overlay: document.getElementById("resultOverlay"),
+      resultImg: document.getElementById("resultImg"),
+      writeArea: document.getElementById("writeArea"),
+      levelText: document.getElementById("levelText"),
+      ds: document.getElementById("ds"),
+      wordCountdown: document.getElementById("wordCountdown"),
+      wordCountdownImg: document.getElementById("wordCountdownImg"),
+      leftGamePanel: document.querySelector(".leftGamePanel"),
+    };
 
-const countdown = document.getElementById("countdown");
-const countImg = document.getElementById("countImg");
-const fadeIntro = document.getElementById("fadeIntro");
+    const countdown = document.getElementById("countdown");
+    const countImg = document.getElementById("countImg");
+    const fadeIntro = document.getElementById("fadeIntro");
 
-const sounds = {
-  success: new Audio("assets/success.ogg"),
-  fail: new Audio("assets/fail.ogg"),
-  erase: new Audio("assets/ERASE.ogg"),
-  finish: new Audio("assets/FINISH.ogg"),
-  wait: new Audio("assets/wait.ogg"),
-  go: new Audio("assets/go.ogg")
-};
+    const sounds = {
+      success: new Audio("assets/success.ogg"),
+      erase: new Audio("assets/ERASE.ogg"),
+      finish: new Audio("assets/FINISH.ogg"),
+      wait: new Audio("assets/wait.ogg"),
+      go: new Audio("assets/go.ogg"),
 
-Object.values(sounds).forEach(a => a && (a.preload = "auto"));
+      buster3: new Audio("assets/3_BUSTER.ogg"),
+      buster2: new Audio("assets/2_BUSTER.ogg"),
+      buster1: new Audio("assets/1_BUSTER.ogg"),
 
-let index = 0;
-let target = "";
-let answer = "";
-let locked = true;     // locked during countdown / transitions
-let gameDone = false;
+      key: new Audio("assets/KEY_PRESS.ogg")
+    };
 
-let againCount = 0;    // per-word
-let hideTimer = null;  // manages hiding the left word
+    Object.values(sounds).forEach(a => a && (a.preload = "auto"));
 
-function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+    let index = 0;
+    let target = "";
+    let answer = "";
+    let locked = true;     // locked during countdown / transitions
+    let gameDone = false;
 
-function playSound(key){
-  const src = sounds[key]?.src;
-  if(!src) return null;
-  const a = new Audio(src); // overlap-friendly
-  a.preload = "auto";
-  a.play();
-  return a;
-}
+    let againCount = 0;    // per-word
+    let hideTimer = null;  // manages hiding the left word
 
-function waitAudioEnd(a){
-  if(!a) return Promise.resolve();
-  return new Promise(res => a.addEventListener("ended", res, { once:true }));
-}
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-function clearOverlay(){
-  els.overlay.classList.remove("show");
-  els.resultImg.src = "";
-}
-
-function showOverlay(type){
-  els.resultImg.src = (type === "correct")
-    ? "assets/CORRECT.webp"
-    : "assets/WRONG.webp";
-  els.overlay.classList.add("show");
-}
-
-function setUnderscores(len){
-  // purely cosmetic (keeps the DS slot box vibe)
-  els.underscores.textContent = "_".repeat(Math.max(1, len));
-}
-
-function setTypedText(){
-  // RIGHT SCREEN shows the full typed word
-  els.typed.textContent = answer.length ? answer : " ";
-}
-
-function stopHideTimer(){
-  if(hideTimer){
-    clearTimeout(hideTimer);
-    hideTimer = null;
-  }
-}
-
-function showWord(ms){
-  stopHideTimer();
-  els.wordDisplay.classList.add("show");
-
-  // If Again pressed > 5 times, keep visible permanently
-  if(againCount > 5) return;
-
-  hideTimer = setTimeout(() => {
-    els.wordDisplay.classList.remove("show");
-    hideTimer = null;
-  }, ms);
-}
-
-function revealDuration(){
-  // Spec:
-  // - initial show: 0.25s (handled in loadWord)
-  // - if Again pressed: 0.5s
-  // - again: 1s
-  // - after that: keep 1s until >5 presses, then always visible
-  if(againCount <= 0) return 250;
-  if(againCount === 1) return 500;
-  return 1000;
-}
-
-function loadWord(i){
-  index = i;
-  answer = "";
-  againCount = 0;
-  locked = false;
-  clearOverlay();
-
-  target = WORDS[index].toUpperCase();
-  // Display word on left (Brain Age feels like lowercase in many screens)
-  els.wordDisplay.textContent = target.toLowerCase();
-
-  setUnderscores(target.length);
-  setTypedText();
-  els.levelText.textContent = "";
-
-  // Initial flash: 0.25s
-  showWord(250);
-}
-
-function checkAnswer(){
-  if(locked || gameDone) return;
-  if(answer.length !== target.length) return;
-
-  locked = true;
-
-  if(answer === target){
-    showOverlay("correct");
-    const sfx = playSound("success");
-
-    if(index < WORDS.length - 1){
-      setTimeout(() => {
-        clearOverlay();
-        loadWord(index + 1);
-      }, 800);
-    } else {
-      waitAudioEnd(sfx).then(() => {
-        clearOverlay();
-        finishSequence();
-      });
+    function playSound(key) {
+      const src = sounds[key]?.src;
+      if (!src) return null;
+      const a = new Audio(src); // overlap-friendly
+      a.preload = "auto";
+      a.play();
+      return a;
     }
-  } else {
-    showOverlay("wrong");
-    playSound("fail");
-    els.writeArea.classList.add("shake");
 
-    setTimeout(() => {
-      els.writeArea.classList.remove("shake");
-      clearOverlay();
-      answer = "";
-      setTypedText();
+    function setAgainPressedVisual(on) {
+      if (on) {
+        els.rightGreyout.classList.add("show");
+        els.againBtn.src = "assets/AGAIN_PRESSED.webp";
+      } else {
+        els.rightGreyout.classList.remove("show");
+        els.againBtn.src = "assets/AGAIN.webp";
+      }
+    }
+
+    function waitAudioEnd(a) {
+      if (!a) return Promise.resolve();
+      return new Promise(res => a.addEventListener("ended", res, { once: true }));
+    }
+
+    function clearOverlay() {
+      els.overlay.classList.remove("show");
+      els.resultImg.src = "";
+    }
+
+    function showOverlay(type) {
+      els.resultImg.src = (type === "correct")
+        ? "assets/CORRECT.webp"
+        : "assets/WRONG.webp";
+      els.overlay.classList.add("show");
+    }
+
+    function stopHideTimer() {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+    }
+
+    let wrongLetterTimer = null;
+
+    async function playWordCountdown() {
+      locked = true;
+      clearWrongLetter();
+      setPromptMemorise();
+      setRightDisabled(true);
+
+      // hide the word during countdown
+      els.answerDisplay.textContent = " ";
+
+      els.wordCountdown.classList.add("show");
+
+      const sequence = [
+        { img: "assets/3_buster.webp", sound: "buster3" },
+        { img: "assets/2_buster.webp", sound: "buster2" },
+        { img: "assets/1_buster.webp", sound: "buster1" }
+      ];
+
+      for (const step of sequence) {
+        els.wordCountdownImg.src = step.img;
+        playSound(step.sound);
+        await sleep(700);
+      }
+
+      // hide countdown
+      els.wordCountdown.classList.remove("show");
+
+      // blank for 50ms before flash
+      els.answerDisplay.textContent = " ";
+      await sleep(50);
+
+      // flash word longer each time Again is pressed on this word
+      const revealMs = 250 + (againCount * 250);
+      els.answerDisplay.textContent = target.toLowerCase();
+      await sleep(revealMs);
+
+      // blank again for 50ms after flash
+      els.answerDisplay.textContent = " ";
+      await sleep(50);
+
+      // then back to typing view
+      setPromptWrite();
+      setAnswerDisplay();
+      setRightDisabled(false);
+
       locked = false;
-    }, 650);
-  }
-}
-
-function erase(){
-  if(gameDone || locked) return;
-  answer = "";
-  setTypedText();
-}
-
-async function finishSequence(){
-  if(gameDone) return;
-  gameDone = true;
-  locked = true;
-
-  const fin = playSound("finish");
-
-  const fadeWhite = document.getElementById("fadeWhite");
-  fadeWhite.classList.add("show");
-
-  const fadeMin = sleep(500);
-  const audioDone = fin ? waitAudioEnd(fin) : sleep(500);
-
-  await Promise.all([fadeMin, audioDone]);
-  window.location.href = "training.html";
-}
-
-/* INPUT */
-document.addEventListener("keydown", (e) => {
-  if(gameDone || locked) return;
-
-  if(e.key.length === 1 && /[a-zA-Z]/.test(e.key)){
-    const ch = e.key.toUpperCase();
-    if(answer.length < target.length){
-      answer += ch;
-      setTypedText();
-      checkAnswer();
     }
-    return;
-  }
 
-  if(e.key === "Backspace"){
-    if(answer.length > 0){
-      playSound("erase");
-      answer = answer.slice(0, -1);
-      setTypedText();
+    function setAnswerDisplay() {
+      const shown = answer.toLowerCase();
+      const hasMore = answer.length < target.length;
+      els.answerDisplay.textContent = shown + (hasMore ? "_" : "");
     }
-    return;
-  }
 
-  if(e.key === "Escape"){
-    playSound("erase");
-    erase();
-    return;
-  }
+    function showWrongLetter(letter) {
+      els.wrongBox.textContent = letter.toLowerCase();
 
-  if(e.key === "Enter"){
-    checkAnswer();
-    return;
-  }
-});
+      if (wrongLetterTimer) clearTimeout(wrongLetterTimer);
+      wrongLetterTimer = setTimeout(() => {
+        els.wrongBox.textContent = " ";
+        wrongLetterTimer = null;
+      }, 500);
+    }
 
-/* BUTTONS */
-els.eraseBtn.addEventListener("click", () => {
-  playSound("erase");
-  erase();
-});
+    function setRightDisabled(on) {
+      els.rightGreyout.classList.toggle("show", on);
+      els.againBtn.classList.toggle("disabled", on);
+      els.eraseBtn.classList.toggle("disabled", on);
 
-els.againBtn.addEventListener("click", () => {
-  if(gameDone) return;
+      if (on) {
+        els.againBtn.src = "assets/AGAIN_PRESSED.webp";
+      } else {
+        els.againBtn.src = "assets/AGAIN.webp";
+      }
+    }
 
-  // You can press Again even while “locked” by result transitions;
-  // it won’t affect scoring, just visibility.
-  againCount++;
+    function clearWrongLetter() {
+      if (wrongLetterTimer) {
+        clearTimeout(wrongLetterTimer);
+        wrongLetterTimer = null;
+      }
+      els.wrongBox.textContent = " ";
+    }
 
-  // If touched more than five times, the word stays visible
-  if(againCount > 5){
-    stopHideTimer();
-    els.wordDisplay.classList.add("show");
-    return;
-  }
+    function setPromptMemorise() {
+      els.promptText.innerHTML = "Memorise<br>the word.";
+    }
 
-  showWord(revealDuration());
-});
+    function setPromptWrite() {
+      els.promptText.innerHTML = "Write down<br>the word.";
+    }
 
-/* COUNTDOWN */
-async function playCountdown(){
-  locked = true;
+    async function loadWord(i) {
+      index = i;
+      answer = "";
+      againCount = 0;
+      locked = true;
+      clearOverlay();
+      clearWrongLetter();
 
-  const sequence = ["3.webp","2.webp","1.webp"];
-  for(const img of sequence){
-    countImg.src = "assets/" + img;
-    playSound("wait");
-    await sleep(1000);
-  }
+      target = WORDS[index].toUpperCase();
 
-  playSound("go");
-  countdown.style.display = "none";
+      await playWordCountdown();
 
-  loadWord(0);
+      setAnswerDisplay();
+      els.levelText.textContent = "";
+      locked = false;
+    }
 
-  requestAnimationFrame(() => {
-    fadeIntro.style.opacity = "0";
-    setTimeout(() => fadeIntro.style.display = "none", 450);
-  });
-}
+    function checkAnswer() {
+      if (locked || gameDone) return;
+      if (answer.length !== target.length) return;
 
-window.onload = playCountdown;
-</script>
+      locked = true;
 
-<div id="fadeWhite"></div>
+      if (answer === target) {
+        showOverlay("correct");
+        const sfx = playSound("success");
+
+        if (index < WORDS.length - 1) {
+          setTimeout(async () => {
+            clearOverlay();
+            await loadWord(index + 1);
+          }, 800);
+        } else {
+          waitAudioEnd(sfx).then(() => {
+            clearOverlay();
+            finishSequence();
+          });
+        }
+      } else {
+        showOverlay("wrong");
+        playSound("fail");
+        els.leftGamePanel.classList.add("shake");
+
+        setTimeout(() => {
+          els.leftGamePanel.classList.remove("shake");
+          clearOverlay();
+          answer = "";
+          clearWrongLetter();
+          setAnswerDisplay();
+          locked = false;
+        }, 650);
+      }
+    }
+
+    function erase() {
+      if (gameDone || locked) return;
+      answer = "";
+      clearWrongLetter();
+      setAnswerDisplay();
+    }
+
+    async function finishSequence() {
+      if (gameDone) return;
+      gameDone = true;
+      locked = true;
+
+      const fin = playSound("finish");
+
+      const fadeWhite = document.getElementById("fadeWhite");
+      fadeWhite.classList.add("show");
+
+      const fadeMin = sleep(500);
+      const audioDone = fin ? waitAudioEnd(fin) : sleep(500);
+
+      await Promise.all([fadeMin, audioDone]);
+      window.location.href = "training.html";
+    }
+
+    /* INPUT */
+    document.addEventListener("keydown", (e) => {
+      if (gameDone || locked) return;
+
+      playSound("key");
+
+      if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+        const ch = e.key.toUpperCase();
+
+        if (answer.length < target.length) {
+          const expected = target[answer.length];
+
+          if (ch === expected) {
+            answer += ch;
+            clearWrongLetter();
+            setAnswerDisplay();
+            checkAnswer();
+          } else {
+            playSound("fail");
+            showWrongLetter(ch);
+          }
+        }
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        if (answer.length > 0) {
+          playSound("erase");
+          answer = answer.slice(0, -1);
+          setAnswerDisplay();
+        }
+        return;
+      }
+
+      if (e.key === "Escape") {
+        playSound("erase");
+        erase();
+        return;
+      }
+
+      if (e.key === "Enter") {
+        checkAnswer();
+        return;
+      }
+    });
+
+    /* BUTTONS */
+    async function handleAgainPress() {
+      if (gameDone || locked) return;
+
+      againCount++;
+
+      answer = "";
+      clearWrongLetter();
+      els.answerDisplay.textContent = " ";
+
+      await playWordCountdown();
+    }
+
+    els.againBtn.addEventListener("pointerdown", (e) => {
+      if (gameDone || locked) return;
+      e.preventDefault();
+      handleAgainPress();
+    });
+
+    async function handleAgainPress() {
+      if (gameDone || locked) return;
+
+      locked = true;
+      setAgainPressedVisual(true);
+
+      againCount++;
+
+      answer = "";
+      clearWrongLetter();
+      els.answerDisplay.textContent = " ";
+
+      await playWordCountdown();
+
+      setAgainPressedVisual(false);
+    }
+
+    els.againBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      handleAgainPress();
+    });
+
+    /* COUNTDOWN */
+    async function playCountdown() {
+      locked = true;
+
+      // grey right side immediately on game start
+      setRightDisabled(true);
+
+      const sequence = ["3.webp", "2.webp", "1.webp"];
+      for (const img of sequence) {
+        countImg.src = "assets/" + img;
+        playSound("wait");
+        await sleep(1000);
+      }
+
+      playSound("go");
+      countdown.style.display = "none";
+
+      fadeIntro.style.opacity = "0";
+      setTimeout(() => {
+        fadeIntro.style.display = "none";
+      }, 450);
+
+      await sleep(450);
+
+      await loadWord(0); // BUSTER countdown begins
+    }
+
+    window.onload = playCountdown;
+  </script>
+
+  <div id="fadeWhite"></div>
 </body>
+
 </html>
