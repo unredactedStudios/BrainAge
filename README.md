@@ -18,11 +18,6 @@
   </p>
 </div>
 
-
-A browser-based recreation of the classic Nintendo DS brain training experience.
-
-This project recreates several activities inspired by **Dr Kawashima’s Brain Training / Brain Age**, allowing players to train their brain directly in the browser with simple, responsive exercises designed to challenge memory, focus, and processing speed.
-
 <br><br>
 ## About
 
