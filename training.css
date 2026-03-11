@@ -1,10 +1,14 @@
 * {
     font-family: "SystemFont", Arial, Helvetica, sans-serif;
     cursor: url("assets/CURSOR.webp"), auto !important;
-    user-select: none;       /* standard */
-    -webkit-user-select: none; /* Safari/Chrome */
-    -moz-user-select: none;   /* Firefox */
-    -ms-user-select: none;    /* IE/Edge */
+    user-select: none;
+    /* standard */
+    -webkit-user-select: none;
+    /* Safari/Chrome */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE/Edge */
 }
 
 img {
@@ -39,7 +43,8 @@ img {
     font-style: normal;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -99,10 +104,14 @@ html, body {
     height: 50px;
     width: 100%;
     background: linear-gradient(to bottom, #ffd05b, #FE9721);
-    display: flex;                /* align icon + text horizontally */
-    align-items: center;          /* vertically center */
-    padding-left: 10px;           /* small padding for left edge */
-    gap: 10px;                    /* space between icon and text */
+    display: flex;
+    /* align icon + text horizontally */
+    align-items: center;
+    /* vertically center */
+    padding-left: 10px;
+    /* small padding for left edge */
+    gap: 10px;
+    /* space between icon and text */
     box-sizing: border-box;
     font-family: "ButtonFont", "SystemFont", Arial, Helvetica, sans-serif;
     position: relative;
@@ -110,17 +119,22 @@ html, body {
 
 /* Top bar icon */
 #topBarIcon {
-    height: 40px;                 /* fit inside the 50px bar */
-    width: auto;                  /* maintain aspect ratio */
+    height: 40px;
+    /* fit inside the 50px bar */
+    width: auto;
+    /* maintain aspect ratio */
 }
 
 /* h1 inside top bar */
 #topBar h1 {
     margin: 0;
-    font-size: 48px;              /* adjust as needed */
+    font-size: 48px;
+    /* adjust as needed */
     color: #EE6D3F;
-    font-family: inherit;         /* BUTTON.otf */
-    transform: translateY(7px);   /* nudge text down */
+    font-family: inherit;
+    /* BUTTON.otf */
+    transform: translateY(7px);
+    /* nudge text down */
     letter-spacing: -1px;
 }
 
@@ -146,7 +160,8 @@ html, body {
 
 #menuBody {
     position: absolute;
-    top: 50px;               /* height of top bar */
+    top: 50px;
+    /* height of top bar */
     left: 0;
     right: 0;
     bottom: 0;
@@ -172,7 +187,8 @@ html, body {
     position: absolute;
     left: 5%;
     bottom: 5%;
-    height: 30vh; /* adjust if needed */
+    height: 30vh;
+    /* adjust if needed */
     animation: headFloat 1.5s ease-in-out infinite;
     pointer-events: none;
     z-index: 2;
@@ -195,7 +211,8 @@ html, body {
 }
 
 #speechText {
-    position: absolute;     /* overlay on top of the img */
+    position: absolute;
+    /* overlay on top of the img */
     top: 14px;
     left: 20px;
     right: 20px;
@@ -212,9 +229,11 @@ html, body {
     0% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-10px);
     }
+
     100% {
         transform: translateY(0);
     }
@@ -241,7 +260,7 @@ html, body {
 .button3 {
     background: linear-gradient(to right, #E5E4E6, #F8F8F8) !important;
     border-color: #96B48B !important;
-    color: #A0B794 !important; 
+    color: #A0B794 !important;
 }
 
 .button4 {
@@ -265,7 +284,7 @@ html, body {
 .button3a {
     background: linear-gradient(to right, #F3C3DB, #F3EBF3) !important;
     border-color: #FB51BA !important;
-    color: #FB51BA !important; 
+    color: #FB51BA !important;
 }
 
 
@@ -290,7 +309,8 @@ html, body {
     align-items: center;
     justify-content: center;
 
-    padding-top: 6px;   /* pushes text down slightly */
+    padding-top: 6px;
+    /* pushes text down slightly */
 
     cursor: pointer !important;
 }
@@ -300,8 +320,10 @@ html, body {
     right: 0;
     top: 15px;
     display: flex;
-    flex-direction: column; /* stack vertically */
-    gap: 15px; /* space between buttons */
+    flex-direction: column;
+    /* stack vertically */
+    gap: 15px;
+    /* space between buttons */
 }
 
 #buttonStack2 {
@@ -309,8 +331,10 @@ html, body {
     right: 0;
     bottom: 15px;
     display: flex;
-    flex-direction: column; /* stack vertically */
-    gap: 15px; /* space between buttons */
+    flex-direction: column;
+    /* stack vertically */
+    gap: 15px;
+    /* space between buttons */
 }
 
 /* Button click effect: shift slightly */
@@ -322,13 +346,14 @@ html, body {
 /* Wipe effect using mask */
 @keyframes fadeRightToLeft {
     0% {
-        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 0%);
-        mask-image: linear-gradient(to left, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 0%);
+        -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 1) 0%);
+        mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 1) 0%);
         opacity: 1;
     }
+
     100% {
-        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0) 100%, rgba(0,0,0,1) 0%);
-        mask-image: linear-gradient(to left, rgba(0,0,0,0) 100%, rgba(0,0,0,1) 0%);
+        -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0) 100%, rgba(0, 0, 0, 1) 0%);
+        mask-image: linear-gradient(to left, rgba(0, 0, 0, 0) 100%, rgba(0, 0, 0, 1) 0%);
         opacity: 0;
     }
 }
@@ -341,20 +366,24 @@ html, body {
 /* Container for right-side top bar buttons */
 .topBarButtons {
     position: absolute;
-    right: 5px;                 /* anchor to right edge */
+    right: 5px;
+    /* anchor to right edge */
     top: 0;
     height: 50px;
     display: flex;
     align-items: center;
-    gap: 14px;                   /* space between buttons */
+    gap: 14px;
+    /* space between buttons */
 }
 
 /* Shared top bar button styling */
 .topBarBtn {
-    height: 45px;                /* fits inside bar */
+    height: 45px;
+    /* fits inside bar */
     width: auto;
     cursor: pointer;
-    image-rendering: pixelated;  /* keeps crisp DS look */
+    image-rendering: pixelated;
+    /* keeps crisp DS look */
 }
 
 /* Inner (left) button — closer to center */
@@ -391,35 +420,42 @@ html, body {
 }
 
 #whiteOverlay {
-  position: fixed;
-  inset: 0;
-  background: #fff;
-  opacity: 1;               /* START WHITE */
-  pointer-events: auto;     /* block clicks during fade */
-  transition: opacity 0.5s ease;
-  z-index: 20000;
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    opacity: 1;
+    /* START WHITE */
+    pointer-events: auto;
+    /* block clicks during fade */
+    transition: opacity 0.5s ease;
+    z-index: 20000;
 }
 
 #versionLabel {
-  position: fixed;
-  bottom: 5%;
-  left: 42%;                 /* middle of the LEFT side */
-  transform: translateX(-50%);
-  font-family: "BIOSFont", Arial, Helvetica, sans-serif;
-  font-size: 24px;
-  color: #F4B756;
-  opacity: 75%;
-  pointer-events: none;      /* never clickable */
-  display: none;             /* hidden by default */
-  z-index: 1000;
+    position: fixed;
+    bottom: 5%;
+    left: 42%;
+    /* middle of the LEFT side */
+    transform: translateX(-50%);
+    font-family: "BIOSFont", Arial, Helvetica, sans-serif;
+    font-size: 24px;
+    color: #F4B756;
+    opacity: 75%;
+    pointer-events: none;
+    /* never clickable */
+    display: none;
+    /* hidden by default */
+    z-index: 1000;
 }
 
 @keyframes slideInFromRight {
     0% {
         transform: translateX(100vw);
         opacity: 0;
-        visibility: visible; /* start being visible once animation begins */
+        visibility: visible;
+        /* start being visible once animation begins */
     }
+
     100% {
         transform: translateX(0);
         opacity: 1;
@@ -429,9 +465,12 @@ html, body {
 
 #buttonStack .button,
 #buttonStack2 .button {
-    transform: translateX(100vw); /* off-screen right */
-    opacity: 0;                  /* fully invisible */
-    visibility: hidden;          /* prevents that brief flash */
+    transform: translateX(100vw);
+    /* off-screen right */
+    opacity: 0;
+    /* fully invisible */
+    visibility: hidden;
+    /* prevents that brief flash */
 }
 
 #loadFade {
@@ -450,6 +489,7 @@ html, body {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -458,97 +498,103 @@ html, body {
 #loadFade.fade {
     animation: fadeOutFromWhite 0.5s ease forwards;
 }
+
 .calendarAnim {
-  position: absolute;
-  left: 6%;
-  bottom: 8%;
-  height: 35%;      /* tweak if you want bigger/smaller */
-  width: auto;
-  image-rendering: pixelated;
-  pointer-events: none;
-  z-index: 2;
+    position: absolute;
+    left: 6%;
+    bottom: 8%;
+    height: 35%;
+    /* tweak if you want bigger/smaller */
+    width: auto;
+    image-rendering: pixelated;
+    pointer-events: none;
+    z-index: 2;
 }
 
-.calendarWrap{
-  position: absolute;
-  left: 6%;
-  bottom: 8%;
-  height: 55vh;      /* same as your old calendarAnim height */
-  width: auto;
-  pointer-events: none;
-  z-index: 2;
+.calendarWrap {
+    position: absolute;
+    left: 6%;
+    bottom: 8%;
+    height: 55vh;
+    /* same as your old calendarAnim height */
+    width: auto;
+    pointer-events: none;
+    z-index: 2;
 }
 
 /* calendar itself stays same size */
-.calendarWrap .calendarAnim{
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 60%;
-  width: auto;
-  image-rendering: pixelated;
-  display: block;
+.calendarWrap .calendarAnim {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 60%;
+    width: auto;
+    image-rendering: pixelated;
+    display: block;
 }
 
 /* static image 12px above calendar, same width */
-.calendarWrap .leftStaticAbove{
-  position: absolute;
-  left: 0;
-  bottom: calc(60% + 12px); /* 12px gap above calendar */
-  height: auto;
-  width: auto;
+.calendarWrap .leftStaticAbove {
+    position: absolute;
+    left: 0;
+    bottom: calc(60% + 12px);
+    /* 12px gap above calendar */
+    height: auto;
+    width: auto;
 
-  /* force same rendered width as calendar */
-  max-width: none;
-  image-rendering: pixelated;
-  display: block;
+    /* force same rendered width as calendar */
+    max-width: none;
+    image-rendering: pixelated;
+    display: block;
 }
 
 .leftStaticAbove,
 .calendarAnim {
-  pointer-events: none !important;
-  user-select: none !important;
-  -webkit-user-drag: none !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    -webkit-user-drag: none !important;
 }
 
 #trainingMenu {
-  position: fixed;
-  inset: 0;
-  display: none;
-  background-color: #FAFBFB;
-  background-image:
-    linear-gradient(to right, #EAECEB 2px, transparent 2px),
-    linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
-  background-size: 64px 64px;
+    position: fixed;
+    inset: 0;
+    display: none;
+    background-color: #FAFBFB;
+    background-image:
+        linear-gradient(to right, #EAECEB 2px, transparent 2px),
+        linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
+    background-size: 64px 64px;
 }
 
 #minigameIntroMenu {
-  position: fixed;
-  inset: 0;
-  display: none;
-  background-color: #FAFBFB;
-  background-image:
-    linear-gradient(to right, #EAECEB 2px, transparent 2px),
-    linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
-  background-size: 64px 64px;
+    position: fixed;
+    inset: 0;
+    display: none;
+    background-color: #FAFBFB;
+    background-image:
+        linear-gradient(to right, #EAECEB 2px, transparent 2px),
+        linear-gradient(to bottom, #EAECEB 2px, transparent 2px);
+    background-size: 64px 64px;
 }
 
-.startBtn{
-  position: absolute;
-  right: 6%;
-  bottom: 10%;
-  height: 90px;           /* tweak to match DS scale */
-  width: auto;
-  cursor: pointer !important;
-  image-rendering: pixelated;
-  z-index: 5000;
-  display: none;
+.startBtn {
+    position: absolute;
+    right: 6%;
+    bottom: 10%;
+    height: 90px;
+    /* tweak to match DS scale */
+    width: auto;
+    cursor: pointer !important;
+    image-rendering: pixelated;
+    z-index: 5000;
+    display: none;
 }
 
 @keyframes gridMove {
     from {
         background-position: 0px 0px;
     }
+
     to {
         background-position: -64px -64px;
     }
@@ -560,195 +606,230 @@ html, body {
 
 /* homeMenu bike area */
 #homeMenu #rightPane {
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 #homeMenu .bikeStage {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
 }
 
 #homeMenu .bikeAnim {
-  position: absolute;
-  top: 75%;
-  left: 0;
-  width: min(12vw, 130px);
-  height: auto;
-  transform: translateY(-50%) scaleX(1);
-  transform-origin: center center;
-  image-rendering: pixelated;
-  will-change: left, transform;
-  opacity: 1 !important;
+    position: absolute;
+    top: 75%;
+    left: 0;
+    width: min(12vw, 130px);
+    height: auto;
+    transform: translateY(-50%) scaleX(1);
+    transform-origin: center center;
+    image-rendering: pixelated;
+    will-change: left, transform;
+    opacity: 1 !important;
 }
 
 #homeMenu .bikeLabel {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 30px;
-  color: #111;
-  text-align: center;
-  white-space: nowrap;
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 30px;
+    color: #111;
+    text-align: center;
+    white-space: nowrap;
 }
 
 /* Results layout (homeMenu left side) */
 
 #homeMenu .resultsPane {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #homeMenu .resultImg {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  image-rendering: pixelated;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    image-rendering: pixelated;
 }
 
 #homeMenu .timeUsed {
-  top: 35%;
-  width: min(26vw, 320px);
+    top: 35%;
+    width: min(26vw, 320px);
 }
 
 #homeMenu .penalty {
-  top: 60%;
-  width: min(26vw, 320px);
+    top: 60%;
+    width: min(26vw, 320px);
 }
 
 /* results layout */
 
-#homeMenu .resultsPane{
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+#homeMenu .resultsPane {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#homeMenu .resultImg{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  image-rendering:pixelated;
+#homeMenu .resultImg {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    image-rendering: pixelated;
 }
 
-#homeMenu .timeUsed{
-  top:32%;
-  width:min(26vw,320px);
+#homeMenu .timeUsed {
+    top: 32%;
+    width: min(26vw, 320px);
 }
 
-#homeMenu .penalty{
-  top:65%;
-  width:min(26vw,320px);
+#homeMenu .penalty {
+    top: 65%;
+    width: min(26vw, 320px);
 }
 
 
 /* TIME VALUE */
 
-#timeUsedValue{
-  position:absolute;
-  top:44%;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:2.6vw;
-  font-weight:bold;
-  white-space:nowrap;
+#timeUsedValue {
+    position: absolute;
+    top: 44%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.6vw;
+    font-weight: bold;
+    white-space: nowrap;
 }
 
-.timeNumber{
-  color:#000;
+.timeNumber {
+    color: #000;
 }
 
-.timeUnit{
-  color:#888;
-  font-size:0.55em;
-  margin-left:2px;
+.timeUnit {
+    color: #888;
+    font-size: 0.55em;
+    margin-left: 2px;
 }
 
 #penaltyPanel {
-  position: absolute;
-  left: 50%;
-  top: 66%;
-  transform: translateX(-50%);
-  width: 70%;
-  height: 140px;
+    position: absolute;
+    left: 50%;
+    top: 66%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 140px;
 }
 
 .penNum {
-  position: absolute;
-  color: #000;
-  font-weight: 700;
-  line-height: 1;
-  font-size: 5.2vw;
+    position: absolute;
+    color: #000;
+    font-weight: 700;
+    line-height: 1;
+    font-size: 5.2vw;
 }
 
 .penUnit,
 .penMissedLabel,
 .penEquals,
 .penTimes {
-  position: absolute;
-  color: #8a8a8a;
-  line-height: 1;
+    position: absolute;
+    color: #8a8a8a;
+    line-height: 1;
 }
 
 .penMissedLabel {
-  left: 3%;
-  top: 33%;
-  font-size: 1.7vw;
-  font-weight: 700;
+    left: 3%;
+    top: 33%;
+    font-size: 1.7vw;
+    font-weight: 700;
 }
 
 .penMissedNum {
-  left: 12%;
-  top: 54%;
+    left: 12%;
+    top: 54%;
 }
 
 .penTimes {
-  left: 34%;
-  top: 17%;
-  font-size: 3.9vw;
-  color: #000;
+    left: 34%;
+    top: 17%;
+    font-size: 3.9vw;
+    color: #000;
 }
 
 .penTwenty {
-  left: 45%;
-  top: 0%;
+    left: 45%;
+    top: 0%;
 }
 
 .penTwentyUnit {
-  left: 57%;
-  top: 73%;
-  font-size: 1.5vw;
+    left: 57%;
+    top: 73%;
+    font-size: 1.5vw;
 }
 
 .penEquals {
-  left: 74%;
-  top: 53%;
-  font-size: 3.7vw;
+    left: 74%;
+    top: 53%;
+    font-size: 3.7vw;
 }
 
 .penMinNum {
-  left: 88%;
-  top: 54%;
+    left: 88%;
+    top: 54%;
 }
 
 .penMinUnit {
-  left: 102%;
-  top: 78%;
-  font-size: 1.5vw;
+    left: 102%;
+    top: 78%;
+    font-size: 1.5vw;
 }
 
 .penSecNum {
-  left: 116%;
-  top: 54%;
+    left: 116%;
+    top: 54%;
 }
 
 .penSecUnit {
-  left: 130%;
-  top: 78%;
-  font-size: 1.5vw;
+    left: 130%;
+    top: 78%;
+    font-size: 1.5vw;
+}
+
+#trainingMenu #rightPane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#minigameImageList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+}
+
+.minigameRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 116px; /* adjust up/down as needed */
+}
+
+.minigameBtn,
+.rulesBtn {
+  height: 100%;
+  width: auto;
+  display: block;
+  flex: 0 0 auto;
+  image-rendering: pixelated;
+  cursor: pointer !important;
 }

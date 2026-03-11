@@ -9,7 +9,8 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Dr Kawashima's BRAIN TRAINING: Web Edition" />
     <meta name="title" content="Dr Kawashima's BRAIN TRAINING: Web Edition">
-    <meta property="og:description" content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning." />
+    <meta property="og:description"
+        content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning." />
     <meta name="description" content="A browser adaptation of the Nintendo DS Brain Age series for fun and learning.">
     <meta property="og:image" content="assets/BANNER.webp" />
     <meta name="image" content="assets/BANNER.webp" />
@@ -24,7 +25,7 @@
 
 <body>
 
-    <audio id="bgm" src="assets/HOME.ogg" loop style="display:none;"></audio>
+    <audio id="bgm" src="assets/HOME.ogg" style="display:none;"></audio>
 
     <!-- Main Menu -->
     <div id="mainMenu" class="menuScreen" style="display:block;">
@@ -82,8 +83,8 @@
     </div>
 
     <!-- Training Submenu (minigames list) -->
-<div id="trainingMenu" class="menuScreen" style="display:none;">
-  <div id="topBar">
+    <div id="trainingMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
             <img id="topBarIcon" src="assets/ABC.webp">
             <h1>Training</h1>
             <div class="topBarButtons">
@@ -96,56 +97,75 @@
             </div>
         </div>
 
-  <div id="menuBody">
-    <div id="leftPane">
-      <div class="calendarWrap">
-        <img class="leftStaticAbove" src="assets/INFO.webp" alt="">
-        <img id="calendarAnim" class="calendarAnim" src="assets/CAL.webp" alt="">
-      </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <div class="calendarWrap">
+                    <img class="leftStaticAbove" src="assets/INFO.webp" alt="">
+                    <img id="calendarAnim" class="calendarAnim" src="assets/CAL.webp" alt="">
+                </div>
+            </div>
+
+            <div id="divider"></div>
+
+            <div id="rightPane">
+                <div id="minigameImageList">
+                    <div class="minigameRow" data-game="reading">
+                        <img class="minigameBtn" data-game="reading" src="assets/READINGALOUD_BUTTON.webp"
+                            alt="Reading Aloud">
+                        <img class="rulesBtn" data-game="reading" src="assets/RULES.webp" alt="Reading Aloud Rules">
+                    </div>
+
+                    <div class="minigameRow" data-game="scramble">
+                        <img class="minigameBtn" data-game="scramble" src="assets/WORDSCRAMBLE_BUTTON.webp"
+                            alt="Word Scramble">
+                        <img class="rulesBtn" data-game="scramble" src="assets/RULES.webp" alt="Word Scramble Rules">
+                    </div>
+
+                    <div class="minigameRow" data-game="photo">
+                        <img class="minigameBtn" data-game="photo" src="assets/PHOTOMEMORY_BUTTON.webp"
+                            alt="Photo Memory">
+                        <img class="rulesBtn" data-game="photo" src="assets/RULES.webp" alt="Photo Memory Rules">
+                    </div>
+
+                    <div class="minigameRow" data-game="buster">
+                        <img class="minigameBtn" data-game="buster" src="assets/WORDBUSTER_BUTTON.webp"
+                            alt="Word Buster">
+                        <img class="rulesBtn" data-game="buster" src="assets/RULES.webp" alt="Word Buster Rules">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="divider"></div>
+    <!-- Minigame Intro Screen -->
+    <div id="minigameIntroMenu" class="menuScreen" style="display:none;">
+        <div id="topBar">
+            <img id="topBarIcon" src="assets/ABC.webp">
+            <h1 id="minigameTitle">Training</h1>
+            <div class="topBarButtons">
+                <img class="topBarBtn leftBtn" src="assets/BACK.webp">
+                <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
+            </div>
+        </div>
 
-    <div id="rightPane">
-      <div id="buttonStack">
-        <div class="button button2">Reading Aloud</div>
-        <div class="button button2">Word Scramble</div>
-        <div class="button button2">Photo Memory</div>
-        <div class="button button2">Word Buster</div>
-      </div>
+        <div id="menuBody">
+            <div id="leftPane">
+                <img class="head" src="assets/HEAD.webp">
+                <div id="speech">
+                    <img src="assets/SPEECH.webp">
+                    <div id="speechText"></div>
+                </div>
+            </div>
+
+            <div id="divider"></div>
+
+            <div id="rightPane">
+                <!-- optional: show a preview image for the minigame -->
+                <img class="rightImage" id="minigamePreview" src="">
+                <img id="startBtn" class="startBtn" src="assets/START.webp" alt="Start" style="display:none;">
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<!-- Minigame Intro Screen -->
-<div id="minigameIntroMenu" class="menuScreen" style="display:none;">
-  <div id="topBar">
-    <img id="topBarIcon" src="assets/ABC.webp">
-    <h1 id="minigameTitle">Training</h1>
-    <div class="topBarButtons">
-      <img class="topBarBtn leftBtn" src="assets/BACK.webp">
-      <img class="topBarBtn rightBtn moreBtn" src="assets/MORE.webp">
-    </div>
-  </div>
-
-  <div id="menuBody">
-    <div id="leftPane">
-      <img class="head" src="assets/HEAD.webp">
-      <div id="speech">
-        <img src="assets/SPEECH.webp">
-        <div id="speechText"></div>
-      </div>
-    </div>
-
-    <div id="divider"></div>
-
-    <div id="rightPane">
-      <!-- optional: show a preview image for the minigame -->
-      <img class="rightImage" id="minigamePreview" src="">
-      <img id="startBtn" class="startBtn" src="assets/START.webp" alt="Start" style="display:none;">
-    </div>
-  </div>
-</div>
 
     <!-- Options Menu -->
     <div id="optionsMenu" class="menuScreen" style="display:none;">

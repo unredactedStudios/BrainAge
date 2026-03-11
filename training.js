@@ -1,143 +1,46 @@
-const APP_VERSION = "ver1.0-1003261323_beta";
+const APP_VERSION = "ver1.0-1103261912_beta";
 
 let activeMenu = null;
-const speechScripts = {
-  aboutIntro: [
-    {
-      text: "Brain Training: Web Edition is a browser-based adaptation of the Nintendo DS Brain Age series...",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: "Characters, names & likenesses from the Nintendo DS series are © Nintendo. All original Nintendo DS IP belongs to Nintendo.",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: "This fan-made edition is non-commercial and intended for educational & entertainment purposes.",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: `Brain Training: Web Edition ${APP_VERSION} <br/>by RexiMemo! Studios<br/>All rights reserved.`,
-      head: "assets/HEAD2.webp"
-    }
-  ],
 
-  introduction: [
-    {
-      text: "Hello! My name is Ryuta Kawashima, and I'm a doctor of neuroscience.",
-      head: "assets/HEAD2.webp"
-    },
-    {
-      text: "Why don't we try doing some <span class='redText'>brain training</span> together?",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: "Let's get started!",
-      head: "assets/HEAD.webp"
-    },
-    {
-      text: "If you don't use your brain, it will age quickly.",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: "Your brain will not be as strong as one with the ideal brain age of <span class='redText'>20</span>.",
-      head: "assets/HEADSAD.webp"
-    },
-    {
-      text: "It's just like not exercising. A healthy body must work out regularly, you know!",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: "But there is a solution: you can <span class='redText'>train your brain</span> like you train your body!",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: "I've found that quick, simple exercises in reading, writing, and arithmetic can help.",
-      head: "assets/HEAD1.webp"
-    },
-    {
-      text: "Take a look at these brain scans.",
-      head: "assets/HEAD1.webp",
-      rightImage: "assets/BRAINSCAN_1.webp"
-    },
-    {
-      text: "The yellow and red patches show areas of rapid blood flow.",
-      head: "assets/HEAD1.webp",
-      rightImage: "assets/BRAINSCAN_1.webp"
-    },
-    {
-      text: "Those areas of your brain are doing <span class='redText'>a lot of work</span>!",
-      head: "assets/HEAD.webp",
-      rightImage: "assets/BRAINSCAN_1.webp"
-    },
-    {
-      text: "Image A shows a brain in idle thought. Image B shows a brain watching TV.",
-      head: "assets/HEAD1.webp",
-      rightImage: "assets/BRAINSCAN_1.webp"
-    },
-    {
-      text: "These brains are hardly working at all! Lazy brains!",
-      head: "assets/HEADSAD.webp",
-      rightImage: "assets/BRAINSCAN_1.webp"
-    },
-    {
-      text: "Now, look at the following images.",
-      head: "assets/HEAD1.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "Image C shows a brain that is solving simple math problems rapidly,",
-      head: "assets/HEAD1.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "while image D shows a brain whose owner is reading out loud.",
-      head: "assets/HEAD1.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "See how <span class='redText'>larger portions of these brains are being put to work</span>?",
-      head: "assets/HEAD.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "Solving simple calculations and reading out loud activate the brain!",
-      head: "assets/HEAD2.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "These activities are included in this software,",
-      head: "assets/HEAD2.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "as well as many other <span class='redText'>training programs</span> for your brain.",
-      head: "assets/HEAD2.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "I designed this software to include only exercises which aid your brain.",
-      head: "assets/HEAD2.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "Modern imaging tools suggest that they are all quite effective!",
-      head: "assets/HEAD2.webp",
-      rightImage: "assets/BRAINSCAN_2.webp"
-    },
-    {
-      text: "And now, it's time to start your training!",
-      head: "assets/HEAD2.webp",
-      rightImage: "assets/BRAINSCAN_2.webp",
-      nextPage: "training.html" // optional: points to another HTML page
-    }
-  ]
+const HOME_LOOP = {
+  start: 2.042,
+  end: 53.946
+};
+
+const speechScripts = {
 };
 
 let selectedMinigame = null;
 
 speechScripts.minigame_reading = [
   { text: "Reading Aloud is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
-  { text: "It may help the <span class='redText'>overall stimulation</span> of your <span class='redText'>brain</span> too!", head: "assets/HEAD2.webp" },
+  { text: "It may help the <span class='redText'>overall stimulation</span> of your <span class='redText'>brain</span> too!", head: "assets/HEAD2.webp",
+    nextPage: "m_reading.html"   // <-- whatever page you want
+  }
+];
+
+speechScripts.minigame_scramble = [
+  { text: "Word Scramble is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
+  { text: "It may help to train your <span class='redText'>memory</span> too!", head: "assets/HEAD2.webp",
+     nextPage: "m_scramble.html"   // <-- whatever page you want
+}
+];
+
+speechScripts.minigame_buster = [
+  { text: "Word Buster is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
+  { text: "It may also help to train your brain's <span class='redText'>evaulation skills</span>!", head: "assets/HEAD2.webp",
+    nextPage: "m_buster.html"   // <-- whatever page you want
+  }
+];
+
+speechScripts.minigame_photo = [
+  { text: "Photo Memory is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
+  { text: "It may also help to train your <span class='redText'>memory</span>!", head: "assets/HEAD2.webp",
+    nextPage: "m_memory.html"   // <-- whatever page you want
+  }
+];
+
+speechScripts.rules_reading = [
   {
     text: "Try to read <span class='redText'>one selection aloud per day</span> as fast as you can.",
     head: "assets/HEAD1.webp",
@@ -160,9 +63,7 @@ speechScripts.minigame_reading = [
   }
 ];
 
-speechScripts.minigame_scramble = [
-  { text: "Word Scramble is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
-  { text: "It may help to train your <span class='redText'>memory</span> too!", head: "assets/HEAD2.webp" },
+speechScripts.rules_scramble = [
   {
     text: "Look at the <span class='redText'>spinning letters</span>, then arrange them to <span class='redText'>form a word</span>.",
     head: "assets/HEAD1.webp",
@@ -175,10 +76,26 @@ speechScripts.minigame_scramble = [
   }
 ];
 
-speechScripts.minigame_buster = [
-  { text: "Word Buster is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
-  { text: "It may also help to train your brain's <span class='redText'>evaulation skills</span>!", head: "assets/HEAD2.webp" },
+speechScripts.rules_photo = [
   {
+    text: "Remember the last photo displayed,",
+    head: "assets/HEAD1.webp",
+    rightImage: "assets/PHOTOMEMORY_PREVIEW.webp"
+  },
+  {
+    text: "then <span class='redText'>touch the photos </span>on the right, following the instructions.",
+    head: "assets/HEAD1.webp",
+    rightImage: "assets/PHOTOMEMORY_PREVIEW1.webp"
+  },
+  {
+    text: "Let's begin.",
+    head: "assets/HEAD1.webp",
+    nextPage: "m_memory.html"   // <-- whatever page you want
+  }
+];
+
+speechScripts.rules_buster = [
+{
     text: "A word will be shown briefly on the left screen.",
     head: "assets/HEAD1.webp",
     // rightImage: "assets/WORDBUSTER_PREVIEW.webp"
@@ -205,26 +122,6 @@ speechScripts.minigame_buster = [
   }
 ];
 
-speechScripts.minigame_photo = [
-  { text: "Photo Memory is good for <span class='redText'>activating your prefrontal cortex</span>.", head: "assets/HEAD2.webp" },
-  { text: "It may also help to train your <span class='redText'>memory</span>!", head: "assets/HEAD2.webp" },
-  {
-    text: "Remember the last photo displayed,",
-    head: "assets/HEAD1.webp",
-    rightImage: "assets/PHOTOMEMORY_PREVIEW.webp"
-  },
-  {
-    text: "then <span class='redText'>touch the photos </span>on the right, following the instructions.",
-    head: "assets/HEAD1.webp",
-    rightImage: "assets/PHOTOMEMORY_PREVIEW1.webp"
-  },
-  {
-    text: "Let's begin.",
-    head: "assets/HEAD1.webp",
-    nextPage: "m_memory.html"   // <-- whatever page you want
-  }
-];
-
 let menuTransitionInProgress = false;
 let moreState = "normal"; // "normal" | "grey" | "blink"
 
@@ -240,7 +137,7 @@ let blinkInterval = null;
 function playSfx(src, volume = 1) {
   const s = new Audio(src);
   s.volume = volume;
-  s.play().catch(() => {});
+  s.play().catch(() => { });
 }
 
 function hideStartBtn() {
@@ -272,22 +169,140 @@ function showStartBtn(nextPage) {
 
   // click -> fade -> redirect
   newBtn.addEventListener("click", () => {
-  // Play OK sound 
-  playSfx("assets/OK.ogg", 1);
+    // Play OK sound 
+    playSfx("assets/OK.ogg", 1);
 
-  const overlay = document.getElementById("whiteOverlay");
-  if (!overlay) {
-    window.location.href = nextPage;
-    return;
-  }
+    const overlay = document.getElementById("whiteOverlay");
+    if (!overlay) {
+      window.location.href = nextPage;
+      return;
+    }
 
-  overlay.style.pointerEvents = "auto";
-  overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+    overlay.style.opacity = "1";
 
-  setTimeout(() => {
-    window.location.href = nextPage;
-  }, 500);
-});
+    setTimeout(() => {
+      window.location.href = nextPage;
+    }, 500);
+  });
+}
+
+function handleMinigameImageButtons() {
+  const allBtns = document.querySelectorAll(".minigameBtn, .rulesBtn");
+
+  allBtns.forEach(btn => {
+    btn.replaceWith(btn.cloneNode(true));
+  });
+
+  
+
+  document.querySelectorAll(".minigameBtn").forEach(btn => {
+    btn.addEventListener("mousedown", () => {
+      const normal = btn.src;
+      const pressed = normal.replace(".webp", "_PRESSED.webp");
+      btn.dataset.normal = normal;
+      btn.src = pressed;
+    });
+
+    function restore(playSound = false) {
+      if (btn.dataset.normal) {
+        btn.src = btn.dataset.normal;
+      }
+      if (playSound) {
+        playSfx("assets/OK.ogg", 1);
+      }
+    }
+
+    btn.addEventListener("mouseup", () => restore(true));
+    btn.addEventListener("mouseleave", () => restore(false));
+
+    btn.addEventListener("click", () => {
+      const game = btn.dataset.game;
+
+      if (game === "reading") {
+        selectedMinigame = {
+          title: "Reading Aloud",
+          script: "minigame_reading",
+          preview: ""
+        };
+      } else if (game === "scramble") {
+        selectedMinigame = {
+          title: "Word Scramble",
+          script: "minigame_scramble",
+          preview: ""
+        };
+      } else if (game === "photo") {
+        selectedMinigame = {
+          title: "Photo Memory",
+          script: "minigame_photo",
+          preview: ""
+        };
+      } else if (game === "buster") {
+        selectedMinigame = {
+          title: "Word Buster",
+          script: "minigame_buster",
+          preview: ""
+        };
+      } else {
+        return;
+      }
+
+      setMinigameIntroUI(selectedMinigame);
+      transitionWithOverlay("minigameIntroMenu", "assets/HOME.ogg");
+    });
+  });
+
+  document.querySelectorAll(".rulesBtn").forEach(btn => {
+    btn.addEventListener("mousedown", () => {
+      btn.dataset.normal = "assets/RULES.webp";
+      btn.src = "assets/RULES_PRESSED.webp";
+    });
+
+    function restoreRules(playSound = false) {
+      btn.src = "assets/RULES.webp";
+      if (playSound) {
+        playSfx("assets/OK.ogg", 1);
+      }
+    }
+
+    btn.addEventListener("mouseup", () => restoreRules(true));
+    btn.addEventListener("mouseleave", () => restoreRules(false));
+
+    btn.addEventListener("click", () => {
+      const game = btn.dataset.game;
+
+      if (game === "reading") {
+        selectedMinigame = {
+          title: "Reading Aloud Rules",
+          script: "rules_reading",
+          preview: ""
+        };
+      } else if (game === "scramble") {
+        selectedMinigame = {
+          title: "Word Scramble Rules",
+          script: "rules_scramble",
+          preview: ""
+        };
+      } else if (game === "photo") {
+        selectedMinigame = {
+          title: "Photo Memory Rules",
+          script: "rules_photo",
+          preview: ""
+        };
+      } else if (game === "buster") {
+        selectedMinigame = {
+          title: "Word Buster Rules",
+          script: "rules_buster",
+          preview: ""
+        };
+      } else {
+        return;
+      }
+
+      setMinigameIntroUI(selectedMinigame);
+      transitionWithOverlay("minigameIntroMenu", "assets/HOME.ogg");
+    });
+  });
 }
 
 function clearMenuTopButtons() {
@@ -394,7 +409,7 @@ function handleMoreButton() {
   newMore.addEventListener("click", () => {
     if (speechInProgress || moreState === "grey") return;
     playSfx("assets/NEXT_PRESSED.ogg", 1);
-    
+
     currentSpeechIndex++;
 
     if (currentSpeechIndex < currentSpeechList.length) {
@@ -466,7 +481,22 @@ function setMoreState(state) {
 
 const mainMenu = document.getElementById("mainMenu");
 const bgm = document.getElementById("bgm");
+bgm.loop = false;
 
+function loopHomeBGM() {
+  if (
+    !bgm.paused &&
+    bgm.readyState >= 2 &&
+    getTrackName(bgm.src) === "HOME.ogg" &&
+    bgm.currentTime >= HOME_LOOP.end
+  ) {
+    bgm.currentTime = HOME_LOOP.start;
+  }
+
+  requestAnimationFrame(loopHomeBGM);
+}
+
+loopHomeBGM();
 
 const buttons = document.querySelectorAll(".button");
 const menuScreens = document.querySelectorAll(".menuScreen");
@@ -569,6 +599,8 @@ function switchMenu(targetMenuId, newBGMsrc) {
     activeMenu = targetMenu;
     startCalendarAnim();
     updateVersionLabel();
+    handleMinigameImageButtons();
+    
 
     if (targetMenuId === "aboutMenu") startSpeech("aboutIntro");
     if (targetMenuId === "homeMenu") startSpeech("introduction");
@@ -590,13 +622,13 @@ function switchMenu(targetMenuId, newBGMsrc) {
 
       bgm.src = newBGMsrc;
       bgm.volume = 1;
-      bgm.play().catch(() => {});
+      bgm.play().catch(() => { });
 
       doSwap();
     });
   } else {
     // 🎵 Same track → DO NOT fade, DO NOT pause, DO NOT reset src
-    if (bgm.paused) bgm.play().catch(() => {});
+    if (bgm.paused) bgm.play().catch(() => { });
     doSwap();
   }
 }
@@ -911,22 +943,23 @@ function animateMainMenuButtons() {
 window.addEventListener("load", () => {
   const overlay = document.getElementById("whiteOverlay");
 
-  // Show main menu *after* page load
   mainMenu.style.display = "block";
   activeMenu = mainMenu;
   startCalendarAnim();
   updateVersionLabel();
   handleEndButton();
+  handleMinigameImageButtons();
+  
 
-  // Force overlay fully white
   overlay.style.opacity = "1";
   overlay.style.pointerEvents = "auto";
-  overlay.getBoundingClientRect(); // force paint
+  overlay.getBoundingClientRect();
 
-  // Start music under fade
+  bgm.src = "assets/HOME.ogg";
+  bgm.loop = false;
+  bgm.currentTime = 0;
   bgm.play().catch(() => { });
 
-  // Fade OUT white
   requestAnimationFrame(() => {
     overlay.style.opacity = "0";
   });
@@ -935,7 +968,7 @@ window.addEventListener("load", () => {
     "transitionend",
     () => {
       overlay.style.pointerEvents = "none";
-      animateMainMenuButtons(); // buttons slide AFTER fade
+      animateMainMenuButtons();
     },
     { once: true }
   );

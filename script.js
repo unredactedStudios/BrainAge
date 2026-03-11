@@ -1,6 +1,16 @@
-const APP_VERSION = "ver1.0-1003261323_beta";
+const APP_VERSION = "ver1.0-1103261912_beta";
 
 let activeMenu = null;
+
+const BGM_LOOPS = {
+  "assets/WELCOME.ogg":  { start: 8.365, end: 45.293 },
+  "assets/ABOUT.ogg":    { start: 0.000, end: 94.834 },
+  "assets/OPTIONS.ogg":  { start: 3.918, end: 25.387 },
+  "assets/MAINMENU.ogg": { start: 3.502, end: 27.507 }
+};
+
+let currentBgmTrack = "assets/MAINMENU.ogg";
+
 const speechScripts = {
   aboutIntro: [
     {
@@ -303,6 +313,24 @@ const splash = document.getElementById("splash");
 const boot = document.getElementById("boot");
 const mainMenu = document.getElementById("mainMenu");
 const bgm = document.getElementById("bgm");
+bgm.loop = false; // IMPORTANT: disable normal full-file looping
+
+function loopBGM() {
+  const loop = BGM_LOOPS[currentBgmTrack];
+
+  if (
+    loop &&
+    !bgm.paused &&
+    bgm.readyState >= 2 &&
+    bgm.currentTime >= loop.end
+  ) {
+    bgm.currentTime = loop.start;
+  }
+
+  requestAnimationFrame(loopBGM);
+}
+
+loopBGM();
 
 const isFastBoot = window.location.hash === "#fastboot";
 
@@ -358,7 +386,10 @@ function switchMenu(targetMenuId, newBGMsrc) {
     activeMenu = targetMenu;
     updateVersionLabel();
 
-    bgm.src = newBGMsrc;
+    currentBgmTrack = newBGMsrc;
+    bgm.src = currentBgmTrack;
+    bgm.loop = false;
+    bgm.currentTime = 0;
     bgm.volume = 1;
     bgm.play().catch(() => {});
 
@@ -631,6 +662,10 @@ function initApp() {
     }
 
     bgm.currentTime = 0;
+    currentBgmTrack = "assets/MAINMENU.ogg";
+    bgm.src = currentBgmTrack;
+    bgm.loop = false;
+    bgm.currentTime = 0;
     bgm.play().catch(err => {
       console.warn("BGM autoplay was blocked:", err);
     });
@@ -693,6 +728,10 @@ function showSequence() {
         updateVersionLabel();
         animateMainMenuButtons();
 
+        currentBgmTrack = "assets/MAINMENU.ogg";
+        bgm.src = currentBgmTrack;
+        bgm.loop = false;
+        bgm.currentTime = 0;
         bgm.play().catch(err => {
             console.warn("BGM autoplay was blocked:", err);
         });
