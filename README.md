@@ -66,7 +66,7 @@ No frameworks are required to run the project.
 [Download](https://github.com/unredactedStudios/BrainAge/releases) or clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/brain-training-web-edition.git
+git clone https://github.com/unredactedStudios/BrainAge
 ```
 
 Open the project folder and open:
